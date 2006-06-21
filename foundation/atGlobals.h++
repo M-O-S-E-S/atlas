@@ -78,7 +78,7 @@ enum atMathEulerAxisOrder
 
 // Windows-specific DLL linkage directives.  Windows requires explicit export
 // and import instructions for its shared libraries (DLL's).  The following
-// sections define a token AT_*_DLL for each VESS library that specifies
+// sections define a token AT_*_DLL for the ATLAS library that specifies
 // the linkage.  The token is defined conditionally. If the library itself 
 // is being compiled the token expands into an export directive.  If a module 
 // that is using the library is being compiled, the token expands into an
