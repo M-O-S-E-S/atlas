@@ -23,6 +23,8 @@ all: $(LIB).so
 
 $(LIB).so: $(LIB).a
 	g++ -shared -o $@ -Wl,--whole-archive $(LIB_OBJS) -Wl,--no-whole-archive
+	mv $(LIB).so $(LIB_DIR)
+	mv $(LIB).a $(LIB_DIR)
 
 $(LIB).a: $(MATH_DIR)/libmath.a $(UTIL_DIR)/libutil.a $(CONTAINER_DIR)/libcontainer.a
 	ar -ruc $@ $(LIB_OBJS)
