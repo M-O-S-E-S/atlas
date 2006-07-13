@@ -38,9 +38,14 @@ class atList : public atNotifier
 
       virtual bool       addEntry(atItem * item);
       virtual bool       removeCurrentEntry();
+      virtual bool       removeAllEntries();
 
       virtual atItem *   getFirstEntry();
       virtual atItem *   getNextEntry();
+      virtual atItem *   getPreviousEntry();
+      virtual atItem *   getNthEntry(u_long n);
+
+      virtual atItem *   findEntry(atItem * item);
 };
 
 #endif

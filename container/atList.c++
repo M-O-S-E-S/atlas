@@ -168,6 +168,22 @@ bool atList::removeCurrentEntry()
 }
 
 
+bool atList::removeAllEntries()
+{
+   // We'll do this by calling removeCurrentEntry() for each entry in
+   // the list (since we're removing all entries, it won't matter that
+   // we're messing with the current_entry pointer)
+   while (list_head != NULL)
+   {
+       current_entry = list_head;
+       removeCurrentEntry();
+   }
+
+   // Return success
+   return true;
+}
+
+
 atItem * atList::getFirstEntry()
 {
    // Go to the first node (if it exists)
@@ -194,3 +210,57 @@ atItem * atList::getNextEntry()
       return NULL;
 }
 
+
+atItem * atList::getPreviousEntry()
+{
+   // If we aren't at the beginning of the list, go to the previous node
+   if (current_entry != NULL)
+      current_entry = current_entry->previous;
+                                                                                
+   // If we have a new node, return its item
+   if (current_entry != NULL)
+      return current_entry->item;
+   else
+      return NULL;
+}
+
+
+atItem * atList::getNthEntry(u_long n)
+{
+   u_long count;
+
+   // Walk the list until we reach the n'th element
+   count = 0;
+   getFirstEntry();
+   while ((count < n) && (current_entry != NULL))
+   {
+       // Increment the count
+       count++;
+
+       // Advance the current entry pointer
+       getNextEntry();
+   }
+
+   // If the current_entry is NULL (the index is greater than the number
+   // of elements in the list), return NULL
+   if (current_entry == NULL)
+      return NULL;
+
+   // Otherwise, return the item at the given list entry
+   return current_entry->item;
+}
+
+
+atItem * atList::findEntry(atItem * item)
+{
+   atItem *currentItem;
+
+   // Walk the list until we find an item in the list that matches the given
+   // item (according to the item's equals() method)
+   currentItem = getFirstEntry();
+   while ((currentItem != NULL) && (!currentItem->equals(item)))
+       currentItem = getNextEntry();
+
+   // Return the item we found, or NULL if we didn't find it
+   return currentItem;
+}
