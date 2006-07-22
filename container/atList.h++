@@ -12,11 +12,11 @@
 
 
 // TYPES
-typedef struct Entry
+typedef struct atEntry
 {
-   atItem *         item;
-   struct Entry *   next;
-   struct Entry *   previous;
+   atItem *           item;
+   struct atEntry *   next;
+   struct atEntry *   previous;
 } atListEntry;
 
 
