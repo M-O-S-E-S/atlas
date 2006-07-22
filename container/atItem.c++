@@ -11,10 +11,11 @@ atItem::~atItem()
 {
 }
 
-bool atItem::equals(atItem *otherItem)
+
+bool atItem::equals(atItem * otherItem)
 {
-   // Just compare pointer values at this level.  Child classes can
-   // have more sophisticated comparisons
+   // Just compare pointer values at this level (child classes can
+   // have more sophisticated comparisons)
    if (this == otherItem)
       return true;
    else
