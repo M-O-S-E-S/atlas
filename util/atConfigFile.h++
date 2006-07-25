@@ -10,26 +10,26 @@
 #define AT_MAX_ARGUMENT_LENGTH   255
 
 
-typedef struct tupleArgument
+typedef struct atCfgArgument
 {
    char                     argument[AT_MAX_ARGUMENT_LENGTH];
-   struct tupleArgument *   next;
+   struct atCfgArgument *   next;
 } atTupleArgument;
 
-typedef struct tupleHead
+typedef struct atCfgHead
 {
    atTupleArgument *    argumentList;
    atTupleArgument *    argumentListEnd;
-   struct tupleHead *   next;
+   struct atCfgHead *   next;
 } atTupleHead;
 
-typedef struct tupleKey
+typedef struct atCfgKey
 {
    char                key[AT_MAX_KEY_LENGTH];
    atTupleHead *       tupleList;
    atTupleHead *       tupleListEnd;
    atTupleHead *       currentTuple;
-   struct tupleKey *   next;
+   struct atCfgKey *   next;
 } atTupleKey;
 
 
