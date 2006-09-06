@@ -173,22 +173,24 @@ atItem * atMap::getValue(atItem * key)
 
 // ------------------------------------------------------------------------
 // Attempts to change the value associated with the given key to newValue.
-// Return true if successful, false if the given key is not present within
-// the tree.
+// Return the old value if successful, NULL if the given key is not present
+// within the tree.
 // ------------------------------------------------------------------------
-bool atMap::changeValue(atItem * key, atItem * newValue)
+atItem * atMap::changeValue(atItem * key, atItem * newValue)
 {
     atMapNode *node;
+    atItem *oldValue;
     
     // Call our helper function to find the node with the given key
     node = findNode(treeRoot, key);
     if (!node)
-        return false;
+        return NULL;
 
-    // If found, remove the current value, set the value and return success
-    // JPD: FIXME:  Probable leak here, should we delete the old value first?
+    // If found, remove the current value, set the new value and return the 
+    // old value
+    oldValue = node->nodeValue;
     node->nodeValue = newValue;
-    return true;
+    return oldValue;
 }
 
 // ------------------------------------------------------------------------
