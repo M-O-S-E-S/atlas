@@ -62,7 +62,7 @@ public:
     
     bool        containsKey(atItem * key);
     atItem *    getValue(atItem * key);
-    bool        changeValue(atItem * key, atItem * newValue);
+    atItem *    changeValue(atItem * key, atItem * newValue);
 
     void        clear();
 
