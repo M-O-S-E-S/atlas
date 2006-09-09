@@ -8,7 +8,7 @@ LIBRARY_NAME = xml
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atXMLBuffer.o atXMLDocument.o 
+LIB_OBJS = atXMLBuffer.o atXMLDocument.o atXMLReader.o
 
 FOUNDATION_DIR = ../foundation
 UTIL_DIR = ../util

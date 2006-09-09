@@ -34,6 +34,7 @@ atXMLDocument::~atXMLDocument()
 }
 
 
+/* GAM These two methods are GEMINI specific, need to be reworked */
 char * atXMLDocument::getClass()
 {
    xmlChar *   xmlClass;
