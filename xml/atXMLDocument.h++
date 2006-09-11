@@ -42,6 +42,8 @@ class atXMLDocument : public atItem
       char *                 getClass();
       u_long                 getFamily();
 
+      atXMLDocumentDocPtr    getDoc();
+
       atXMLDocumentNodePtr   getRootNode();
       atXMLDocumentNodePtr   getNextSiblingNode(atXMLDocumentNodePtr node);
       atXMLDocumentNodePtr   getNextChildNode(atXMLDocumentNodePtr node);

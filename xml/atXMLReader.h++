@@ -23,6 +23,9 @@ class atXMLReader : public atNotifier
    public:
       atXMLReader(char * filename);
       atXMLReader(int fileDescriptor);
+      atXMLReader(char * memory, u_long memorySize);
+      atXMLReader(atXMLDocument * doc);
+
       virtual ~atXMLReader();
 
       atXMLDocument *   getSubDocument(char * elementName);

@@ -25,6 +25,28 @@ atXMLReader::atXMLReader(int fileDescriptor)
 }
 
 
+atXMLReader::atXMLReader(char * memory, u_long memorySize)
+{
+   // Open an XML file for reading using an XML reader
+   xml_reader = xmlReaderForMemory(memory, memorySize, NULL, NULL, 0);
+
+   // Check to make sure it worked okay
+   if (xml_reader == NULL)
+      notify(AT_WARN, "XML Reader cannot process file.\n");
+}
+
+
+atXMLReader::atXMLReader(atXMLDocument * doc)
+{
+   // Open an XML file for reading using an XML reader
+   xml_reader = xmlReaderWalker(doc->getDoc());
+
+   // Check to make sure it worked okay
+   if (xml_reader == NULL)
+      notify(AT_WARN, "XML Reader cannot process file.\n");
+}
+
+
 atXMLReader::~atXMLReader()
 {
    // Close the reader

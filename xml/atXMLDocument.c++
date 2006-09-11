@@ -82,6 +82,13 @@ u_long atXMLDocument::getFamily()
 }
 
 
+atXMLDocumentDocPtr atXMLDocument::getDoc()
+{
+   // Return the base xml doc
+   return xml_doc;
+}
+
+
 atXMLDocumentNodePtr atXMLDocument::getRootNode()
 {
    // Get the root node pointer and return it
