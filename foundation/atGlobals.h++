@@ -14,7 +14,11 @@ enum
     AT_W = 3,
     AT_H = 0,
     AT_P = 1,
-    AT_R = 2
+    AT_R = 2,
+    AT_RED = 0,
+    AT_GREEN = 1,
+    AT_BLUE = 2,
+    AT_ALPHA = 3
 };
 
 #define AT_PI    (3.14159265358979)
