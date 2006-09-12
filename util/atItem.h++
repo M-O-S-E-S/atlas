@@ -16,7 +16,7 @@ class atItem : public atNotifier
       atItem();
       virtual ~atItem();
 
-      virtual bool   equals(atItem *otherItem);
+      virtual bool   equals(atItem * otherItem);
 };
 
 #endif
