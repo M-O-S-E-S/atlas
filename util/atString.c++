@@ -25,6 +25,17 @@ atString::atString(char * stringToCopy)
 }
 
 
+atString::atString(atString * stringToCopy)
+{
+   // Initialize string to not being allocated
+   local_string = NULL;
+   string_length = 0;
+
+   // Copy the contents of the other string
+   setString(stringToCopy);
+}
+
+
 atString::~atString()
 {
    // Get rid of the local string if it exists
@@ -33,6 +44,17 @@ atString::~atString()
       free(local_string);
       local_string = NULL;
    }
+}
+
+
+atString * atString::clone()
+{
+   atString *copyString;
+
+   // Return a copy of this string
+   copyString = new atString(this);
+
+   return copyString;
 }
 
 
@@ -77,6 +99,13 @@ void atString::setString(char * stringToCopy)
          local_string[0] = '\0';
       string_length = 0;
    }
+}
+
+
+void atString::setString(atString * stringToCopy)
+{
+   // Call setString() with the contents of the string to copy
+   setString(stringToCopy->getString());
 }
 
 
