@@ -25,14 +25,14 @@ atString::atString(char * stringToCopy)
 }
 
 
-atString::atString(atString * stringToCopy)
+atString::atString(const atString & stringToCopy)
 {
    // Initialize string to not being allocated
    local_string = NULL;
    string_length = 0;
 
    // Copy the contents of the other string
-   setString(stringToCopy);
+   setString(stringToCopy.getString());
 }
 
 
@@ -47,18 +47,13 @@ atString::~atString()
 }
 
 
-atString * atString::clone()
+atString atString::clone()
 {
-   atString *copyString;
-
-   // Return a copy of this string
-   copyString = new atString(this);
-
-   return copyString;
+   return atString(local_string);
 }
 
 
-void atString::setString(char * stringToCopy)
+void atString::setString(const char * stringToCopy)
 {
    int   lengthOfNewString;
 
@@ -102,10 +97,10 @@ void atString::setString(char * stringToCopy)
 }
 
 
-void atString::setString(atString * stringToCopy)
+void atString::setString(const atString & stringToCopy)
 {
    // Call setString() with the contents of the string to copy
-   setString(stringToCopy->getString());
+   setString(stringToCopy.getString());
 }
 
 
@@ -113,6 +108,13 @@ char * atString::getString()
 {
    // Return the string stored
    return local_string;
+}
+
+
+const char * atString::getString() const
+{
+   // Return the string stored
+   return (const char *)local_string;
 }
 
 

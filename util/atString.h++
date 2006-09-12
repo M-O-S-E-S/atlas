@@ -19,19 +19,21 @@ class atString : public atItem
    public:
       atString();
       atString(char * stringToCopy);
-      atString(atString * stringToCopy);
+      atString(const atString & stringToCopy);
       virtual ~atString();
 
-      virtual atString *  clone();
+      virtual atString       clone();
 
-      virtual void        setString(char * stringToCopy);
-      virtual void        setString(atString * stringToCopy);
+      virtual void           setString(const char * stringToCopy);
+      virtual void           setString(const atString & stringToCopy);
 
-      virtual char *      getString();
-      virtual char        getCharAt(int index);
-      virtual int         getLength();
+      virtual const char *   getString() const;
+      virtual char *         getString();
 
-      virtual bool        equals(atItem * otherItem);
+      virtual char           getCharAt(int index);
+      virtual int            getLength();
+
+      virtual bool           equals(atItem * otherItem);
 };
 
 #endif
