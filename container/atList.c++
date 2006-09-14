@@ -11,6 +11,7 @@ atList::atList()
 
    // We haven't started traversing the list
    current_entry = NULL;
+   next_entry = list_head;
 }
 
 
@@ -79,6 +80,12 @@ bool atList::addEntry(atItem * item)
          list_tail = newEntry;
       }
 
+      // Set the traversal pointers appropriately
+      if (current_entry == NULL)
+         next_entry = list_head;
+      else
+         next_entry = current_entry->next;
+
       // Increment the number of entries since we just added one
       num_entries++;
                                                                                 
@@ -142,18 +149,21 @@ bool atList::removeCurrentEntry()
          // need to do something with the "current" (so set it to NULL
          // since we don't have a previous node)
          current_entry = NULL;
+         next_entry = list_head;
       }
       else if (current_entry->next == NULL)
       {
-         // We removed the last node so fix the tail and set current as
-         // being done with the list
+         // We removed the last node so fix the tail and set current and
+         // next as being done with the list
          list_tail = current_entry->previous;
          current_entry = NULL;
+         next_entry = NULL;
       }
       else
       {
          // We're removing a node in the middle so point "current" back one
          current_entry = current_entry->previous;
+         next_entry = current_entry->next;
       }
                                                                                 
       // Free up the structure from the list
@@ -179,6 +189,10 @@ bool atList::removeAllEntries()
        removeCurrentEntry();
    }
 
+   // Set traversal pointers
+   current_entry = NULL;
+   next_entry = NULL;
+
    // Return success
    return true;
 }
@@ -188,6 +202,10 @@ atItem * atList::getFirstEntry()
 {
    // Go to the first node (if it exists)
    current_entry = list_head;
+   if (list_head != NULL)
+      next_entry = list_head->next;
+   else
+      next_entry = NULL;
            
    // If we have a first node, return the item stored in it
    if (current_entry != NULL)
@@ -199,13 +217,16 @@ atItem * atList::getFirstEntry()
 
 atItem * atList::getNextEntry()
 {
-   // If we aren't at the end of the list, go to the next node
-   if (current_entry != NULL)
-      current_entry = current_entry->next;
-                                                                                
-   // If we have a new node, return its item
-   if (current_entry != NULL)
+   // If there is a next node, move on and return it
+   if (next_entry != NULL)
+   {
+      // Advance
+      current_entry = next_entry;
+      next_entry = current_entry->next;
+
+      // Return the item
       return current_entry->item;
+   }
    else
       return NULL;
 }

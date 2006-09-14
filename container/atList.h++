@@ -29,6 +29,7 @@ class atList : public atNotifier
       u_long          num_entries;
 
       atListEntry *   current_entry;
+      atListEntry *   next_entry;
 
    public:
       atList();
