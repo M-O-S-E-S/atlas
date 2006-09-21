@@ -7,11 +7,12 @@ class atQuat;
 #include <stdio.h>
 
 #include "atGlobals.h++"
+#include "atItem.h++"
 #include "atMatrix.h++"
 #include "atVector.h++"
 
 
-class ATLAS_DLL atQuat
+class ATLAS_DLL atQuat : public atItem
 {
 private:
 
@@ -88,6 +89,8 @@ public:
 
     void        print() const;
     void        print(FILE *fp) const;
+
+    virtual bool   equals(atItem * otherItem);
 };
 
 atQuat operator*(double multiplier, atQuat operand);

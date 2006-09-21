@@ -888,3 +888,22 @@ atVector operator*(double multiplier, atVector operand)
     // Return the target vector
     return result;
 }
+
+// ------------------------------------------------------------------------
+// atItem derived method.  Return whether the given atItem is an equivalent
+// atVector
+// ------------------------------------------------------------------------
+bool atVector::equals(atItem * otherItem)
+{
+   atVector * otherVector;
+
+   // Try to cast the item to a vector
+   otherVector = dynamic_cast<atVector *>(otherItem);
+
+   // Return true iff the item is a vector and they are equivalent (within
+   // default tolerance)
+   if ((otherVector != NULL) && (isEqual(*otherVector)))
+      return true;
+   else
+      return false;
+}

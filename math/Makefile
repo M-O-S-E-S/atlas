@@ -8,10 +8,12 @@ LIBRARY_NAME = math
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atVector.o atMatrix.o atQuat.o
+LIB_OBJS = atVector.o atMatrix.o atQuat.o atInteger.o
 
 
 FOUNDATION_DIR = ../foundation
+CONTAINER_DIR = ../container
+UTIL_DIR = ../util
 
 
 .SUFFIXES: .c++
@@ -24,7 +26,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR)
+	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR) -I$(CONTAINER_DIR) -I$(UTIL_DIR)
 
 
 clean:

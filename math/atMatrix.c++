@@ -1336,3 +1336,22 @@ bool atMatrix::operator==(const atMatrix &operand) const
     // If all the pairs match, return true
     return true;
 }
+
+// ------------------------------------------------------------------------
+// atItem-derived method.  Return true if the given item is an equivalent
+// matrix
+// ------------------------------------------------------------------------
+bool atMatrix::equals(atItem * otherItem)
+{
+   atMatrix * otherMatrix;
+
+   // Try to cast the other item to an atMatrix
+   otherMatrix = dynamic_cast<atMatrix *>(otherItem);
+
+   // Return true iff the other item is a matrix and is equivalent to
+   // this matrix (within default tolerance)
+   if ((otherMatrix != NULL) && (isEqual(*otherMatrix)))
+      return true;
+   else
+      return false;
+}

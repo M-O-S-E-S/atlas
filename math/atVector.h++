@@ -7,9 +7,10 @@ class atVector;
 #include <stdio.h>
 
 #include "atGlobals.h++"
+#include "atItem.h++"
 
 
-class ATLAS_DLL atVector
+class ATLAS_DLL atVector : public atItem
 {
 private:
 
@@ -72,6 +73,8 @@ public:
 
     void            print() const;
     void            print(FILE *fp) const;
+
+    virtual bool    equals(atItem * otherItem);
 };
 
 atVector operator*(double multiplier, atVector operand);

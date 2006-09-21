@@ -1207,3 +1207,23 @@ bool atQuat::operator==(const atQuat &operand) const
     // If all the pairs match, return true
     return true;
 }
+
+// ------------------------------------------------------------------------
+// atItem-derived method.  Return true if the given item is an equivalent
+// quaternion
+// ------------------------------------------------------------------------
+bool atQuat::equals(atItem * otherItem)
+{
+   atQuat * otherQuat;
+
+   // Try to cast the other item to an atQuat
+   otherQuat = dynamic_cast<atQuat *>(otherItem);
+
+   // Return true iff the other item is a quaternion and is equivalent to
+   // this quaternion (within default tolerance)
+   if ((otherQuat != NULL) && (isEqual(*otherQuat)))
+      return true;
+   else
+      return false;
+}
+

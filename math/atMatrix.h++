@@ -7,11 +7,12 @@ class atMatrix;
 #include <stdio.h>
 
 #include "atGlobals.h++"
+#include "atItem.h++"
 #include "atQuat.h++"
 #include "atVector.h++"
 
 
-class ATLAS_DLL atMatrix
+class ATLAS_DLL atMatrix : public atItem
 {
 private:
 
@@ -90,6 +91,8 @@ public:
     void              readRow(int rowNum, FILE *fp);
     void              read();
     void              read(FILE *fp);
+
+    virtual bool      equals(atItem * otherItem);
 };
 
 #endif
