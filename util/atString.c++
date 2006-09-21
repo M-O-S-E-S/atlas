@@ -150,3 +150,9 @@ bool atString::equals(atItem * otherItem)
       return false;
 }
 
+
+void atString::operator=(atString stringToCopy)
+{
+   // Copy the string from the given atString
+   setString(stringToCopy);
+}

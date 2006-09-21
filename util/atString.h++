@@ -34,6 +34,8 @@ class atString : public atItem
       virtual int            getLength();
 
       virtual bool           equals(atItem * otherItem);
+
+      virtual void           operator=(atString stringToCopy);
 };
 
 #endif
