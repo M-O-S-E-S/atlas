@@ -54,7 +54,7 @@ private:
 public:
 
                 atMap();
-                ~atMap();
+    virtual     ~atMap();
 
     bool        addEntry(atItem * key, atItem * value);
     bool        deleteEntry(atItem * key);
