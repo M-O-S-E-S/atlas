@@ -8,7 +8,7 @@ LIBRARY_NAME = math
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atVector.o atMatrix.o atQuat.o atInteger.o
+LIB_OBJS = atVector.o atMatrix.o atQuat.o
 
 
 FOUNDATION_DIR = ../foundation
