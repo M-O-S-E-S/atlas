@@ -140,7 +140,7 @@ bool atString::equals(atItem * otherItem)
 {
    atString *   strItem;
 
-   // Check the type for Jason's nasty equal checking
+   // Try to convert it to a string to make sure it is a string
    strItem = dynamic_cast<atString *>(otherItem);
 
    // Return whether the two strings are equal or not
