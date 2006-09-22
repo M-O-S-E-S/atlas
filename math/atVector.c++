@@ -907,3 +907,53 @@ bool atVector::equals(atItem * otherItem)
    else
       return false;
 }
+
+// ------------------------------------------------------------------------
+// atItem derived method.  Return an integer indicating whether this
+// vector is less than (negative) equal (zero) or greater than (positive)
+// the other vector.
+// ------------------------------------------------------------------------
+int atVector::compare(atItem * otherItem)
+{
+   atVector * otherVector;
+   atVector   diffVec;
+   int        i;
+   double     diffSum;
+
+   // Try to cast the item to a vector
+   otherVector = dynamic_cast<atVector *>(otherItem);
+
+   // See if the other item is a vector
+   if (otherVector != NULL)
+   {
+      // We'll use a component-wise difference between the two vectors.
+      // To assign the label "greater" or "less".  This works better on
+      // a wider variety of vectors than something like a magnitude
+      // check or a dot product.  For example, comparing the magnitude
+      // of normalized vectors is rather pointless, since it is always
+      // 1.0.  However, an element-wise difference will return different
+      // values even with normalized vectors, but the result will always
+      // be consistent given the same sets of data.
+
+      // Subtract the two vectors element-wise
+      diffVec = (*this) - (*otherVector);
+
+      // Get the sum of the difference vector's components
+      diffSum = 0.0;
+      for (i = 0; i < diffVec.getSize(); i++)
+         diffSum += diffVec[i];
+
+      // Return value depends on the sign of the difference sum
+      if (diffSum > 0)
+         return 1;
+      else if (diffSum < 0)
+         return -1;
+      else
+         return 0;
+   }
+   else
+   {
+      // Return the default atItem comparison
+      return atItem::compare(otherItem);
+   }
+}

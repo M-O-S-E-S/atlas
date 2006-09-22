@@ -93,6 +93,7 @@ public:
     void              read(FILE *fp);
 
     virtual bool      equals(atItem * otherItem);
+    virtual int       compare(atItem * otherItem);
 };
 
 #endif

@@ -1355,3 +1355,51 @@ bool atMatrix::equals(atItem * otherItem)
    else
       return false;
 }
+
+// ------------------------------------------------------------------------
+// atItem-derived method.  Return an integer value indicating whether this
+// matrix is less than (negative), equal to (zero), or greater than
+// (positive) the other matrix.  Mainly used for sorted containers (like
+// atMap).
+// ------------------------------------------------------------------------
+int atMatrix::compare(atItem * otherItem)
+{
+   atMatrix * otherMatrix;
+   atMatrix   diffMat;
+   atVector   diffVec;
+   double     diffSum;
+
+   // Try to cast the item to a vector
+   otherMatrix = dynamic_cast<atMatrix *>(otherItem);
+
+   // See if the other item is a vector
+   if (otherMatrix != NULL)
+   {
+      // We'll use the element-wise difference of the two matrices to
+      // determine "greater" or "less".  See the atVector::compare()
+      // method for justification.
+      
+      // Subtract the two matrices element-wise
+      diffMat = (*this) - (*otherMatrix);
+
+      // Sum the rows of the difference matrix into a difference vector
+      diffVec = diffMat[0] + diffMat[1] + diffMat[2] + diffMat[3];
+
+      // Sum the elements of the difference vector
+      diffSum = diffVec[0] + diffVec[1] + diffVec[2] + diffVec[3];
+
+      // Use the difference sum to assign a comparison result
+      if (diffSum > 0)
+         return 1;
+      else if (diffSum < 0)
+         return -1;
+      else
+         return 0;
+   }
+   else
+   {
+      // Return the default atItem comparison
+      return atItem::compare(otherItem);
+   }
+}
+

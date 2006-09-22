@@ -75,6 +75,7 @@ public:
     void            print(FILE *fp) const;
 
     virtual bool    equals(atItem * otherItem);
+    virtual int     compare(atItem * otherItem);
 };
 
 atVector operator*(double multiplier, atVector operand);

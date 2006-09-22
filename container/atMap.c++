@@ -62,7 +62,7 @@ bool atMap::addEntry(atItem * key, atItem * value)
     while (1)
     {
         // Branch left or right based on key comparison
-        if (newNode->nodeKey < nodeParent->nodeKey)
+        if (newNode->nodeKey->compare(nodeParent->nodeKey) < 0)
         {
             // Left subtree
             if (nodeParent->leftChild == NULL)
@@ -258,7 +258,7 @@ atMapNode *atMap::findNode(atMapNode * node, atItem * key)
 
     // Otherwise, search a child for the key; which child to search is
     // determined by comparing key values
-    if (key > node->nodeKey)
+    if (key->compare(node->nodeKey) > 0)
         return findNode(node->rightChild, key);
     else
         return findNode(node->leftChild, key);

@@ -14,7 +14,7 @@ int atNotifier::notify_level = AT_INFO;
 atNotifier::atNotifier()
 {
    // Initialize the instance variables (an empty header and output to stdout)
-   strcpy(header_name, "");
+   memset(header_name, 0, sizeof(header_name));
    output_file_ptr = stdout;
 }
 

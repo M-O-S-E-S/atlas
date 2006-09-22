@@ -151,8 +151,30 @@ bool atString::equals(atItem * otherItem)
 }
 
 
+int atString::compare(atItem * otherItem)
+{
+   atString *   strItem;
+
+   // Try to cast to an atString
+   strItem = dynamic_cast<atString *>(otherItem);
+
+   // See if the other item is valid
+   if (strItem != NULL)
+   {
+      // Return the string comparison of the two native strings
+      return strcmp(local_string, strItem->getString());
+   }
+   else
+   {
+      // Return the default atItem comparison
+      return atItem::compare(otherItem);
+   }
+}
+
+
 void atString::operator=(atString stringToCopy)
 {
    // Copy the string from the given atString
    setString(stringToCopy);
 }
+

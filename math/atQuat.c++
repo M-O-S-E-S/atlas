@@ -1227,3 +1227,45 @@ bool atQuat::equals(atItem * otherItem)
       return false;
 }
 
+
+// ------------------------------------------------------------------------
+// atItem derived method.  Return an integer indicating whether this
+// quaternion is less than (negative) equal (zero) or greater than
+// (positive) the other quaternion.
+// ------------------------------------------------------------------------
+int atQuat::compare(atItem * otherItem)
+{
+   atQuat * otherQuat;
+   double   thisAngle, otherAngle;
+   double   angleDiff;
+
+   // Try to cast the item to a vector
+   otherQuat = dynamic_cast<atQuat *>(otherItem);
+
+   // See if the other item is a vector
+   if (otherQuat != NULL)
+   {
+      // Since quaternions are almost always used for rotations, we'll
+      // compare using the angle of rotation, which is encoded in the
+      // quaternion's W component
+
+      // Get the angle rotation for each quaternion
+      getAxisAngleRotation(NULL, NULL, NULL, &thisAngle);
+      otherQuat->getAxisAngleRotation(NULL, NULL, NULL, &otherAngle);
+
+      // Use the angle difference to determine the "greater" quaternion
+      angleDiff = otherAngle - thisAngle;
+      if (angleDiff > 0.0)
+         return 1;
+      else if (angleDiff < 0.0)
+         return -1;
+      else
+         return 0;
+   }
+   else
+   {
+      // Return the default atItem comparison
+      return atItem::compare(otherItem);
+   }
+}
+
