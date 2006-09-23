@@ -62,6 +62,7 @@ void atXMLBuffer::processXMLDocument()
 {
    xmlDocPtr         doc;
    xmlNodePtr        current;
+   char              fullHeader[256];
    xmlChar *         version;
    atXMLDocument *   xmlDoc;
 
@@ -105,7 +106,8 @@ void atXMLBuffer::processXMLDocument()
 
    // Now, check to make sure the root element is the header
    // (all XML documents start with the header and end with the footer
-   if (xmlStrcmp(current->name, (xmlChar *) xml_header))
+   sprintf(fullHeader, "<%s>", current->name);
+   if (xmlStrcmp((xmlChar *) fullHeader, (xmlChar *) xml_header))
    {
       notify(AT_WARN, "XML document is of wrong type.\n");
       xmlFreeDoc(doc);
