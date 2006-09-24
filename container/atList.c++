@@ -137,6 +137,12 @@ bool atList::removeCurrentEntry()
          current_entry->previous->next = current_entry->next;
          if (current_entry->next != NULL)
             current_entry->next->previous = current_entry->previous;
+         else
+         {
+            // We do need to be careful with the list tail (in case we
+            // removed the very last node)
+            list_tail = current_entry->previous;
+         }
       }
 
       // Save a pointer to the structure holding this item
