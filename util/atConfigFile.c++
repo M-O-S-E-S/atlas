@@ -25,7 +25,7 @@ atConfigFile::atConfigFile(char *filename)
    if ( (infile = fopen(filename, "r")) == NULL )
    {
       // Warn the user if we failed to open the list
-      notify(AT_WARN, "Can't open configuration file!\n");
+      notify(AT_WARN, "Can't open configuration file (%s)!\n", filename);
    }
    else
    {
