@@ -126,6 +126,7 @@ bool atList::removeCurrentEntry()
             // We're also removing the last node (must be the only node) so
             // we need to fix the tail pointer
             list_tail = NULL;
+            list_tail = NULL;
          }
       }
       else
@@ -168,8 +169,8 @@ bool atList::removeCurrentEntry()
       else
       {
          // We're removing a node in the middle so point "current" back one
-         current_entry = current_entry->previous;
          next_entry = current_entry->next;
+         current_entry = current_entry->previous;
       }
                                                                                 
       // Free up the structure from the list
