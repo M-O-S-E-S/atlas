@@ -80,12 +80,6 @@ bool atList::addEntry(atItem * item)
          list_tail = newEntry;
       }
 
-      // Set the traversal pointers appropriately
-      if (current_entry == NULL)
-         next_entry = list_head;
-      else
-         next_entry = current_entry->next;
-
       // Increment the number of entries since we just added one
       num_entries++;
                                                                                 
@@ -126,7 +120,6 @@ bool atList::removeCurrentEntry()
             // We're also removing the last node (must be the only node) so
             // we need to fix the tail pointer
             list_tail = NULL;
-            list_tail = NULL;
          }
       }
       else
@@ -138,12 +131,6 @@ bool atList::removeCurrentEntry()
          current_entry->previous->next = current_entry->next;
          if (current_entry->next != NULL)
             current_entry->next->previous = current_entry->previous;
-         else
-         {
-            // We do need to be careful with the list tail (in case we
-            // removed the very last node)
-            list_tail = current_entry->previous;
-         }
       }
 
       // Save a pointer to the structure holding this item
@@ -152,11 +139,15 @@ bool atList::removeCurrentEntry()
       // Check for head and tail issues for the "current entry"
       if (current_entry->previous == NULL)
       {
-         // We removed the first node but the head is already okay; we just
-         // need to do something with the "current" (so set it to NULL
-         // since we don't have a previous node)
-         current_entry = NULL;
+         // We removed the first node but the head is already okay
+
+         // But it could be the only node too
+         if (current_entry->next == NULL)
+            list_tail = NULL;
+
+         // Set the traversals
          next_entry = list_head;
+         current_entry = NULL;
       }
       else if (current_entry->next == NULL)
       {
@@ -168,9 +159,9 @@ bool atList::removeCurrentEntry()
       }
       else
       {
-         // We're removing a node in the middle so point "current" back one
+         // We're removing a node in the middle
          next_entry = current_entry->next;
-         current_entry = current_entry->previous;
+         current_entry = NULL;
       }
                                                                                 
       // Free up the structure from the list
