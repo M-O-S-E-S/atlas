@@ -132,7 +132,10 @@ char * atXMLDocument::getNodeAttribute(atXMLDocumentNodePtr node,
    prop = (char *) xmlGetProp(node, (const xmlChar *) attrName);
 
    // Copy the property value into our internal string
-   strcpy(string_value, prop);
+   if (prop != NULL)
+      strcpy(string_value, prop);
+   else
+      strcpy(string_value, "");
 
    // Free up the XML structure
    xmlFree((xmlChar *) prop);
