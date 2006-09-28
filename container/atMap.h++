@@ -50,6 +50,7 @@ private:
     int               getChildType(atMapNode * node);
     void              fillLists(atMapNode * node, atList * keyList,
                                 atList * valueList);
+    void              printTree(atMapNode * node, int indent);
 
 public:
 
@@ -68,6 +69,8 @@ public:
 
     void        getSortedList(atList * keyList,
                               atList * valueList);
+
+    void        print();
 };
 
 #endif

@@ -232,11 +232,11 @@ void atMap::getSortedList(atList * keyList, atList * valueList)
     fillLists(treeRoot, keyList, valueList);
     
     // Error checking
-    if (arrayPos != treeSize)
+    if (keyList->getNumEntries() != treeSize)
     {
         notify(AT_ERROR, "atMap::getSortedList: Map Inconsistency:\n");
-        notify(AT_ERROR, "   Number of entries in map is not equal to "
-            "the map's stated size\n");
+        notify(AT_ERROR, "   Number of entries in map %d is not equal to "
+            "the map's stated size %d\n", keyList->getNumEntries(), treeSize);
     }
 }
 
@@ -783,3 +783,88 @@ void atMap::fillLists(atMapNode * node, atList * keyList, atList * valueList)
     // Inorder - traverse right child
     fillLists(node->rightChild, keyList, valueList);
 }
+
+void atMap::print()
+{
+    // Print a header for the map tree first
+    printf("atMap %p (%d entries):\n", this, treeSize);
+
+    // Call the recursive printTree() method with the root of the red-black
+    // tree and a zero indent
+    if (treeRoot != NULL)
+        printTree(treeRoot, 0);
+}
+
+void atMap::printTree(atMapNode *node, int indent)
+{
+    int i;
+
+    // Print this node's information
+    // Start with an opening brace
+    for (i = 0; i < indent; i++)
+        printf(" ");
+    printf("{\n");
+
+    // Print the node's address
+    for (i = 0; i < indent+2; i++)
+        printf(" ");
+    printf("Node         %p\n", node);
+
+    // Print the node's color
+    for (i = 0; i < indent+2; i++)
+        printf(" ");
+    switch(node->color)
+    {
+        case AT_MAP_BLACK:
+            printf("Color        %s\n", "BLACK");
+            break;
+        case AT_MAP_RED:
+            printf("Color        %s\n", "RED");
+            break;
+    };
+
+    // Print the node's key item pointer
+    for (i = 0; i < indent+2; i++)
+        printf(" ");
+    printf("Key          %p\n", node->nodeKey);
+
+    // Print the node's value item pointer
+    for (i = 0; i < indent+2; i++)
+        printf(" ");
+    printf("Value        %p\n", node->nodeValue);
+    printf("\n");
+
+    // Print the node's parent node pointer
+    for (i = 0; i < indent+2; i++)
+        printf(" ");
+    printf("Parent       %p\n", node->parent);
+
+    // Now, traverse and print the subtrees
+    // First, the left child
+    for (i = 0; i < indent+2; i++)
+        printf(" ");
+    if (node->leftChild != NULL)
+    {
+        printf("Left Child:  %p\n", node->leftChild);
+        printTree(node->leftChild, indent + 2);
+    }
+    else
+        printf("Left Child:  (none)\n");
+
+    // Then, the right child
+    for (i = 0; i < indent+2; i++)
+        printf(" ");
+    if (node->rightChild != NULL)
+    {
+        printf("Right Child: %p\n", node->rightChild);
+        printTree(node->rightChild, indent + 2);
+    }
+    else
+        printf("Right Child: (none)\n");
+
+    // Finish with a closing brace
+    for (i = 0; i < indent; i++)
+        printf(" ");
+    printf("}\n");
+}
+
