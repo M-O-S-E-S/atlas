@@ -70,19 +70,15 @@ void atString::setString(const char * stringToCopy)
       // Get the length of the new string
       lengthOfNewString = strlen(stringToCopy);
 
-      // If there is actually a string, allocate space and copy it in
-      if (lengthOfNewString > 0)
-      {
-         // Here we add one to the length to include the \0 character
-         local_string = (char *) calloc((lengthOfNewString + 1), sizeof(char));
+      // Here we add one to the length to include the \0 character
+      local_string = (char *) calloc((lengthOfNewString + 1), sizeof(char));
 
-         // Make sure we allocated space okay
-         if (local_string != NULL)
-         {
-            // We did so copy the string in
-            strcpy(local_string, stringToCopy);
-            string_length = lengthOfNewString;
-         }
+      // Make sure we allocated space okay
+      if (local_string != NULL)
+      {
+         // We did so copy the string in
+         strcpy(local_string, stringToCopy);
+         string_length = lengthOfNewString;
       }
    }
    else
