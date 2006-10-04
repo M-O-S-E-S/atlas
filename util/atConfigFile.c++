@@ -319,7 +319,10 @@ bool atConfigFile::getNextTuple(char * key, int * argc, char * argv[])
    // Search for key.  If not found, return error
    tupleKey = findKey(key);
    if (tupleKey == NULL)
+   {
+      *argc = 0;
       return false;
+   }
 
    // If pointer is at end of list already, return error
    if (tupleKey->currentTuple == NULL)
