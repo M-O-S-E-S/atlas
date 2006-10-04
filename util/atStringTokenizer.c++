@@ -37,6 +37,15 @@ atString * atStringTokenizer::getToken(char delimiters[])
    char         token[4096];
    atString *   newStr;
 
+   // First, if we're currently at a delimiter, we need to skip
+   // them
+   while ( (string_index < strlen(the_chars)) &&
+           (strchr(delimiters, the_chars[string_index]) != NULL) )
+   {
+      // Move up the index
+      string_index++;
+   }
+
    // Go through the delimiters and find the "earliest" one in
    // the string so far
    minChar = strchr(&the_chars[string_index], delimiters[0]);
@@ -46,7 +55,7 @@ atString * atStringTokenizer::getToken(char delimiters[])
       ch = strchr(&the_chars[string_index], delimiters[i]);
 
       // See if this is earlier than the best so far and save if so
-      if ( (ch != NULL) && (ch < minChar) )
+      if ( ((ch != NULL) && (ch < minChar)) || (minChar == NULL) )
          minChar = ch;
    }
 
