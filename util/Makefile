@@ -8,7 +8,8 @@ LIBRARY_NAME = util
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atItem.o atConfigFile.o atNotifier.o atBufferHandler.o atString.o
+LIB_OBJS = atItem.o atConfigFile.o atNotifier.o atBufferHandler.o atString.o \
+           atStringTokenizer.o
 
 
 FOUNDATION_DIR = ../foundation
