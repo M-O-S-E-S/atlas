@@ -8,18 +8,21 @@
 //*************************** CONSTRUCTOR/DESTRUCTOR *************************//
 
 
-atConfigFile::atConfigFile(char *filename)
+atConfigFile::atConfigFile(char * filename)
 {
    FILE *          infile;
    char            line[255];
-   char *          lineToken;
+   atString *      lineToken;
    atTupleKey *    key;
    atTupleHead *   head;
-   char *          arg;
+   atString *      arg;
 
    // Initialize the tuple list to be empty
    tuple_list = NULL;
    tuple_list_end = NULL;
+
+   // Initialize the tokenizer
+   current_tokenizer = NULL;
 
    // Open the config file
    if ( (infile = fopen(filename, "r")) == NULL )
@@ -36,31 +39,43 @@ atConfigFile::atConfigFile(char *filename)
          fgets(line, sizeof(line), infile);
          if (!feof(infile))
          {
+            // Create a tokenizer for this line
+            if (current_tokenizer != NULL)
+               delete current_tokenizer;
+            current_tokenizer = new atStringTokenizer(line);
+
             // Get a token from the line
-            lineToken = getToken(line);
+            lineToken = getToken();
 
             // If we received something and it's not the comment character (#)
-            if ( (lineToken != NULL) && (strncmp(lineToken, "#", 1) != 0) )
+            if ( (lineToken != NULL) && (lineToken->getCharAt(0) != '#') )
             {
                // Find the tuple of this input line.  Create one if needed.
-               key = findKey(lineToken);
+               key = findKey(lineToken->getString());
                if (key == NULL)
-                  key = addKey(lineToken);
+                  key = addKey(lineToken->getString());
 
                // Add in a new argument tuple to the list of the key
                head = addTuple(key);
 
                // Loop while arguments exist
-               arg = getToken(NULL);
+               arg = getToken();
                while (arg != NULL)
                {
                   // Add argument to argument tuple
-                  addArgument(head, arg);
+                  addArgument(head, arg->getString());
+
+                  // Clean up the argument
+                  delete arg;
 
                   // Get next argument
-                  arg = getToken(NULL);
+                  arg = getToken();
                }
             }
+
+            // Cleanup the token
+            if (lineToken != NULL)
+               delete lineToken;
          }
       }
 
@@ -78,6 +93,10 @@ atConfigFile::~atConfigFile()
    atTupleKey *        oldKey;
    atTupleHead *       oldHead;
    atTupleArgument *   oldArg;
+
+   // Cleanup the tokenizer
+   if (current_tokenizer != NULL)
+      delete current_tokenizer;
 
    // Go through all the keys in the list
    currentKey = tuple_list;
@@ -120,35 +139,42 @@ atConfigFile::~atConfigFile()
 //************************ PROTECTED MEMBER FUNCTIONS ************************//
 
 
-char * atConfigFile::getToken(char *buffer)
+atString * atConfigFile::getToken()
 {
-   char *   lineToken;
-   char *   lineToken2;
+   atString *   lineToken;
+   char         token[4096];
 
    // Get the token
-   lineToken = strtok(buffer, " \t\n");
+   lineToken = current_tokenizer->getToken(" \t\n");
 
    // If the token starts with a quote, we're getting a string
-   if ( (lineToken != NULL) && (lineToken[0] == '"') )
+   if ( (lineToken != NULL) && (lineToken->getCharAt(0) == '"') )
    {
+      // Get the token itself and release the string
+      strcpy(token, lineToken->getString());
+      delete lineToken;
+
       // Check to see if the quoted string is actually just a single word
       // (meaning the last strtok call read through the second quote as well)
-      if (lineToken[strlen(lineToken)-1] == '"')
+      if (token[strlen(token)-1] == '"')
       {
          // Overwrite second quote to get the single word
-         lineToken[strlen(lineToken)-1] = '\0';
+         token[strlen(token)-1] = '\0';
       }
       else
       {
          // Get the next part of string (until terminating quote)
-         lineToken2 = strtok(NULL, "\"");
+         lineToken = current_tokenizer->getToken(" \t\n");
 
-         // Overwrite previous NULL to put string back together
-         lineToken[strlen(lineToken)] = ' ';
+         // Put the two pieces back together
+         strcat(token, lineToken->getString());
+
+         // Delete the token
+         delete lineToken;
       }
 
       // Return everything after the quotation mark
-      return &lineToken[1];
+      return new atString(&token[1]);
    }
    else
    {
@@ -158,7 +184,7 @@ char * atConfigFile::getToken(char *buffer)
 }
 
 
-atTupleKey * atConfigFile::findKey(char *key)
+atTupleKey * atConfigFile::findKey(char * key)
 {
    atTupleKey *   current;
 
@@ -167,7 +193,7 @@ atTupleKey * atConfigFile::findKey(char *key)
    while (current != NULL)
    {
       // See if this node's key matches our key; if it does, return this node
-      if (strcmp(current->key, key) == 0)
+      if (strcmp(key, current->key) == 0)
          return current;
 
       // Otherwise, go to the next node
@@ -179,7 +205,7 @@ atTupleKey * atConfigFile::findKey(char *key)
 }
 
 
-atTupleKey * atConfigFile::addKey(char *key)
+atTupleKey * atConfigFile::addKey(char * key)
 {
    atTupleKey *   newKey;
 

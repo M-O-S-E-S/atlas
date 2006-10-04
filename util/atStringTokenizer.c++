@@ -53,8 +53,10 @@ atString * atStringTokenizer::getToken(char delimiters[])
    // Prepare the token
    if (minChar != NULL)
    {
-      // Copy the token out
-      strncpy(token, &the_chars[string_index], minChar - the_chars);
+      // Copy the token out, not forgetting to add a NULL
+      strncpy(token, &the_chars[string_index], 
+              minChar - &the_chars[string_index]);
+      token[minChar - &the_chars[string_index]] = '\0';
 
       // Move the string index to after this location
       string_index = minChar - the_chars + 1;

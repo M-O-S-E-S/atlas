@@ -4,10 +4,12 @@
 
 
 #include "atNotifier.h++"
+#include "atString.h++"
+#include "atStringTokenizer.h++"
 
 
-#define AT_MAX_KEY_LENGTH        255
-#define AT_MAX_ARGUMENT_LENGTH   255
+#define AT_MAX_KEY_LENGTH        256
+#define AT_MAX_ARGUMENT_LENGTH   256
 
 
 typedef struct atCfgArgument
@@ -36,21 +38,23 @@ typedef struct atCfgKey
 class atConfigFile : public atNotifier
 {
    protected:
-      atTupleKey *   tuple_list;
-      atTupleKey *   tuple_list_end;
+      atTupleKey *          tuple_list;
+      atTupleKey *          tuple_list_end;
 
-      char *              getToken(char *buffer);
-      atTupleKey *        findKey(char *key);
-      atTupleKey *        addKey(char *key);
-      atTupleHead *       addTuple(atTupleKey *key);
-      atTupleArgument *   addArgument(atTupleHead *head, char *arg);
+      atStringTokenizer *   current_tokenizer;
+
+      atString *          getToken();
+      atTupleKey *        findKey(char * key);
+      atTupleKey *        addKey(char * key);
+      atTupleHead *       addTuple(atTupleKey * key);
+      atTupleArgument *   addArgument(atTupleHead * head, char * arg);
 
    public:
-      atConfigFile(char *filename);
+      atConfigFile(char * filename);
       ~atConfigFile();
 
-      virtual bool   getNextTuple(char *key, int *argc, char *argv[]);
-      virtual bool   resetTupleList(char *key);
+      virtual bool   getNextTuple(char * key, int * argc, char * argv[]);
+      virtual bool   resetTupleList(char * key);
 };
 
 #endif
