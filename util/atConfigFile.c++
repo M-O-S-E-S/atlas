@@ -164,9 +164,10 @@ atString * atConfigFile::getToken()
       else
       {
          // Get the next part of string (until terminating quote)
-         lineToken = current_tokenizer->getToken(" \t\n");
+         lineToken = current_tokenizer->getToken("\"\n");
 
          // Put the two pieces back together
+         strcat(token, " ");
          strcat(token, lineToken->getString());
 
          // Delete the token
