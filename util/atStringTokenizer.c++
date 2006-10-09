@@ -74,7 +74,22 @@ atString * atStringTokenizer::getToken(char delimiters[])
       newStr = new atString(token);
    }
    else
-      newStr = NULL;
+   {
+      // We didn't find a delimiter but check if we have bytes left
+      // over in the string (we just need to return this last token)
+      if (string_index < strlen(the_chars))
+      {
+         // We had a substring left so we have an implicit delimiter
+         // of the NULL character (\0)
+         newStr = new atString(&the_chars[string_index]);
+         string_index = strlen(the_chars);
+      }
+      else
+      {
+         // We're just at the end of the string so return no token!
+         newStr = NULL;
+      }
+   }
 
    // Return the new string
    return newStr;
