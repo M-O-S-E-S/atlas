@@ -8,7 +8,7 @@ LIBRARY_NAME = container
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atList.o atMap.o
+LIB_OBJS = atList.o atMap.o atArray.o
 
 
 FOUNDATION_DIR = ../foundation
