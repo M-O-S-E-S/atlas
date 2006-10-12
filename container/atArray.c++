@@ -129,13 +129,18 @@ bool atArray::insertEntry(u_long index, atItem * item)
       // Make sure the array is big enough to handle the given index
       if (ensureCapacity(index))
       {
-         // Add the entry
+         // Since we're adding an item at an index beyond the current entry
+         // count, all the items in between the previous entry count and
+         // the new index are also implicitly filled.  We need to make sure
+         // these implicit items are set to NULL to avoid any confusion
+         memset(&array_items[num_entries], 0, 
+            sizeof(atItem *) * (index - num_entries));
+
+         // Add the entry at the specified index
          array_items[index] = item;
 
-         // Update the entry count.  Since we added an item at an index
-         // beyond the current entry count, all the items in between the
-         // previous entry count and the new index are also implicitly 
-         // filled (even though they're NULL)
+         // Update the entry count to reflect the new item and any
+         // implicitly filled items
          num_entries = index + 1;
 
          // Return success
@@ -164,10 +169,10 @@ bool atArray::removeEntry(u_long index)
          // left
          memmove(&array_items[index], &array_items[index+1],
             sizeof(atItem *) * (num_entries - index));
-
-         // Update the entry count
-         num_entries--;
       }
+
+      // Update the entry count
+      num_entries--;
    }
    else
    {
@@ -186,7 +191,7 @@ bool atArray::removeEntry(atItem * item)
    index = getIndexOf(item);
 
    // See if the index is valid
-   if (index > 0)
+   if (index >= 0)
    {
       // Call removeEntry() with the index of the item we found
       return removeEntry((u_long)index);
@@ -271,7 +276,7 @@ bool atArray::ensureCapacity(u_long capacity)
       // Initialize all the new memory to NULL, in case someone tries to
       // read from there (which they really shouldn't)
       memset(&array_items[num_entries], 0, 
-         sizeof(atItem) * newCapacity - current_capacity);
+         sizeof(atItem *) * (newCapacity - current_capacity));
 
       // Update the array's capacity indicator
       current_capacity = newCapacity;
