@@ -69,12 +69,12 @@ bool atArray::addEntry(atItem * item)
 }
 
 
-atItem * atArray::setEntry(u_long index, atItem * item)
+atItem * atArray::setEntry(long index, atItem * item)
 {
    atItem * oldItem;
 
    // See if the given index is within the current array bounds
-   if (index < num_entries)
+   if ((index >= 0) && (index < num_entries))
    {
       // Get the item at the given index (if any)
       oldItem = array_items[index];
@@ -85,7 +85,7 @@ atItem * atArray::setEntry(u_long index, atItem * item)
       // Return the old item (may be NULL)
       return oldItem;
    }
-   else
+   else if (index >= 0)
    {
       // The index is outside the current array bounds, so this is
       // effectively just an insert operation.  Check the return value
@@ -96,13 +96,18 @@ atItem * atArray::setEntry(u_long index, atItem * item)
       // Return NULL, since there was no item present at that index before
       return NULL;
    }
+   else
+   {
+      // We were given a negative index
+      notify(AT_ERROR, "The given index (%d) is invalid\n", index);
+   }
 }
 
 
-bool atArray::insertEntry(u_long index, atItem * item)
+bool atArray::insertEntry(long index, atItem * item)
 {
    // See if the given index is within the bounds of the current array
-   if (index < num_entries)
+   if ((index >= 0) && (index < num_entries))
    {
       // We need to shift some number of elements in the array to the right.
       // This means we need to make sure the array is big enough to handle the
@@ -124,7 +129,7 @@ bool atArray::insertEntry(u_long index, atItem * item)
          return false;
       }
    }
-   else
+   else if (index >= 0)
    {
       // Make sure the array is big enough to handle the given index
       if (ensureCapacity(index))
@@ -152,13 +157,18 @@ bool atArray::insertEntry(u_long index, atItem * item)
          return false;
       }
    }
+   else
+   {
+      // We were given a negative index
+      notify(AT_ERROR, "The given index (%d) is invalid\n", index);
+   }
 }
 
 
-bool atArray::removeEntry(u_long index)
+bool atArray::removeEntryAtIndex(long index)
 {
    // Make sure the index is valid
-   if (index < num_entries)
+   if ((index >= 0) && (index < num_entries))
    {
       // To remove the item, we need to slide any subsequent items to the
       // left to take its place.  First, check to make sure we're not 
@@ -174,11 +184,16 @@ bool atArray::removeEntry(u_long index)
       // Update the entry count
       num_entries--;
    }
+   else if (index >= 0)
+   {
+      // We don't have any elements at this index
+      notify(AT_WARN, "The given index (%d) is out of bounds\n", index);
+      return false;
+   }
    else
    {
-      // Print a warning and return failure
-      notify(AT_WARN, "The given index is out of bounds\n");
-      return false;
+      // We were given a negative index
+      notify(AT_ERROR, "The given index (%d) is invalid\n", index);
    }
 }
 
@@ -193,8 +208,8 @@ bool atArray::removeEntry(atItem * item)
    // See if the index is valid
    if (index >= 0)
    {
-      // Call removeEntry() with the index of the item we found
-      return removeEntry((u_long)index);
+      // Call removeEntryAtIndex() with the index of the item we found
+      return removeEntryAtIndex(index);
    }
    else
    {
@@ -213,11 +228,11 @@ bool atArray::removeAllEntries()
 }
 
 
-atItem * atArray::getEntry(u_long index)
+atItem * atArray::getEntry(long index)
 {
    // See if the index is within the current array bounds.  Return the
    // specified item if so, or NULL if not.
-   if (index < num_entries)
+   if ((index >= 0) && (index < num_entries))
       return array_items[index];
    else
       return NULL;
