@@ -23,7 +23,6 @@ class atArray : public atNotifier
 
    public:
       atArray();
-      atArray(u_long capacity);
       virtual ~atArray();
 
       virtual u_long     getNumEntries();
