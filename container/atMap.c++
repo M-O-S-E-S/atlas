@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "atGlobals.h++"
+#include "atString.h++"
 
 #include "atMap.h++"
 
@@ -505,6 +506,7 @@ void atMap::deleteNode(atMapNode * node)
     int childType = getChildType(node);
     atMapNode *parent = node->parent;
     atMapNode *child;
+    atItem * tempItem;
 
     // Switch based on the number of children the node has
     if ((node->leftChild == NULL) && (node->rightChild == NULL))
@@ -575,10 +577,15 @@ void atMap::deleteNode(atMapNode * node)
         // Find the node with the 'next' value
         child = getInorderSuccessor(node);
         
-        // Move the 'next' node's data to the one that would have been
-        // deleted
+        // Swap the keys
+        tempItem = node->nodeKey;
         node->nodeKey = child->nodeKey;
+        child->nodeKey = tempItem;
+
+        // Swap the values
+        tempItem = node->nodeValue;
         node->nodeValue = child->nodeValue;
+        child->nodeValue = tempItem;
         
         // Delete the 'next' node instead
         deleteNode(child);
@@ -798,6 +805,7 @@ void atMap::print()
 void atMap::printTree(atMapNode *node, int indent)
 {
     int i;
+    atString * itemStr;
 
     // Print this node's information
     // Start with an opening brace
@@ -826,12 +834,28 @@ void atMap::printTree(atMapNode *node, int indent)
     // Print the node's key item pointer
     for (i = 0; i < indent+2; i++)
         printf(" ");
-    printf("Key          %p\n", node->nodeKey);
+    printf("Key          %p", node->nodeKey);
+
+    // If the node key is an atString, append the string to the printout
+    // for additional information
+    if (itemStr = dynamic_cast<atString *>(node->nodeKey))
+        printf("  \"%s\"\n", itemStr->getString());
+    else
+        printf("\n");
 
     // Print the node's value item pointer
     for (i = 0; i < indent+2; i++)
         printf(" ");
-    printf("Value        %p\n", node->nodeValue);
+    printf("Value        %p", node->nodeValue);
+
+    // If the node value is an atString, append the string to the printout
+    // for additional information
+    if (itemStr = dynamic_cast<atString *>(node->nodeValue))
+        printf("  \"%s\"\n", itemStr->getString());
+    else
+        printf("\n");
+
+    // Leave a blank line before printing the linkage information
     printf("\n");
 
     // Print the node's parent node pointer
