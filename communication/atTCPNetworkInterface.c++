@@ -38,6 +38,32 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 }
 
 
+atTCPNetworkInterface::atTCPNetworkInterface(short port)
+{
+   char               hostname[MAXHOSTNAMELEN];
+   struct hostent *   host;
+
+   // Open the socket
+   if ( (socket_value = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
+      notify(AT_ERROR, "Unable to open socket for communication.\n");
+
+   // Get information about this host and initialize the read name field
+   gethostname(hostname, sizeof(hostname));
+   host = gethostbyname(hostname);
+   read_name.sin_family = AF_INET;
+   memcpy(&read_name.sin_addr.s_addr, host->h_addr_list[0], host->h_length);
+   read_name.sin_port = htons(port);
+
+   // Get information about remote host and initialize the write name field
+   write_name.sin_family = AF_INET;
+   memcpy(&write_name.sin_addr.s_addr, host->h_addr_list[0], host->h_length);
+   write_name.sin_port = htons(port);
+
+   // Initialize remaining instance variables
+   num_client_sockets = 0;
+}
+
+
 atTCPNetworkInterface::~atTCPNetworkInterface()
 {
    // Close the socket
