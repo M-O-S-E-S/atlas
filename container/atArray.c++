@@ -100,6 +100,9 @@ atItem * atArray::setEntry(long index, atItem * item)
    {
       // We were given a negative index
       notify(AT_ERROR, "The given index (%d) is invalid\n", index);
+
+      // Return NULL, since the set failed altogether
+      return NULL;
    }
 }
 
@@ -161,6 +164,9 @@ bool atArray::insertEntry(long index, atItem * item)
    {
       // We were given a negative index
       notify(AT_ERROR, "The given index (%d) is invalid\n", index);
+
+      // Return false to indicate failure
+      return false;
    }
 }
 
@@ -194,6 +200,9 @@ bool atArray::removeEntryAtIndex(long index)
    {
       // We were given a negative index
       notify(AT_ERROR, "The given index (%d) is invalid\n", index);
+
+      // Return false to indicate failure
+      return false;
    }
 }
 
@@ -225,6 +234,9 @@ bool atArray::removeAllEntries()
    // Clear the array to all NULL and set the entry count to zero
    memset(array_items, 0, sizeof(atItem *) * current_capacity);
    num_entries = 0;
+
+   // Return true to indicate success
+   return true;
 }
 
 
