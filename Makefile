@@ -15,6 +15,8 @@ XML_DIR = ./xml
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
 LIB_OBJS = $(COMMUNICATION_DIR)/*.o $(CONTAINER_DIR)/*.o $(MATH_DIR)/*.o $(UTIL_DIR)/*.o $(XML_DIR)/*.o
+
+RTI_LIB_DIR = /irl/tools/libs/rtis-1.3_D11A/lib/linux_g++-3.4
            
 
 .SUFFIXES: .c++
@@ -24,7 +26,7 @@ all: $(LIB_DIR)/$(LIB).so
 
 
 $(LIB_DIR)/$(LIB).so: $(LIB_DIR)/$(LIB).a
-	g++ -shared -o $@ -Wl,--whole-archive $(LIB_OBJS) -Wl,--no-whole-archive
+	g++ -shared -o $@ -Wl,--whole-archive $(LIB_OBJS) -Wl,--no-whole-archive -lrti13 -L$(RTI_LIB_DIR) -Wl,--no-whole-archive
 
 $(LIB_DIR)/$(LIB).a: $(COMMUNICATION_DIR)/libcommunication.a $(CONTAINER_DIR)/libcontainer.a $(MATH_DIR)/libmath.a $(UTIL_DIR)/libutil.a $(XML_DIR)/libxml.a
 	ar -ruc $@ $(LIB_OBJS)
