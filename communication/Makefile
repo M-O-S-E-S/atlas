@@ -23,7 +23,7 @@ FOUNDATION_DIR = ../foundation
 CONTAINER_DIR = ../container
 UTIL_DIR = ../util
 
-RTI_DIR = /irl/tools/libs/rtis-1.3_D11A
+RTI_DIR = /irl/tools/libs/rtis-1.3_D18A
 
 
 .SUFFIXES: .c++
