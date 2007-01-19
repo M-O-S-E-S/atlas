@@ -281,6 +281,9 @@ void atSharedQueue::reallocateQueue(u_long minimumToAdd)
 
       // Increment the "realloc" flag count to let others know we reallocated
       (*realloc_num)++;
+
+      // Set our realloc tracker to this flag count
+      last_realloc_num = *realloc_num;
    }
 }
 
