@@ -30,7 +30,7 @@ class atXMLDocument : public atItem
       xmlDocPtr   xml_doc;
       xmlChar *   xml_text;
 
-      char        string_value[1024];
+      char        string_value[65536];
 
       char        current_xml_class[256];
 

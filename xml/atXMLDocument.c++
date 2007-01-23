@@ -15,6 +15,7 @@ atXMLDocument::atXMLDocument(atXMLDocumentDocPtr doc)
 
 atXMLDocument::atXMLDocument(atXMLDocument * doc)
 {
+abort();
    // Save a pointer to the XML document of the document we are copying
    xml_doc = xmlCopyDoc(doc->xml_doc, 1);
 
@@ -138,7 +139,8 @@ char * atXMLDocument::getNodeAttribute(atXMLDocumentNodePtr node,
       strcpy(string_value, "");
 
    // Free up the XML structure
-   xmlFree((xmlChar *) prop);
+   if (prop != NULL)
+      xmlFree((xmlChar *) prop);
 
    // Return the string
    return string_value;
@@ -159,7 +161,8 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
       string_value[0] = '\0';
 
    // Free up the XML structure
-   xmlFree((xmlChar *) str);
+   if (str != NULL)
+      xmlFree((xmlChar *) str);
 
    // Return the string
    return string_value;
