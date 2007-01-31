@@ -472,6 +472,8 @@ void atRTIInterface::processAmbInteraction(
    char *                   msg;
    atKeyedBufferHandler *   buf;
 
+   printf("New interaction:  handle = %d\n", interaction);
+
    // Go through the interaction classes, looking for a match
    for (i=0; i < num_interaction_class_handles; i++)
    {
