@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/param.h>
+#include <sys/select.h>
 #include "atTCPNetworkInterface.h++"
 
 
@@ -156,6 +157,8 @@ int atTCPNetworkInterface::makeConnection()
    int                  statusFlags;
    int                  keepTrying;
    struct sockaddr_in   connectingName;
+   fd_set               fds;
+   struct timeval       timeout;
 
    // Get flags on our current socket (so we can put them on new sockets if
    // needed)
@@ -175,17 +178,37 @@ int atTCPNetworkInterface::makeConnection()
       }
       else
       {
-         // We didn't connect so close the socket
-         close(socket_value);
-         socket_value = -1;
-
          // If we are not in blocking mode, tell the loop to stop (we give up);
          // Otherwise, tell the user the info that we failed this time and
          // re-open the socket
          if ( (fcntl(socket_value, F_GETFL) & FNONBLOCK) != 0 )
-            keepTrying = 0;
+         {
+            // We are non-blocking so we could be failing to connect
+            // or we could just need more time (EINPROGRESS) so
+            // use select() to give it some time and then check again
+            FD_ZERO(&fds);
+            FD_SET(socket_value, &fds);
+            timeout.tv_sec = 1;
+            timeout.tv_usec = 0;
+            if (select(socket_value+1, NULL, &fds, NULL, &timeout) > 0)
+            {
+               // We actually did connect!
+               keepTrying = 0;
+            }
+            else
+            {
+               // We didn't connect so close the socket
+               keepTrying = 0;
+               close(socket_value);
+               socket_value = -1;
+            }
+         }
          else
          {
+            // We didn't connect so close the socket
+            close(socket_value);
+            socket_value = -1;
+
             notify(AT_INFO, "Failed to connect to server.  Trying again.\n");
 
             // Re-open the socket
