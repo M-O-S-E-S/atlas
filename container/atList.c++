@@ -244,6 +244,20 @@ atItem * atList::getPreviousEntry()
 }
 
 
+atItem * atList::getLastEntry()
+{
+   // Go to the last node (if it exists)
+   current_entry = list_tail;
+   next_entry = NULL;
+           
+   // If we have a first node, return the item stored in it
+   if (current_entry != NULL)
+      return current_entry->item;
+   else
+      return NULL;
+}
+
+
 atItem * atList::getNthEntry(u_long n)
 {
    u_long count;

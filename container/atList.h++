@@ -44,6 +44,7 @@ class atList : public atNotifier
       virtual atItem *   getFirstEntry();
       virtual atItem *   getNextEntry();
       virtual atItem *   getPreviousEntry();
+      virtual atItem *   getLastEntry();
       virtual atItem *   getNthEntry(u_long n);
 
       virtual atItem *   findEntry(atItem * item);
