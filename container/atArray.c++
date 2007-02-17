@@ -22,7 +22,7 @@ atArray::atArray()
 
 atArray::~atArray()
 {
-   int index;
+   u_long index;
 
    // Go through the list and delete the items and entries
    for (index = 0; index < num_entries; index++)
@@ -52,7 +52,7 @@ bool atArray::addEntry(atItem * item)
    // Compute the index at the end of the array, and make sure the array is
    // big enough to handle it
    index = num_entries;
-   if (ensureCapacity(index))
+   if (ensureCapacity(num_entries+1))
    {
       // Go ahead and add the entry
       array_items[index] = item;
@@ -98,7 +98,7 @@ atItem * atArray::setEntry(long index, atItem * item)
    }
    else
    {
-      // We were given a negative index
+      // We were given a negative index, which is invalid
       notify(AT_ERROR, "The given index (%d) is invalid\n", index);
 
       // Return NULL, since the set failed altogether
@@ -125,6 +125,9 @@ bool atArray::insertEntry(long index, atItem * item)
          // Add the entry and increment the entry count
          array_items[index] = item;
          num_entries++;
+         
+         // Return true to indicate success
+         return true;
       }
       else
       {
@@ -187,8 +190,9 @@ bool atArray::removeEntryAtIndex(long index)
             sizeof(atItem *) * (num_entries - index));
       }
 
-      // Update the entry count
+      // Update the entry count and return true to indicate success
       num_entries--;
+      return true;
    }
    else if (index >= 0)
    {
