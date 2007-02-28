@@ -157,7 +157,8 @@ int atTCPNetworkInterface::makeConnection()
    int                  statusFlags;
    int                  keepTrying;
    struct sockaddr_in   connectingName;
-   fd_set               fds;
+   fd_set               readFds;
+   fd_set               writeFds;
    struct timeval       timeout;
 
    // Get flags on our current socket (so we can put them on new sockets if
@@ -186,18 +187,33 @@ int atTCPNetworkInterface::makeConnection()
             // We are non-blocking so we could be failing to connect
             // or we could just need more time (EINPROGRESS) so
             // use select() to give it some time and then check again
-            FD_ZERO(&fds);
-            FD_SET(socket_value, &fds);
-            timeout.tv_sec = 1;
-            timeout.tv_usec = 0;
-            if (select(socket_value+1, NULL, &fds, NULL, &timeout) > 0)
+            if (errno == EINPROGRESS)
             {
-               // We actually did connect!
-               keepTrying = 0;
+               notify(AT_INFO, "Waiting for connection.\n");
+               FD_ZERO(&readFds);
+               FD_SET(socket_value, &readFds);
+               FD_ZERO(&writeFds);
+               FD_SET(socket_value, &writeFds);
+               timeout.tv_sec = 1;
+               timeout.tv_usec = 0;
+               if (select(socket_value+1, &readFds, 
+                          &writeFds, NULL, &timeout) < 1)
+               {
+                  // We didn't connect so close the socket
+                  keepTrying = 0;
+                  close(socket_value);
+                  socket_value = -1;
+               }
+               else
+               {
+                  // We actually did connect!
+                  keepTrying = 0;
+               }
             }
             else
             {
-               // We didn't connect so close the socket
+               // Just give up
+               notify(AT_INFO, "Failed to connect to server.  Giving up.\n");
                keepTrying = 0;
                close(socket_value);
                socket_value = -1;
