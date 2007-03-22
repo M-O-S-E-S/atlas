@@ -3,7 +3,10 @@
 #define AT_TIMER_HPP
 
 
-class atTimer
+#include "atNotifier.h++"
+
+
+class atTimer : public atNotifier
 {
    private:
 
