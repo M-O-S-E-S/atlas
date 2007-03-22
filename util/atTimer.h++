@@ -10,8 +10,6 @@ class atTimer : public atNotifier
 {
    private:
 
-      static atTimer    *systemTimer;
-
       double            markTime;
       double            markInterval;
 
