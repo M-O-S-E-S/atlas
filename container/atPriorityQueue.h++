@@ -12,12 +12,12 @@
 
 
 // TYPES
-typedef struct atEntry
+typedef struct atPriorityQueueEntry
 {
-   atItem *           item;
-   struct atEntry *   next;
-   struct atEntry *   previous;
-} atPriorityQueueEntry;
+   atItem *                 item;
+   atPriorityQueueEntry *   next;
+   atPriorityQueueEntry *   previous;
+};
 
 
 class atPriorityQueue : public atNotifier
@@ -35,8 +35,8 @@ class atPriorityQueue : public atNotifier
       virtual u_long   getNumEntries();
 
       virtual bool   insertEntry(atItem * item);
-      virtual bool   containsEntry(atItem * item);
 
+      virtual atItem *   peekEntry();
       virtual atItem *   removeEntry();
       virtual void       removeAllEntries();
 };

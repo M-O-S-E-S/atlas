@@ -75,9 +75,9 @@ bool atPriorityQueue::insertEntry(atItem * item)
          newEntry->next = queue_head;
          queue_head = newEntry;
       }
-      else if (queue_tail->item->compare(newEntry->item) > 0)
+      else if (queue_tail->item->compare(newEntry->item) >= 0)
       {
-         // This node has a lower value than the tail of the queue. Add it
+         // This node has value no greater than the tail of the queue. Add it
          // after the current tail and update the tail pointer to indicate the
          // new node.
          queue_tail->next = newEntry;
@@ -91,9 +91,9 @@ bool atPriorityQueue::insertEntry(atItem * item)
          searchEntry = queue_head;
          while (searchEntry != NULL)
          {
-            // It is already known that the new item is lesser in value than
-            // the current node. If the new item is greater in value than the
-            // next item, the new item should be inserted in between the
+            // It is already known that the new item is no greater in value
+            // than the current node. If the new item is greater in value than
+            // the next item, the new item should be inserted in between the
             // search node and the following node.
             if (searchEntry->next->item->compare(newEntry->item) < 0)
             {
@@ -119,6 +119,25 @@ bool atPriorityQueue::insertEntry(atItem * item)
 
       // Return success
       return true;
+   }
+}
+
+
+atItem * atPriorityQueue::peekEntry()
+{
+   atPriorityQueueEntry *   returnEntry;
+   atItem *                 returnItem;
+
+   // If we don't have any items, simply return NULL.
+   if (queue_head == NULL)
+   {
+      return NULL;
+   }
+   else
+   {
+      // As this is a priority queue, the item to be removed will always be at
+      // the head of the list. Return the item associated with this node.
+      return queue_head->item;
    }
 }
 
