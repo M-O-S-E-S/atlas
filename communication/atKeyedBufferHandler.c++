@@ -5,11 +5,13 @@
 
 
 atKeyedBufferHandler::atKeyedBufferHandler(u_long bufferType, 
-   char * bufferTarget, u_long bufferKey, u_char * buffer, u_long bufferLen)
+   char * bufferTarget, u_long classID, u_long bufferKey, 
+   u_char * buffer, u_long bufferLen)
 {
    // Save the data of this buffer
    buffer_type = bufferType;
    buffer_target = bufferTarget;
+   buffer_class = classID;
    buffer_key = bufferKey;
    buffer_text = buffer;
    buffer_len = bufferLen;
@@ -22,12 +24,13 @@ atKeyedBufferHandler::~atKeyedBufferHandler()
 
 
 void atKeyedBufferHandler::retrieveBuffer(u_long * bufferType, 
-   char ** bufferTarget, u_long * bufferKey, u_char ** buffer, 
-   u_long * bufferLen)
+   char ** bufferTarget, u_long * classID, u_long * bufferKey,
+   u_char ** buffer, u_long * bufferLen)
 {
    // Save the data of this buffer
    *bufferType = buffer_type;
    *bufferTarget = buffer_target;
+   *classID = buffer_class;
    *bufferKey = buffer_key;
    *buffer = buffer_text;
    *bufferLen = buffer_len;
@@ -35,11 +38,12 @@ void atKeyedBufferHandler::retrieveBuffer(u_long * bufferType,
 
 
 void atKeyedBufferHandler::setBuffer(u_long bufferType, char * bufferTarget,
-   u_long bufferKey, u_char * buffer, u_long bufferLen)
+   u_long classID, u_long bufferKey, u_char * buffer, u_long bufferLen)
 {
    // Save the data of this buffer
    buffer_type = bufferType;
    buffer_target = bufferTarget;
+   buffer_class = classID;
    buffer_key = bufferKey;
    buffer_text = buffer;
    buffer_len = bufferLen;

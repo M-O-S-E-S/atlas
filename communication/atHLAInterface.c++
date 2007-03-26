@@ -240,6 +240,7 @@ atList * atHLAInterface::update()
    bool                     typeAdded;
    u_long                   bufferType;
    char *                   bufferTarget;
+   u_long                   bufferClassID;
    u_long                   bufferKey;
    u_char *                 buffer;
    u_long                   bufferSize;
@@ -269,16 +270,18 @@ atList * atHLAInterface::update()
          // is the object name being updated, bufferKey is the ID of
          // the attribute/interaction being updated, and buffer and 
          // bufferSize represents the data of the update itself)
-         rtiBuffer->retrieveBuffer(&bufferType, &bufferTarget, &bufferKey,
-                                   &buffer, &bufferSize);
+         rtiBuffer->retrieveBuffer(&bufferType, &bufferTarget, &bufferClassID,
+                                   &bufferKey, &buffer, &bufferSize);
 
          if (bufferType == AT_RTI_CONTROL_TYPE)
          {
             // If we haven't added a type of update yet, do so
             if (typeAdded == false)
             {
-               addPair(return_list, "Control", "RemoveEntity");
-               addPair(return_list, "Name", bufferTarget);
+               addPair(return_list, "Control", "RemoveObject");
+               addPair(return_list, "ObjName", bufferTarget);
+               addPair(return_list, "ObjType", 
+                       lookupRTIObjectClassID(bufferClassID));
                typeAdded = true;
             }
 
@@ -304,7 +307,9 @@ atList * atHLAInterface::update()
                if (typeAdded == false)
                {
                   addPair(return_list, "Object", "Update");
-                  addPair(return_list, "Name", bufferTarget);
+                  addPair(return_list, "ObjName", bufferTarget);
+                  addPair(return_list, "ObjType", 
+                          lookupRTIObjectClassID(bufferClassID));
                   typeAdded = true;
                }
 
@@ -333,7 +338,7 @@ atList * atHLAInterface::update()
                if (typeAdded == false)
                {
                   addPair(return_list, "Interaction", "Update");
-                  addPair(return_list, "Name", bufferTarget);
+                  addPair(return_list, "IntName", bufferTarget);
                   typeAdded = true;
                }
 
@@ -383,6 +388,23 @@ atClassID atHLAInterface::lookupRTIObjectClass(char * name)
 
    // Return a sentinel that we didn't find the class
    return -1;
+}
+
+
+char * atHLAInterface::lookupRTIObjectClassID(atClassID id)
+{
+   u_long   i;
+
+   // Go through the known classes and see if we match the name
+   for (i=0; i < num_classes; i++)
+   {
+      // See if it matches and then return the RTI Class if it does
+      if (id == rti_classes[i].rtiClass)
+         return rti_classes[i].name;
+   }
+
+   // Return a sentinel that we didn't find the class
+   return NULL;
 }
 
 

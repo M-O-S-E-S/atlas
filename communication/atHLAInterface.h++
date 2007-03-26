@@ -60,6 +60,7 @@ class atHLAInterface : public atIPCInterface
       atList *          update();
 
       atClassID         lookupRTIObjectClass(char * name);
+      char *            lookupRTIObjectClassID(atClassID id);
       atInteractionID   lookupRTIInteraction(char * name);
 
       void              addPair(atList * list, char * name, char * value);

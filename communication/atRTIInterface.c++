@@ -339,6 +339,8 @@ void atRTIInterface::processAmbDiscover(rti13::ObjectHandle obj,
 void atRTIInterface::processAmbRemove(rti13::ObjectHandle obj)
 {
    int                      i;
+   u_long                   c;
+   atClassID                classID;
    atKeyedBufferHandler *   buf;
    char *                   targetID;
    char *                   tmpMsg;
@@ -352,11 +354,20 @@ void atRTIInterface::processAmbRemove(rti13::ObjectHandle obj)
          printf("Remove entity:  handle = %d   class = %d  name = %s\n",
             obj, object_handles[i].objClass, object_handles[i].name);
 
+         // Figure out the class ID for this object
+         classID = 0;
+         for (c=0; c < num_class_handles; c++)
+         {
+            if (class_handles[c] == object_handles[i].objClass)
+               classID = c;
+         }
+
          // Create a buffer with the remove entity information
          tmpMsg = (char *) calloc(8, sizeof(char));
          sprintf(tmpMsg, "REMOVE");
          buf = new atKeyedBufferHandler(AT_RTI_CONTROL_TYPE, 
                                         strdup(object_handles[i].name),
+                                        classID,
                                         i, (u_char *) tmpMsg, 7);
          buf_list->addEntry(buf);
 
@@ -367,8 +378,9 @@ void atRTIInterface::processAmbRemove(rti13::ObjectHandle obj)
 
          // Create the terminator buffer to terminate this interaction
          // parameter set
-         buf = new atKeyedBufferHandler(AT_RTI_CONTROL_TYPE, targetID, 0, 
-                                        NULL, 0);
+         buf = new atKeyedBufferHandler(AT_RTI_CONTROL_TYPE, 
+                                        targetID, classID,
+                                        0, NULL, 0);
          buf_list->addEntry(buf);
 
          // If we're not at the last element in the object list, we need
@@ -395,6 +407,8 @@ void atRTIInterface::processAmbAttribute(rti13::ObjectHandle obj,
    u_long                     i;
    u_long                     j;
    u_long                     k;
+   u_long                     c;
+   atClassID                  classID;
    rti13::AttributeHandle     attrHandle;
    rti13::ULong               valueLen;
    char *                     targetID;
@@ -409,6 +423,14 @@ void atRTIInterface::processAmbAttribute(rti13::ObjectHandle obj,
       {
          // printf("Updating entity %d (%s) (%d attributes)\n", obj, 
          //        object_handles[i].name, attrs.size());
+
+         // Figure out the class ID for this object
+         classID = 0;
+         for (c=0; c < num_class_handles; c++)
+         {
+            if (class_handles[c] == object_handles[i].objClass)
+               classID = c;
+         }
 
          // Found the object so go through the attributes
          for (j=0; j < attrs.size(); j++)
@@ -434,8 +456,8 @@ void atRTIInterface::processAmbAttribute(rti13::ObjectHandle obj,
                   attrs.getValue(j, (char *) msg, valueLen);
 
                   buf = new atKeyedBufferHandler(AT_RTI_ATTRIBUTE_TYPE, 
-                                                 targetID, k, (u_char *) msg,
-                                                 valueLen);
+                                                 targetID, classID,
+                                                 k, (u_char *) msg, valueLen);
 
                   buf_list->addEntry(buf);
                }
@@ -448,8 +470,9 @@ void atRTIInterface::processAmbAttribute(rti13::ObjectHandle obj,
          strcpy(targetID, object_handles[i].name);
 
          // Create the terminator buffer to terminate this attribute set
-         buf = new atKeyedBufferHandler(AT_RTI_ATTRIBUTE_TYPE, targetID, 0, 
-                                        NULL, 0);
+         buf = new atKeyedBufferHandler(AT_RTI_ATTRIBUTE_TYPE, 
+                                        targetID, classID,
+                                        0, NULL, 0);
          buf_list->addEntry(buf);
       }
    }
@@ -501,8 +524,8 @@ void atRTIInterface::processAmbInteraction(
                   parameters.getValue(j, (char *) msg, valueLen);
 
                   buf = new atKeyedBufferHandler(AT_RTI_INTERACTION_TYPE, 
-                                                 targetID, k, (u_char *) msg, 
-                                                 valueLen);
+                                                 targetID, 0,
+                                                 k, (u_char *) msg, valueLen);
 
                   buf_list->addEntry(buf);
                }
@@ -516,8 +539,9 @@ void atRTIInterface::processAmbInteraction(
 
          // Create the terminator buffer to terminate this interaction
          // parameter set
-         buf = new atKeyedBufferHandler(AT_RTI_INTERACTION_TYPE, targetID, 0,
-                                        NULL, 0);
+         buf = new atKeyedBufferHandler(AT_RTI_INTERACTION_TYPE, 
+                                        targetID, 0,
+                                        0, NULL, 0);
          buf_list->addEntry(buf);
       }
    }
