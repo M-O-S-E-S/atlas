@@ -36,7 +36,7 @@ class atMap : public atNotifier
 private:
 
     atMapNode *   treeRoot;
-    int           treeSize;
+    u_long        treeSize;
     
     atMapNode *       findNode(atMapNode * node, atItem * key);
     void              rebalanceInsert(atMapNode * node);
@@ -59,7 +59,7 @@ public:
 
     bool        addEntry(atItem * key, atItem * value);
     bool        deleteEntry(atItem * key);
-    int         getEntryCount();
+    u_long      getNumEntries();
     
     bool        containsKey(atItem * key);
     atItem *    getValue(atItem * key);

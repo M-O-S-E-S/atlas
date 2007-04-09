@@ -137,7 +137,7 @@ bool atMap::deleteEntry(atItem * key)
 // ------------------------------------------------------------------------
 // Returns the number of mappings contained in this tree
 // ------------------------------------------------------------------------
-int atMap::getEntryCount()
+u_long atMap::getNumEntries()
 {
     return treeSize;
 }
@@ -794,7 +794,7 @@ void atMap::fillLists(atMapNode * node, atList * keyList, atList * valueList)
 void atMap::print()
 {
     // Print a header for the map tree first
-    printf("atMap %p (%d entries):\n", this, treeSize);
+    printf("atMap %p (%lu entries):\n", this, treeSize);
 
     // Call the recursive printTree() method with the root of the red-black
     // tree and a zero indent
