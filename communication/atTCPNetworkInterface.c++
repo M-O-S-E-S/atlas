@@ -91,6 +91,7 @@ int atTCPNetworkInterface::acceptConnection()
    int                  newSocket;
    struct sockaddr_in   connectingName;
    socklen_t            connectingNameLength;
+   char *               address;
 
    // Try to accept a connection
    connectingNameLength = sizeof(connectingName);
@@ -109,6 +110,10 @@ int atTCPNetworkInterface::acceptConnection()
    else
    {
       client_sockets[num_client_sockets] = newSocket;
+      address = (char *) connectingName.sin_addr.s_addr;
+      sprintf(client_addrs[num_client_sockets].address, "%d.%d.%d.%d",
+              address[0], address[1], address[2], address[3]);
+      client_addrs[num_client_sockets].port = connectingName.sin_port;
       num_client_sockets++;
       return num_client_sockets - 1;
    }
@@ -149,6 +154,13 @@ void atTCPNetworkInterface::disableBlockingOnClient(int clientID)
       if (fcntl(client_sockets[clientID], F_SETFL, statusFlags | FNONBLOCK) < 0)
          notify(AT_ERROR, "Unable to disable blocking on socket.\n");
    }
+}
+
+
+ClientAddr atTCPNetworkInterface::getClientInfo(int clientID)
+{
+   // Return the information for this client ID
+   return client_addrs[clientID];
 }
 
 
