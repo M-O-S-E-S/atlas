@@ -39,7 +39,10 @@ atXMLReader::atXMLReader(char * memory, u_long memorySize)
 atXMLReader::atXMLReader(atXMLDocument * doc)
 {
    // Open an XML file for reading using an XML reader
-   xml_reader = xmlReaderWalker(doc->getDoc());
+   if (doc != NULL)
+      xml_reader = xmlReaderWalker(doc->getDoc());
+   else
+      xml_reader = NULL;
 
    // Check to make sure it worked okay
    if (xml_reader == NULL)
