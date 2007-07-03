@@ -6,6 +6,7 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include "atItem.h++"
+#include "atString.h++"
 
 
 // CONSTANTS
@@ -27,12 +28,12 @@ typedef xmlNodePtr   atXMLDocumentNodePtr;
 class atXMLDocument : public atItem
 {
    protected:
-      xmlDocPtr   xml_doc;
-      xmlChar *   xml_text;
+      xmlDocPtr    xml_doc;
+      xmlChar *    xml_text;
 
-      char        string_value[65536];
+      atString *   string_value;
 
-      char        current_xml_class[256];
+      char         current_xml_class[256];
 
    public:
       atXMLDocument(atXMLDocumentDocPtr doc);

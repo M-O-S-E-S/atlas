@@ -12,10 +12,11 @@
 #include "atXMLDocument.h++"
 #include "atBufferHandler.h++"
 
+#include "atString.h++"
 
-#define MAX_XML_DOCUMENT_SIZE    65536
+
+#define MAX_XML_DOCUMENT_SIZE    262144
 #define MAX_XML_TAG_SIZE         256
-#define MAX_XML_DOCUMENTS        100
 
 
 class atXMLBuffer : public atNotifier

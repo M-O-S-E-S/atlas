@@ -134,16 +134,16 @@ char * atXMLDocument::getNodeAttribute(atXMLDocumentNodePtr node,
 
    // Copy the property value into our internal string
    if (prop != NULL)
-      strcpy(string_value, prop);
+      string_value->setString(prop);
    else
-      strcpy(string_value, "");
+      string_value->setString("");
 
    // Free up the XML structure
    if (prop != NULL)
       xmlFree((xmlChar *) prop);
 
    // Return the string
-   return string_value;
+   return string_value->getString();
 }
 
 
@@ -156,16 +156,16 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
 
    // Copy the string value (if there is one) into our internal string
    if (str != NULL)
-      strcpy(string_value, str);
+      string_value->setString(str);
    else
-      string_value[0] = '\0';
+      string_value->setString("");
 
    // Free up the XML structure
    if (str != NULL)
       xmlFree((xmlChar *) str);
 
    // Return the string
-   return string_value;
+   return string_value->getString();
 }
 
 
