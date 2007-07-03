@@ -3,38 +3,38 @@
 #define AT_PRIORITY_QUEUE_H
 
 
-// INCLUDES
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
 #include "atNotifier.h++"
 #include "atItem.h++"
 
 
-// TYPES
+#define AT_PRIORITY_QUEUE_DEFAULT_CAPACITY   15
+
+
 typedef struct atPriorityQueueEntry
 {
-   atItem *                 item;
-   atPriorityQueueEntry *   next;
-   atPriorityQueueEntry *   previous;
+   atItem *   item;
 };
 
 
 class atPriorityQueue : public atNotifier
 {
    protected:
-      atPriorityQueueEntry *   queue_head;
-      atPriorityQueueEntry *   queue_tail;
+      atPriorityQueueEntry *   heap_array;
 
-      u_long          num_entries;
+      u_long   max_capacity;
+      u_long   num_entries;
+
+      void   bubbleUp(int index);
+      void   trickleDown(int index);
 
    public:
       atPriorityQueue();
+      atPriorityQueue(u_long initialCapacity);
       virtual ~atPriorityQueue();
 
       virtual u_long   getNumEntries();
 
-      virtual bool   insertEntry(atItem * item);
+      virtual bool   addEntry(atItem * item);
 
       virtual atItem *   peekEntry();
       virtual atItem *   removeEntry();

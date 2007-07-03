@@ -1,35 +1,37 @@
 
 #include "atPriorityQueue.h++"
 
+#include <math.h>
+
 
 atPriorityQueue::atPriorityQueue()
 {
-   // Initialize the doubly-linked list
-   queue_head = NULL;
-   queue_tail = NULL;
+   // Initialize the array properties to their defaults.
+   max_capacity = AT_PRIORITY_QUEUE_DEFAULT_CAPACITY;
    num_entries = 0;
+
+   // Initialize the array itself.
+   heap_array = (atPriorityQueueEntry *)
+      malloc(max_capacity * sizeof(atPriorityQueueEntry)); 
+}
+
+
+atPriorityQueue::atPriorityQueue(u_long initialCapacity)
+{
+   // Initialize the array properties to their defaults.
+   max_capacity = initialCapacity;
+   if (max_capacity < 1)
+      max_capacity = 1;
+   num_entries = 0;
+
+   // Initialize the array itself.
+   heap_array = (atPriorityQueueEntry *)
+      malloc(max_capacity * sizeof(atPriorityQueueEntry));
 }
 
 
 atPriorityQueue::~atPriorityQueue()
 {
-   atPriorityQueueEntry *  current;
-
-   // Go through the list and delete the items and entries
-   while (queue_head)
-   {
-      // Bump the head of the list back one entry, keeping a pointer to the old
-      // head so it may be deleted.
-      current = queue_head;
-      queue_head = queue_head->next;
-
-      // Delete the item if it exists
-      if (current->item != NULL)
-         delete current->item;
-
-      // Free the memory for the node itself.
-      free(current);
-   }
 }
 
 
@@ -39,97 +41,55 @@ u_long atPriorityQueue::getNumEntries()
 }
 
 
-bool atPriorityQueue::insertEntry(atItem * item)
+bool atPriorityQueue::addEntry(atItem * item)
 {
+   int                      newCapacity;
+   atPriorityQueueEntry *   newHeap;
    atPriorityQueueEntry *   newEntry;
-   atPriorityQueueEntry *   searchEntry;
+   int                      bubbleIndex;
 
-   // Create a new entry for this item in the list
-   newEntry = (atPriorityQueueEntry *) calloc(1, sizeof(atPriorityQueueEntry));
-   if (newEntry == NULL)
+   // If this new item exceeds the current capacity, more space must be
+   // allocated.
+   if (num_entries == max_capacity)
    {
-      // We failed to allocate the memory so tell user and return a failure
-      notify(AT_WARN, "Unable to allocate memory in Priority Queue.\n");
-      return false;
-   }
-   else
-   {
-      // Set the fields of the new entry.
-      newEntry->item = item;
-      newEntry->next = NULL;
-      newEntry->previous = NULL;
+      // Increase the heap depth by 1, just more than doubling the capacity of
+      // the priority queue.
+      newCapacity = (max_capacity * 2) + 1;
 
-      // Add the new entry to its appropriate location in the queue.
-      if (queue_head == NULL)
+      // Allocate a new heap.
+      newHeap = (atPriorityQueueEntry *)
+         realloc(heap_array, newCapacity * sizeof(atPriorityQueueEntry));
+
+      // Make sure the allocation was successful.
+      if (newHeap == NULL)
       {
-         // This new item is the only item in the queue.
-         queue_head = newEntry;
-         queue_tail = newEntry;
-      }
-      else if (queue_head->item->compare(newEntry->item) < 0)
-      {
-         // This node has a greater value than the current head of the queue.
-         // Add it before the current head and update the head pointer to
-         // indicate the new node.
-         queue_head->previous = newEntry;
-         newEntry->next = queue_head;
-         queue_head = newEntry;
-      }
-      else if (queue_tail->item->compare(newEntry->item) >= 0)
-      {
-         // This node has value no greater than the tail of the queue. Add it
-         // after the current tail and update the tail pointer to indicate the
-         // new node.
-         queue_tail->next = newEntry;
-         newEntry->previous = queue_tail;
-         queue_tail = newEntry;
+         // We failed to allocate memory so notify user and indicate failure.
+         notify(AT_WARN, "Unable to allocate memory for Priority Queue!\n");
+         return false;
       }
       else
       {
-         // Find the last node whose value is greater than that of the current
-         // item. This node will be added next after that node.
-         searchEntry = queue_head;
-         while (searchEntry != NULL)
-         {
-            // It is already known that the new item is no greater in value
-            // than the current node. If the new item is greater in value than
-            // the next item, the new item should be inserted in between the
-            // search node and the following node.
-            if (searchEntry->next->item->compare(newEntry->item) < 0)
-            {
-               // Insert the new node between the current and the next nodes.
-               newEntry->previous = searchEntry;
-               newEntry->next = searchEntry->next;
-               searchEntry->next->previous = newEntry;
-               searchEntry->next = newEntry;
-
-               // Halt the traversal.
-               searchEntry = NULL;
-            }
-            else
-            {
-               // Move on to the next node.
-               searchEntry = searchEntry->next;
-            }
-         }
+         // The original array may have been moved, so use the new pointer.
+         heap_array = newHeap;
       }
-
-      // Increment the number of entries since we just added one
-      num_entries++;
-
-      // Return success
-      return true;
    }
+
+   // Store the new item in the array and increment the entry counter.
+   heap_array[num_entries].item = item;
+   num_entries++;
+
+   // Now bubble the newly-added node up to maintain heap conditions.
+   bubbleUp(num_entries - 1);
+
+   // Indicate that the addition was successful.
+   return true;
 }
 
 
 atItem * atPriorityQueue::peekEntry()
 {
-   atPriorityQueueEntry *   returnEntry;
-   atItem *                 returnItem;
-
    // If we don't have any items, simply return NULL.
-   if (queue_head == NULL)
+   if (num_entries == 0)
    {
       return NULL;
    }
@@ -137,61 +97,159 @@ atItem * atPriorityQueue::peekEntry()
    {
       // As this is a priority queue, the item to be removed will always be at
       // the head of the list. Return the item associated with this node.
-      return queue_head->item;
+      return heap_array[0].item;
    }
 }
 
 
 atItem * atPriorityQueue::removeEntry()
 {
-   atPriorityQueueEntry *   returnEntry;
-   atItem *                 returnItem;
+   atItem *   removeItem;
 
    // If we don't have any items, simply return NULL.
-   if (queue_head == NULL)
+   if (num_entries == 0)
    {
       return NULL;
    }
    else
    {
-      // As this is a priority queue, the item to be removed will always be at
-      // the head of the list. Remove this node from the list structurally.
-      returnEntry = queue_head;
+      // Store the item to be removed so we can resort the heap without losing
+      // it.
+      removeItem = heap_array[0].item;
 
-      // If there is only one item in the list, its removal method is special.
-      if (queue_head == queue_tail)
-      {
-         queue_head = NULL;
-         queue_tail = NULL;
-      }
-      else
-      {
-         queue_head = queue_head->next;
-         queue_head->previous = NULL;
-      }
-
-      // Store a pointer to the item held by this node.
-      returnItem = returnEntry->item;
-
-      // Free up the memory used by the node.
-      free(returnEntry);
-
-      // Decrement the number of items held by this priority queue.
+      // Move the last item in the heap up to the first position and indicate
+      // that the item has been removed.
+      heap_array[0].item = heap_array[num_entries - 1].item;
       num_entries--;
 
+      // Now cause the new root to trickle downward to reestablish the heap
+      // condition.
+      trickleDown(0);
+
       // Return the item itself.
-      return returnItem;
+      return removeItem;
    }
 }
 
 
 void atPriorityQueue::removeAllEntries()
 {
-   // We'll do this by calling removeEntry() for as long as there are any items
-   // remaining in the queue.
-   while (queue_head != NULL)
+   // Simply set the number of valid entries back down to 0.
+   num_entries = 0;
+}
+
+
+void atPriorityQueue::bubbleUp(int index)
+{
+   int        parentIndex;
+   atItem *   swapItem;
+
+   // If the object is at the root, it cannot be bubbled up any further.
+   if (index == 0)
+      return;
+
+   // Calculate the index of the parent node.
+   parentIndex = (int)floor((index - 1) / 2.0);
+
+   // If the current item has higher priority than its parent, they need to be
+   // swapped.
+   if (heap_array[index].item->compare(heap_array[parentIndex].item) > 0)
    {
-       removeEntry();
+      // Swap the two items.
+      swapItem = heap_array[index].item;
+      heap_array[index].item = heap_array[parentIndex].item;
+      heap_array[parentIndex].item = swapItem;
+
+      // Recurse on the parent location, which now contains the new item.
+      bubbleUp(parentIndex);
+   }
+}
+
+
+void atPriorityQueue::trickleDown(int index)
+{
+   int        leftChildIndex;
+   int        rightChildIndex;
+   bool       leftChildHigher;
+   bool       rightChildHigher;
+   atItem *   swapItem;
+
+   // Calculate the indices of the children of the current node.
+   leftChildIndex = (index * 2);
+   rightChildIndex = leftChildIndex + 1;
+
+   // Determine whether the left child has a higher priority than this node.
+   if ((leftChildIndex < num_entries) &&
+      (heap_array[index].item->compare(heap_array[leftChildIndex].item) < 0))
+   {
+      leftChildHigher = true;
+   }
+   else
+   {
+      leftChildHigher = false;
+   }
+
+   // Determine whether the right child has a higher priority than this node.
+   if ((rightChildIndex < num_entries) &&
+      (heap_array[index].item->compare(heap_array[rightChildIndex].item) < 0))
+   {
+      rightChildHigher = true;
+   }
+   else
+   {
+      rightChildHigher = false;
+   }
+
+   // Now determine whether this node needs to be swapped.
+   if (leftChildHigher && rightChildHigher)
+   {
+      // Store the item to be traded.
+      swapItem = heap_array[index].item;
+
+      // Both children have a higher priority than the current node. The
+      // current node must be swapped with the child node with the higher
+      // priority.
+      if (heap_array[leftChildIndex].item->
+         compare(heap_array[rightChildIndex].item) > 0)
+      {
+         // The left child has higher priority than the right child. The
+         // current node should be swapped with the left child.
+         heap_array[index].item = heap_array[leftChildIndex].item;
+         heap_array[leftChildIndex].item = swapItem;
+
+         // The heap condition must be reestablished on the new left child.
+         trickleDown(leftChildIndex);
+      }
+      else
+      {
+         // The right child has higher priority than the left child. The
+         // current node should be swapped with the right child.
+         heap_array[index].item = heap_array[rightChildIndex].item;
+         heap_array[rightChildIndex].item = swapItem;
+
+         // The heap condition must be reestablished on the new right child.
+         trickleDown(rightChildIndex);
+      }
+   }
+   else if (leftChildHigher)
+   {
+      // The left child has higher priority than the current item.
+      swapItem = heap_array[index].item;
+      heap_array[index].item = heap_array[leftChildIndex].item;
+      heap_array[leftChildIndex].item = swapItem;
+
+      // The heap condition must be reestablished on the new left child.
+      trickleDown(leftChildIndex);
+   }
+   else if (rightChildHigher)
+   {
+      // The right child has higher priority than the current item.
+      swapItem = heap_array[index].item;
+      heap_array[index].item = heap_array[rightChildIndex].item;
+      heap_array[rightChildIndex].item = swapItem;
+
+      // The heap condition must be reestablished on the new right child.
+      trickleDown(rightChildIndex);
    }
 }
 
