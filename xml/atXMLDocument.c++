@@ -8,6 +8,9 @@ atXMLDocument::atXMLDocument(atXMLDocumentDocPtr doc)
    // Save a pointer to the XML document
    xml_doc = (xmlDocPtr ) doc;
 
+   // Initialize the value for holding temp strings
+   string_value = new atString();
+
    // Initialize the xml text pointer
    xml_text = NULL;
 }
@@ -15,9 +18,11 @@ atXMLDocument::atXMLDocument(atXMLDocumentDocPtr doc)
 
 atXMLDocument::atXMLDocument(atXMLDocument * doc)
 {
-abort();
    // Save a pointer to the XML document of the document we are copying
    xml_doc = xmlCopyDoc(doc->xml_doc, 1);
+
+   // Initialize the value for holding temp strings
+   string_value = new atString();
 
    // Initialize the xml text pointer
    xml_text = NULL;
@@ -29,6 +34,10 @@ atXMLDocument::~atXMLDocument()
    // Free up the text buffer 
    if (xml_text != NULL)
       xmlFree(xml_text);
+
+   // Free up the temp string
+   if (string_value != NULL)
+      delete string_value;
 
    // Free the XML document itself
    xmlFreeDoc(xml_doc);
