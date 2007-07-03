@@ -16,7 +16,7 @@ LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
 LIB_OBJS = $(COMMUNICATION_DIR)/*.o $(CONTAINER_DIR)/*.o $(MATH_DIR)/*.o $(UTIL_DIR)/*.o $(XML_DIR)/*.o
 
-RTI_LIB_DIR = /irl/tools/libs/rtis-1.3_D18A/lib/linux_g++-3.4
+RTI_LIB_DIR = /irl/tools/libs/rtis-1.3_D18A/lib/linux_g++-4.1
            
 
 .SUFFIXES: .c++
