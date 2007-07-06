@@ -68,7 +68,8 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
 atTCPNetworkInterface::~atTCPNetworkInterface()
 {
    // Close the socket
-   close(socket_value);
+   if (socket_value != -1)
+      close(socket_value);
 }
 
 
@@ -110,8 +111,8 @@ int atTCPNetworkInterface::acceptConnection()
    else
    {
       client_sockets[num_client_sockets] = newSocket;
-      address = (char *) connectingName.sin_addr.s_addr;
-      sprintf(client_addrs[num_client_sockets].address, "%d.%d.%d.%d",
+      address = (char *) &connectingName.sin_addr.s_addr;
+      sprintf(client_addrs[num_client_sockets].address, "%hhu.%hhu.%hhu.%hhu",
               address[0], address[1], address[2], address[3]);
       client_addrs[num_client_sockets].port = connectingName.sin_port;
       num_client_sockets++;
@@ -172,6 +173,8 @@ int atTCPNetworkInterface::makeConnection()
    fd_set               readFds;
    fd_set               writeFds;
    struct timeval       timeout;
+   int                  errorCode;
+   socklen_t            errorLength;
 
    // Get flags on our current socket (so we can put them on new sockets if
    // needed)
@@ -212,14 +215,35 @@ int atTCPNetworkInterface::makeConnection()
                           &writeFds, NULL, &timeout) < 1)
                {
                   // We didn't connect so close the socket
+                  notify(AT_INFO, "Failed to connect to server.  Giving up.\n");
                   keepTrying = 0;
                   close(socket_value);
                   socket_value = -1;
                }
                else
                {
-                  // We actually did connect!
-                  keepTrying = 0;
+                  // Check for error on the socket to see if we connected
+                  // successfully or not
+                  errorLength = sizeof(int);
+                  getsockopt(socket_value, SOL_SOCKET, SO_ERROR, &errorCode, 
+                             &errorLength);
+
+                  // Check the error status
+                  if (errorCode == 0)
+                  {
+                     // We actually did connect!
+                     notify(AT_INFO, "Connected!\n");
+                     keepTrying = 0;
+                  }
+                  else
+                  {
+                     // Failed to connect, so give up
+                     notify(AT_INFO,
+                            "Failed to connect to server.  Giving up.\n");
+                     keepTrying = 0;
+                     close(socket_value);
+                     socket_value = -1;
+                  }
                }
             }
             else
