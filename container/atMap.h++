@@ -43,6 +43,7 @@ private:
     void              rebalanceDelete(atMapNode * parent,
                                       int deletedChildType);
     void              deleteNode(atMapNode * node);
+    void              removeNode(atMapNode * node);
     atMapNode *       getInorderSuccessor(atMapNode * node);
     void              rotateLeft(atMapNode * node);
     void              rotateRight(atMapNode * node);
@@ -59,6 +60,7 @@ public:
 
     bool        addEntry(atItem * key, atItem * value);
     bool        deleteEntry(atItem * key);
+    atItem *    removeEntry(atItem * key);
     u_long      getNumEntries();
     
     bool        containsKey(atItem * key);

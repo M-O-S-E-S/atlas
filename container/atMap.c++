@@ -135,6 +135,39 @@ bool atMap::deleteEntry(atItem * key)
 }
 
 // ------------------------------------------------------------------------
+// Removes the entry specified by the key from the map, returning the
+// value.  Yields ownership of both the key and value (neither are 
+// deleted).  Returns NULL if there is no entry with the given key.
+// ------------------------------------------------------------------------
+atItem * atMap::removeEntry(atItem * key)
+{
+    atMapNode * targetNode;
+    atItem * value;
+    
+    // Find the node in the tree with the given key. Abort if there
+    // is no such node.
+    targetNode = findNode(treeRoot, key);
+    if (targetNode == NULL)
+        return NULL;
+
+    // Get the node's value entry so we can return it
+    value = targetNode->nodeValue;
+
+    // Call an internal function to do the actual node removal
+    removeNode(targetNode);
+
+    // The last part of cleaning up the tree, which is the only part that
+    // removeNode() doesn't do by itself, is forcing the root node to be
+    // black.
+    if (treeRoot)
+        treeRoot->color = AT_MAP_BLACK;
+
+    // Decrease entry count by one and return success
+    treeSize--;
+    return value;
+}
+
+// ------------------------------------------------------------------------
 // Returns the number of mappings contained in this tree
 // ------------------------------------------------------------------------
 u_long atMap::getNumEntries()
@@ -589,6 +622,96 @@ void atMap::deleteNode(atMapNode * node)
         
         // Delete the 'next' node instead
         deleteNode(child);
+    }
+}
+
+// ------------------------------------------------------------------------
+// Private function
+// Removes the specified node from the tree, calling the function to
+// restore the tree balance afterwards if needed.  Deletes the node
+// structure, but unlike deleteNode(), it does not delete the contents of
+// the node.
+// ------------------------------------------------------------------------
+void atMap::removeNode(atMapNode * node)
+{
+    int childType = getChildType(node);
+    atMapNode *parent = node->parent;
+    atMapNode *child;
+    atItem * tempItem;
+
+    // Switch based on the number of children the node has
+    if ((node->leftChild == NULL) && (node->rightChild == NULL))
+    {
+        // Case 1: node to delete has no children
+        // Remove the node and rebalance
+
+        // Remove the node
+        if (childType == AT_MAP_LEFTCHILD)
+            parent->leftChild = NULL;
+        else if (childType == AT_MAP_RIGHTCHILD)
+            parent->rightChild = NULL;
+        else
+            treeRoot = NULL;
+        
+        // Rebalance the tree if needed
+        if (node->color == AT_MAP_BLACK)
+            rebalanceDelete(parent, childType);
+        
+        // Delete the detached node
+        delete node;
+    }
+    else if ((node->leftChild == NULL) || (node->rightChild == NULL))
+    {
+        // Case 2: node to delete has one child
+        // Move the child node into the location that the node to
+        // be deleted is in, and rebalance
+
+        // Get the child node
+        if (node->leftChild)
+            child = node->leftChild;
+        else
+            child = node->rightChild;
+
+        // Reparent the child node
+        child->parent = parent;
+
+        // Rechild the parent node
+        if (childType == AT_MAP_LEFTCHILD)
+            parent->leftChild = child;
+        else if (childType == AT_MAP_RIGHTCHILD)
+            parent->rightChild = child;
+        else
+            treeRoot = child;
+        
+        // Rebalance the tree if needed
+        if (node->color == AT_MAP_BLACK)
+            rebalanceDelete(parent, childType);
+
+        // Delete the detached node
+        delete node;
+    }
+    else
+    {
+        // Case 3: node to delete has two children
+        // Rather than deleting the node, instead find the node with
+        // the next-higher key value, transplant that value into the
+        // node that would have been deleted, and delete that other node.
+
+        // Find the node with the 'next' value
+        child = getInorderSuccessor(node);
+        
+        // Swap the keys
+        tempItem = node->nodeKey;
+        node->nodeKey = child->nodeKey;
+        child->nodeKey = tempItem;
+
+        // Swap the values
+        tempItem = node->nodeValue;
+        node->nodeValue = child->nodeValue;
+        child->nodeValue = tempItem;
+        
+        // Remove the 'next' node instead
+        removeNode(child);
     }
 }
 
