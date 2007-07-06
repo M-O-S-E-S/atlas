@@ -156,6 +156,13 @@ atItem * atMap::removeEntry(atItem * key)
     // Call an internal function to do the actual node removal
     removeNode(targetNode);
 
+    // If the given key and the key previously stored in the tree are
+    // different objects (i.e.: two different instances), we need to
+    // delete the stored key to avoid a memory leak.  This should be
+    // OK, as the user will still have the given key if needed
+    if ((void *)key != (void *)targetNode->nodeKey)
+       delete targetNode->nodeKey;
+
     // The last part of cleaning up the tree, which is the only part that
     // removeNode() doesn't do by itself, is forcing the root node to be
     // black.
