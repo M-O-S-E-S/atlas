@@ -10,18 +10,19 @@ class atTimer : public atNotifier
 {
    private:
 
-      double            markTime;
-      double            markInterval;
+      double   mark_time;
+      double   mark_interval;
 
    public:
 
       atTimer();
-      ~atTimer();
+      virtual ~atTimer();
 
-      void              mark();
-      void              markAtInterval(double intervalTime);
-      double            getInterval();
-      double            getElapsed();
+      virtual void   mark();
+      virtual void   markAtInterval(double intervalTime);
+
+      virtual double   getInterval();
+      virtual double   getElapsed();
 };
 
 #endif
