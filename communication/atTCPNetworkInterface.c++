@@ -112,7 +112,7 @@ int atTCPNetworkInterface::acceptConnection()
    {
       client_sockets[num_client_sockets] = newSocket;
       address = (char *) &connectingName.sin_addr.s_addr;
-      sprintf(client_addrs[num_client_sockets].address, "%hhu.%hhu.%hhu.%hhu",
+      sprintf(client_addrs[num_client_sockets].address, "%u.%u.%u.%u",
               address[0], address[1], address[2], address[3]);
       client_addrs[num_client_sockets].port = connectingName.sin_port;
       num_client_sockets++;
@@ -222,13 +222,15 @@ int atTCPNetworkInterface::makeConnection()
                }
                else
                {
-                  // Check for error on the socket to see if we connected
-                  // successfully or not
-                  errorLength = sizeof(int);
+                  // Normally, we would know we would have connected here,
+                  // but low-level issues (I guess) are causing issues here
+                  // so check the socket to make sure all is okay before
+                  // declaring success
+                  errorLength = sizeof(errorCode);
                   getsockopt(socket_value, SOL_SOCKET, SO_ERROR, &errorCode, 
                              &errorLength);
 
-                  // Check the error status
+                  // Check the socket error status
                   if (errorCode == 0)
                   {
                      // We actually did connect!
@@ -237,7 +239,8 @@ int atTCPNetworkInterface::makeConnection()
                   }
                   else
                   {
-                     // Failed to connect, so give up
+                     // Failed to connect, but we thought we were okay
+                     // so just give up because something is wrong
                      notify(AT_INFO,
                             "Failed to connect to server.  Giving up.\n");
                      keepTrying = 0;
