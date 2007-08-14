@@ -8,7 +8,7 @@ LIBRARY_NAME = foundation
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atItem.o
+LIB_OBJS = atNotifier.o atItem.o
 
 
 .SUFFIXES: .c++
@@ -21,7 +21,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR)
+	$(CC) $(CFLAGS) -c $< 
 
 
 clean:

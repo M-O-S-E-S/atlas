@@ -8,11 +8,12 @@ LIBRARY_NAME = util
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atConfigFile.o atNotifier.o atBufferHandler.o atString.o \
-           atStringTokenizer.o atTimer.o
+LIB_OBJS = atConfigFile.o atBufferHandler.o atString.o \
+           atStringTokenizer.o atTimer.o atJoint.o
 
 
 FOUNDATION_DIR = ../foundation
+MATH_DIR = ../math
 
 
 .SUFFIXES: .c++
@@ -25,7 +26,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR)
+	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR) -I$(MATH_DIR)
 
 
 clean:
