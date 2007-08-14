@@ -4,15 +4,11 @@
 CC = g++
 CFLAGS = -fpic -g
 
-LIBRARY_NAME = util
+LIBRARY_NAME = foundation
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atConfigFile.o atNotifier.o atBufferHandler.o atString.o \
-           atStringTokenizer.o atTimer.o
-
-
-FOUNDATION_DIR = ../foundation
+LIB_OBJS = atItem.o
 
 
 .SUFFIXES: .c++
