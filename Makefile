@@ -47,7 +47,7 @@ $(CONTAINER_DIR)/libcontainer.a:
 	cd $(CONTAINER_DIR) && $(MAKE)
 
 $(FOUNDATION_DIR)/libfoundation.a:
-	cd $(FOUDNATION_DIR) && $(MAKE)
+	cd $(FOUNDATION_DIR) && $(MAKE)
 
 $(MATH_DIR)/libmath.a:
 	cd $(MATH_DIR) && $(MAKE)
