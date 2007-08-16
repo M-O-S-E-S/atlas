@@ -20,6 +20,7 @@ class atJoint : public atItem
 
    public:
       atJoint(atString name, atVector position, atQuat rotation);
+      atJoint();
       virtual ~atJoint();
 
       virtual atString   getName();

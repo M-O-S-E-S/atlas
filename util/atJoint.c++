@@ -12,6 +12,11 @@ atJoint::atJoint(atString name, atVector position, atQuat rotation)
 }
 
 
+atJoint::atJoint()
+{
+}
+
+
 atJoint::~atJoint()
 {
    // Nothing to do
