@@ -28,6 +28,7 @@ class atSharedQueue : public atNotifier
       u_long *   queue_size;
       u_long *   queue_used;
       u_long *   realloc_num;
+      u_long *   connected_count;
 
       u_long     last_realloc_num;
 

@@ -58,6 +58,7 @@ atSharedQueue::atSharedQueue(key_t controlKey, key_t dataKey,
 {
    u_long        queueInfoSize;
    union semun   zero;
+   bool          createdControl;
 
    // Keep the keys to use later
    data_shm_key = dataKey;
@@ -67,32 +68,82 @@ atSharedQueue::atSharedQueue(key_t controlKey, key_t dataKey,
    // Compute how big our control info is (so we can allocate space later)
    queueInfoSize = sizeof(*queue_head) + sizeof(*queue_tail) + 
                    sizeof(*queue_size) + sizeof(*queue_used) +
-                   sizeof(*realloc_num);
+                   sizeof(*realloc_num) + sizeof(*connected_count);
 
    // Keep the increment size for later use as well
    memory_increment_size = incrementSize;
 
-   // Get a semaphore to control access to this shared memory buffer
-   sem_id = semget(sem_key, 1, 0666 | IPC_CREAT);
+   // Get a semaphore to control access to this shared memory buffer (this is
+   // complicated because we want to make sure we can initialize the queue 
+   // state); First, try to get it "exclusively" (this will fail if we try
+   // to create it and it already exists -- this tells us somebody is
+   // "here" already)
+   sem_id = semget(sem_key, 1, 0666 | IPC_CREAT | IPC_EXCL);
    if (sem_id == -1)
    {
-      notify(AT_FATAL_ERROR, 
-             "Failed to get lock mechanism for shared queue.\n");
+      // See if we failed because it exists already
+      if (errno == EEXIST)
+      {
+         // It does exist so get it "non-exclusively" then
+         sem_id = semget(sem_key, 1, 0666 | IPC_CREAT);
+
+         // Save the fact that we did not create the control semaphore
+         createdControl = false;
+      }
+      else
+      {
+         // Having serious issues so tell user and bail
+         notify(AT_FATAL_ERROR, 
+                "Failed to get lock mechanism for shared queue.\n");
+      }
+   }
+   else
+   {
+      // Save the fact that we actually created the control semaphore
+      createdControl = true;
+
+      // Initialize the semaphore value
+      zero.val = 0;
+      semctl(sem_id, AT_SHQ_LOCK_SEMAPHORE_NUM, SETVAL, zero);
    }
 
-   // Initialize the semaphore value
-   zero.val = 0;
-   semctl(sem_id, AT_SHQ_LOCK_SEMAPHORE_NUM, SETVAL, zero);
-
-   // Get shared memory for the control info
-   control_shm_id = shmget(control_shm_key, queueInfoSize, 0666 | IPC_CREAT);
+   // Get shared memory for the control info but make sure we don't wipe
+   // out anything that might be there (shmget() will initialize to all
+   // zero values so we check by asking for exclusive access first)
+   control_shm_id = shmget(control_shm_key, queueInfoSize, 
+                           0666 | IPC_CREAT | IPC_EXCL);
    if (control_shm_id == -1)
-      notify(AT_FATAL_ERROR, "Failed to get memory for shared queue info.\n");
+   {
+      // See if we failed because it exists already
+      if (errno == EEXIST)
+      {
+         // It does exist so get it "non-exclusively" then
+         control_shm_id = shmget(control_shm_key, queueInfoSize, 0666);
+      }
+      else
+      {
+         // Failed big time
+         notify(AT_FATAL_ERROR, 
+                "Failed to get memory for shared queue info.\n");
+      }
+   }
 
    // Get shared memory for the data buffer
-   data_shm_id = shmget(data_shm_key, initialSize, 0666 | IPC_CREAT);
+   data_shm_id = shmget(data_shm_key, initialSize, 0666 | IPC_CREAT | IPC_EXCL);
    if (data_shm_id == -1)
-      notify(AT_FATAL_ERROR, "Failed to get memory for shared queue.\n");
+   {
+      // See if we failed because it exists already
+      if (errno == EEXIST)
+      {
+         // It does exist so get it "non-exclusively" then
+         data_shm_id = shmget(data_shm_key, initialSize, 0666);
+      }
+      else
+      {
+         // Failed big time
+         notify(AT_FATAL_ERROR, "Failed to get memory for shared queue.\n");
+      }
+   }
 
    // Attach to shared memory for the control info
    shared_control_info = (u_char *) shmat(control_shm_id, NULL, 0);
@@ -106,17 +157,29 @@ atSharedQueue::atSharedQueue(key_t controlKey, key_t dataKey,
 
    // Initialize queue (lock it to make sure we don't initialize it twice)
    lock();
-   queue_head = (u_long *) &shared_control_info[0];
+   queue_head = (u_long *) shared_control_info;
    queue_tail = (u_long *) queue_head + sizeof(*queue_head);
    queue_size = (u_long *) queue_tail + sizeof(*queue_tail);
    queue_used = (u_long *) queue_size + sizeof(*queue_size);
    realloc_num = (u_long *) queue_used + sizeof(*queue_used);
+   connected_count = (u_long *) realloc_num + sizeof(*realloc_num);
 
-   *queue_head = 0;
-   *queue_tail = 0;
-   *queue_size = initialSize;
-   *queue_used = 0;
-   *realloc_num = 0;
+   // If we created the control info, we need to initialize it
+   if (createdControl == true)
+   {
+      *queue_head = 0;
+      *queue_tail = 0;
+      *queue_size = initialSize;
+      *queue_used = 0;
+      *realloc_num = 0;
+      *connected_count = 1;
+   }
+   else
+   {
+      // We didn't create the memory so just increment the count
+      // to tell everybody that we're here
+      *connected_count = (*connected_count) + 1;
+   }
    unlock();
 
    // Initialize our local queue reallocation flag
@@ -126,36 +189,51 @@ atSharedQueue::atSharedQueue(key_t controlKey, key_t dataKey,
 
 atSharedQueue::~atSharedQueue()
 {
+   u_long           newConnectedCount;
    union semunion   zero;
 
    // Lock everything
    lock();
 
+   // First, remove us from the count of people attached and keep a copy
+   *connected_count = (*connected_count) - 1;
+   newConnectedCount = *connected_count;
+
    // Detach from the shared memory
    if (shmdt(shared_buffer) == -1)
       notify(AT_WARN, "Failed to detach from memory for shared queue.\n");
-
-   // Remove shared memory
-   if (shmctl(data_shm_id, IPC_RMID, NULL) == -1)
-      notify(AT_WARN, "Failed to remove shared memory for shared queue.\n");
 
    // Detach from the shared memory control info
    if (shmdt(shared_control_info) == -1)
       notify(AT_WARN, "Failed to detach from memory for shared queue info.\n");
 
-   // Remove shared memory control info
-   if (shmctl(control_shm_id, IPC_RMID, NULL) == -1)
+   // If we are the last one using the semaphore, just remove it; otherwise,
+   // just unlock it because we're done with it.  Similarly, if we were the
+   // last one, then we need to remove the shared memory (if we do it too
+   // early, people cannot find it by key anymore since the remove clears
+   // the key in the shared memory table)
+   if (newConnectedCount == 0)
    {
-      notify(AT_WARN, 
-             "Failed to remove shared memory for shared queue info.\n");
+      // Remove shared memory
+      if (shmctl(data_shm_id, IPC_RMID, NULL) == -1)
+         notify(AT_WARN, "Failed to remove shared memory for shared queue.\n");
+
+      // Remove shared memory control info
+      if (shmctl(control_shm_id, IPC_RMID, NULL) == -1)
+      {
+         notify(AT_WARN, 
+                "Failed to remove shared memory for shared queue info.\n");
+      }
+
+      // Remove locking semaphore
+      zero.val = 0;
+      semctl(sem_id, 1, IPC_RMID, zero);
    }
-
-   // Unlock everything
-   unlock();
-
-   // Remove locking semaphore
-   zero.val = 0;
-   semctl(sem_id, 1, IPC_RMID, zero);
+   else
+   {
+      // Just unlock everything
+      unlock();
+   }
 }
 
 
