@@ -86,7 +86,62 @@ bool atList::addEntry(atItem * item)
       // Return success
       return true;
    }
+}
 
+
+bool atList::insertEntry(atItem * item)
+{
+   atListEntry *   newEntry;
+
+   // If we don't have a current node but we do have nodes, return a failure
+   if ( (current_entry == NULL) && (list_head == NULL) )
+      return false;
+   else
+   {
+      // Create a new entry for this item in the list
+      newEntry = (atListEntry *) calloc(1, sizeof(atListEntry));
+      if (newEntry == NULL)
+      {
+         // We failed to allocate the memory so tell user and return a failure
+         notify(AT_WARN, "Unable to allocate memory in List.\n");
+         return false;
+      }
+      else
+      {
+         // Set the fields of the new entry
+         newEntry->item = item;
+         newEntry->next = NULL;
+         newEntry->previous = NULL;
+      }
+                                                                                
+      // Insert the entry
+      if (current_entry == NULL)
+      {
+         // We are inserting into an empty list
+         list_head = newEntry;
+         list_tail = newEntry;
+      }
+      else if (current_entry->previous == NULL)
+      {
+         // We are inserting in front of the first node so update the head
+         list_head->previous = newEntry;
+         newEntry->next = list_head;
+         list_head = newEntry;
+      }
+      else if (current_entry->next == NULL)
+      {
+         // We are inserting at the end of the list
+         list_tail->next = newEntry;
+         newEntry->previous = list_tail;
+         list_tail = newEntry;
+      }
+      else
+      {
+         // We are inserting at the middle of the list
+         current_entry->previous = newEntry;
+         newEntry->next = current_entry;
+      }
+   }
 }
 
 

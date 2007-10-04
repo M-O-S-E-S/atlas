@@ -38,6 +38,7 @@ class atList : public atNotifier
       virtual u_long     getNumEntries();
 
       virtual bool       addEntry(atItem * item);
+      virtual bool       insertEntry(atItem * item);
       virtual bool       removeCurrentEntry();
       virtual bool       removeAllEntries();
 
