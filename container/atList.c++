@@ -137,6 +137,9 @@ bool atList::insertEntry(atItem * item)
          current_entry->previous = newEntry;
          newEntry->next = current_entry;
       }
+
+      // We succeeded
+      return true;
    }
 }
 
