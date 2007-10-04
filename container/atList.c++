@@ -115,7 +115,7 @@ bool atList::insertEntry(atItem * item)
       }
                                                                                 
       // Insert the entry
-      if (current_entry == NULL)
+      if (list_head == NULL)
       {
          // We are inserting into an empty list
          list_head = newEntry;
@@ -124,20 +124,16 @@ bool atList::insertEntry(atItem * item)
       else if (current_entry->previous == NULL)
       {
          // We are inserting in front of the first node so update the head
-         list_head->previous = newEntry;
-         newEntry->next = list_head;
+         current_entry->previous = newEntry;
+         newEntry->next = current_entry;
          list_head = newEntry;
-      }
-      else if (current_entry->next == NULL)
-      {
-         // We are inserting at the end of the list
-         list_tail->next = newEntry;
-         newEntry->previous = list_tail;
-         list_tail = newEntry;
       }
       else
       {
-         // We are inserting at the middle of the list
+         // We are inserting at the middle of the list (because we insert
+         // *before*, we never have the case at the very end of the list)
+         current_entry->previous->next = newEntry;
+         newEntry->previous = current_entry->previous;
          current_entry->previous = newEntry;
          newEntry->next = current_entry;
       }
