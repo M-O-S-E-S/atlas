@@ -17,8 +17,10 @@ atHLAInterface::atHLAInterface(char * fedExecName, char * metaFilename)
    cfg = new atConfigFile(metaFilename);
 
    // Get the base fed filename
-   cfg->getNextTuple("fedDir", &count, values);
-   strcpy(fedDir, values[0]);
+   if (cfg->getNextTuple("fedDir", &count, values))
+      strcpy(fedDir, values[0]);
+   else
+      fedDir[0] = '\0';
 
    // Get the base fed filename
    cfg->getNextTuple("baseFedFile", &count, values);
