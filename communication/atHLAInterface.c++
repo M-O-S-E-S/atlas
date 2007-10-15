@@ -10,14 +10,22 @@ atHLAInterface::atHLAInterface(char * fedExecName, char * metaFilename)
    atConfigFile *   cfg;
    int              count;
    char *           values[100];
-   char             fedFilename[255];
+   char             fedDir[1024];
+   char             fedFilename[1024];
 
    // Open the meta filename
    cfg = new atConfigFile(metaFilename);
 
    // Get the base fed filename
+   cfg->getNextTuple("fedDir", &count, values);
+   strcpy(fedDir, values[0]);
+
+   // Get the base fed filename
    cfg->getNextTuple("baseFedFile", &count, values);
-   strcpy(fedFilename, values[0]);
+   if (strlen(fedDir) > 0)
+      sprintf(fedFilename, "%s/%s", fedDir, values[0]);
+   else
+      strcpy(fedFilename, values[0]);
 
    // Create the interface to the RTI
    rti_interface = new atRTIInterface(fedExecName, fedFilename);
