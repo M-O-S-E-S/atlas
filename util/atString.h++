@@ -24,6 +24,9 @@ class atString : public atItem
 
       virtual atString       clone();
 
+      virtual void           append(const atString & stringToAppend);
+      virtual atString       concat(const atString & stringToConcat) const;
+
       virtual void           setString(const char * stringToCopy);
       virtual void           setString(const atString & stringToCopy);
 

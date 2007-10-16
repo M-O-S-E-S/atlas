@@ -53,6 +53,72 @@ atString atString::clone()
 }
 
 
+void atString::append(const atString & stringToAppend)
+{
+   int      lengthOfNewString;
+   char *   oldString;
+
+   // If we don't have a local string already, just set the string to
+   // the given string
+   if (local_string == NULL)
+   {
+      setString(stringToAppend);
+   }
+   else if (stringToAppend.getString() != NULL)
+   {
+      // Get the combined length of the current string and the new string
+      lengthOfNewString = strlen(local_string) + 
+         strlen(stringToAppend.getString());
+
+      // Keep a copy of the old string until we're done
+      oldString = local_string;
+
+      // Allocate space for the combined string (adding one to the length to
+      // include the \0 character)
+      local_string = (char *) calloc((lengthOfNewString + 1), sizeof(char));
+
+      // Make sure we allocated space okay
+      if (local_string != NULL)
+      {
+         // We did so copy the existing string
+         strcpy(local_string, oldString);
+
+         // Concatenate the appending string
+         strcat(local_string, stringToAppend.getString());
+
+         // Update the length
+         string_length = lengthOfNewString;
+
+         // Free the old string
+         free(oldString);
+      }
+      else
+      {
+         // Failed to allocate memory, so just keep the old string
+         local_string = oldString;
+
+         // Notify the user of the failure
+         notify(AT_ERROR, "Unable to append string (not enough memory)\n");
+      }
+   }
+}
+
+
+atString atString::concat(const atString & stringToConcat) const
+{
+   atString result;
+
+   // Create a new string with the contents of this string
+   result.setString(local_string);
+
+   // Append the contents of the given string
+   result.append(stringToConcat);
+
+   // Return the result
+   return result;
+}
+
+
 void atString::setString(const char * stringToCopy)
 {
    int   lengthOfNewString;
