@@ -252,11 +252,10 @@ void atMap::clear()
 }
 
 // ------------------------------------------------------------------------
-// Fills the keyList and valueList arrays with the keys and values from
-// the tree, respectively. Each element of one list corresponds to the
-// element with the same index from the other list. Corresponding element
-// pairs are sorted in ascending key order. Also sets the size of each
-// array to the number of elements in the tree.
+// Fills the keyList and valueList with the keys and values from the tree,
+// respectively. Each element of one list corresponds to the element with
+// the same index from the other list. Corresponding element pairs are
+// sorted in ascending key order.
 // ------------------------------------------------------------------------
 void atMap::getSortedList(atList * keyList, atList * valueList)
 {
@@ -912,10 +911,11 @@ void atMap::fillLists(atMapNode * node, atList * keyList, atList * valueList)
     // Inorder - traverse left child
     fillLists(node->leftChild, keyList, valueList);
     
-    // Copy this node's data to the array, and increment the current
-    // write position index
-    keyList->addEntry(node->nodeKey);
-    valueList->addEntry(node->nodeValue);
+    // Add the key and value to their respective lists
+    if (keyList != NULL)
+        keyList->addEntry(node->nodeKey);
+    if (valueList != NULL)
+        valueList->addEntry(node->nodeValue);
     
     // Inorder - traverse right child
     fillLists(node->rightChild, keyList, valueList);
