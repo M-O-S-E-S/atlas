@@ -13,6 +13,8 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * address, short port)
 {
    char             hostname[MAXHOSTNAMELEN];
    struct hostent   *host;
+   u_long           firstOctet;
+   struct ip_mreq   mreq;
 
    // Open the socket
    if ( (socket_value = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
@@ -38,6 +40,20 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * address, short port)
             sizeof(read_name)) < 0)
    {
       notify(AT_ERROR, "Unable to bind to the port.\n");
+   }
+
+   // If we are connecting to a multicast address, set the socket
+   // appropriately
+   firstOctet = ntohl(write_name.sin_addr.s_addr) >> 24;
+   if ( (firstOctet >= 224) && (firstOctet <= 239) )
+   {
+      // Join the multicast group
+      notify(AT_INFO, "Joining multicast group.\n");
+      memcpy(&mreq.imr_multiaddr.s_addr, host->h_addr_list[0], host->h_length);
+      mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+      if (setsockopt(socket_value, IPPROTO_IP, IP_ADD_MEMBERSHIP,
+                     &mreq, sizeof(mreq)) < 0)
+         notify(AT_WARN, "Unable to join multicast group on socket.\n");
    }
 }
 
