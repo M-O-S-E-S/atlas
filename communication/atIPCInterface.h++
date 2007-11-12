@@ -5,10 +5,10 @@
 
 // INCLUDES
 #include <sys/types.h>
-#include "atNotifier.h++"
+#include "atItem.h++"
 
 
-class atIPCInterface : public atNotifier
+class atIPCInterface : public atItem
 {
    public:
       atIPCInterface();
