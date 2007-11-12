@@ -10,7 +10,9 @@
 class atUDPNetworkInterface : public atNetworkInterface
 {
    public:
-      atUDPNetworkInterface(char * address, short port);
+      atUDPNetworkInterface(char * readAddress, char * writeAddress, 
+                            short port);
+      atUDPNetworkInterface(char * writeAddress, short port);
       atUDPNetworkInterface(short port);
       virtual ~atUDPNetworkInterface();
 
