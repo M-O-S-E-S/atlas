@@ -9,6 +9,9 @@
 
 class atUDPNetworkInterface : public atNetworkInterface
 {
+   protected:
+      bool   ignore_our_own;
+
    public:
       atUDPNetworkInterface(char * readAddress, char * writeAddress, 
                             short port);

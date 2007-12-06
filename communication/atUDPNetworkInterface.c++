@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <netdb.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/param.h>
@@ -64,6 +65,9 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * readAddress,
                      &mreq, sizeof(mreq)) < 0)
          notify(AT_WARN, "Unable to join multicast group on socket.\n");
    }
+
+   // Ignore our own broadcasted packets by default
+   ignore_our_own = true;
 }
 
 
@@ -122,6 +126,9 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * writeAddress, short port)
                      &mreq, sizeof(mreq)) < 0)
          notify(AT_WARN, "Unable to join multicast group on socket.\n");
    }
+
+   // Ignore our own broadcasted packets by default
+   ignore_our_own = true;
 }
 
 
@@ -152,6 +159,9 @@ atUDPNetworkInterface::atUDPNetworkInterface(short port)
    {
       notify(AT_ERROR, "Unable to bind to the port.\n");
    }
+
+   // Ignore our own broadcasted packets by default
+   ignore_our_own = true;
 }
 
 
@@ -164,19 +174,55 @@ atUDPNetworkInterface::~atUDPNetworkInterface()
 
 int atUDPNetworkInterface::read(u_char * buffer, u_long len)
 {
+   bool                 loop;
    struct sockaddr_in   fromAddress;
    socklen_t            fromAddressLength;
    int                  packetLength;
+   char                 hostname[MAXHOSTNAMELEN];
+   struct hostent *     host;
 
-   // Get a packet
-   fromAddressLength = sizeof(fromAddress);
-   packetLength = recvfrom(socket_value, buffer, len, 0, 
-                           (struct sockaddr *) &fromAddress, 
-                           &fromAddressLength);
+   // Keep looping if necessary
+   loop = true;
+   while (loop == true)
+   {
+      // Get a packet
+      fromAddressLength = sizeof(fromAddress);
+      packetLength = recvfrom(socket_value, buffer, len, 0, 
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
 
-   // In broadcast mode we're going to receive our own packets back
-   // so make sure we ignore them
-   // GAM   TO DO
+      // In broadcast mode we're going to receive our own packets back
+      // so make sure we ignore them if requested
+      if ( (ignore_our_own == true) && (packetLength > 0) )
+      {
+         gethostname(hostname, sizeof(hostname));
+         host = gethostbyname(hostname);
+         if (memcmp(&fromAddress.sin_addr.s_addr, 
+                    host->h_addr_list[0], host->h_length) == 0)
+         {
+            // It was our own
+   
+            // If we were not blocking, we should just return that nothing 
+            // was read (if we were blocking, we just loop around again)
+            if ((fcntl(socket_value, F_GETFL) & FNONBLOCK) != 0)
+            {
+               // Set length to zero and stop looping
+               packetLength = 0;
+               loop = false;
+            }
+         }
+         else
+         {
+            // It wasn't from us so accept it (stop looping)
+            loop = false;
+         }
+      }
+      else
+      {
+         // We don't ignore out own so accept it (stop looping)
+         loop = false;
+      }
+   }
 
    // Tell user how many bytes we read (-1 if error)
    return packetLength;
