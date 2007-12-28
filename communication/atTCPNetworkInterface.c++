@@ -256,6 +256,17 @@ int atTCPNetworkInterface::makeConnection()
                keepTrying = 0;
                close(socket_value);
                socket_value = -1;
+
+               // Let's be nice and set-up the socket for a later use
+               if ( (socket_value = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
+               {
+                  notify(AT_ERROR, 
+                         "Unable to open socket for communication.\n");
+               }
+
+               // Put flags from previous socket on this new socket
+               if (fcntl(socket_value, F_SETFL, statusFlags) < 0)
+                  notify(AT_ERROR, "Unable to disable blocking on socket.\n");
             }
          }
          else
