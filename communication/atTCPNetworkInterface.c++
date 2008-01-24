@@ -12,14 +12,29 @@
 #include "atTCPNetworkInterface.h++"
 
 
+// CONSTANTS
+#define AT_TCP_MAX_PACKET_SIZE   65536
+
+
 atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 {
+   int                max;
    char               hostname[MAXHOSTNAMELEN];
    struct hostent *   host;
 
    // Open the socket
    if ( (socket_value = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
+
+   // Set the max buffer size for this new socket (Windows has very
+   // low defaults so we fix them across our applications)
+   max = AT_TCP_MAX_PACKET_SIZE;
+   if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
+                  &max, sizeof(max)) < 0)
+      perror("setsockopt sndbuf");
+   if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
+                  &max, sizeof(max)) < 0)
+      perror("setsockopt sndbuf");
 
    // Get information about this host and initialize the read name field
    gethostname(hostname, sizeof(hostname));
@@ -41,12 +56,23 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 
 atTCPNetworkInterface::atTCPNetworkInterface(short port)
 {
+   int                max;
    char               hostname[MAXHOSTNAMELEN];
    struct hostent *   host;
 
    // Open the socket
    if ( (socket_value = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
+
+   // Set the max buffer size for this new socket (Windows has very
+   // low defaults so we fix them across our applications)
+   max = AT_TCP_MAX_PACKET_SIZE;
+   if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
+                  &max, sizeof(max)) < 0)
+      perror("setsockopt sndbuf");
+   if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
+                  &max, sizeof(max)) < 0)
+      perror("setsockopt sndbuf");
 
    // Get information about this host and initialize the read name field
    gethostname(hostname, sizeof(hostname));
@@ -92,6 +118,7 @@ int atTCPNetworkInterface::acceptConnection()
    int                  newSocket;
    struct sockaddr_in   connectingName;
    socklen_t            connectingNameLength;
+   int                  max;
    char *               address;
 
    // Try to accept a connection
@@ -104,12 +131,24 @@ int atTCPNetworkInterface::acceptConnection()
    // notify the user; otherwise, store the socket and return an ID to the user
    if (newSocket == -1)
    {
+      // Output to user if necessary and return
       if (errno != EWOULDBLOCK) 
          notify(AT_ERROR, "Could not accept a connection.\n");
       return -1;
    }
    else
    {
+      // Set the max buffer size for this new socket (Windows has very
+      // low defaults so we fix them across our applications)
+      max = AT_TCP_MAX_PACKET_SIZE;
+      if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
+                     &max, sizeof(max)) < 0)
+         perror("setsockopt sndbuf");
+      if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
+                     &max, sizeof(max)) < 0)
+         perror("setsockopt sndbuf");
+
+      // Store the data for this connection
       client_sockets[num_client_sockets] = newSocket;
       address = (char *) &connectingName.sin_addr.s_addr;
       sprintf(client_addrs[num_client_sockets].address, "%u.%u.%u.%u",
@@ -175,6 +214,7 @@ int atTCPNetworkInterface::makeConnection()
    struct timeval       timeout;
    int                  errorCode;
    socklen_t            errorLength;
+   int                  max;
 
    // Get flags on our current socket (so we can put them on new sockets if
    // needed)
@@ -273,6 +313,16 @@ int atTCPNetworkInterface::makeConnection()
             // Put flags from previous socket on this new socket
             if (fcntl(socket_value, F_SETFL, statusFlags) < 0)
                notify(AT_ERROR, "Unable to disable blocking on socket.\n");
+
+            // Set the max buffer size for this new socket (Windows has very
+            // low defaults so we fix them across our applications)
+            max = AT_TCP_MAX_PACKET_SIZE;
+            if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
+                           &max, sizeof(max)) < 0)
+               perror("setsockopt sndbuf");
+            if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
+                           &max, sizeof(max)) < 0)
+               perror("setsockopt sndbuf");
          }
       }
    }
