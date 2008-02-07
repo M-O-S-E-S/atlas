@@ -44,54 +44,6 @@ atXMLDocument::~atXMLDocument()
 }
 
 
-/* GAM These two methods are GEMINI specific, need to be reworked */
-char * atXMLDocument::getClass()
-{
-   xmlChar *   xmlClass;
-
-   // Get the "class" property
-   xmlClass = xmlGetProp(xmlDocGetRootElement(xml_doc), (xmlChar *) "class");
-
-   // Copy the XML "class" into our longer-term string
-   strcpy(current_xml_class, (char *) xmlClass);
-
-   // Toss the XML property now
-   xmlFree((xmlChar *) xmlClass);
-
-   // Return to the user
-   return current_xml_class;
-}
-
-
-u_long atXMLDocument::getFamily()
-{
-   char *   family;
-   u_long   familyType;
-
-   // Get the "family" property
-   family = (char *) xmlGetProp(xmlDocGetRootElement(xml_doc), 
-                                (xmlChar *) "family");
-
-   // Get a family "type" based on the property
-   if (strcasecmp(family, "control") == 0)
-       familyType = AT_XML_CONTROL_FAMILY;
-   else if (strcasecmp(family, "request") == 0)
-       familyType = AT_XML_REQUEST_FAMILY;
-   else if (strcasecmp(family, "response") == 0)
-       familyType = AT_XML_RESPONSE_FAMILY;
-   else if (strcasecmp(family, "command") == 0)
-       familyType = AT_XML_COMMAND_FAMILY;
-   else
-       familyType = AT_XML_UNKNOWN_FAMILY;
-
-   // Free up the property we queried
-   xmlFree((xmlChar *) family);
-
-   // Return the family
-   return familyType;
-}
-
-
 atXMLDocumentDocPtr atXMLDocument::getDoc()
 {
    // Return the base xml doc
@@ -190,5 +142,19 @@ void atXMLDocument::retrieveXML(u_char ** buffer, u_long * bufferLen)
 
    // Then point the user's pointer to this buffer
    *buffer = (u_char *) xml_text;
+}
+
+
+void atXMLDocument::print()
+{
+   u_char *   buffer;
+   u_long     bufferLen;
+
+   // Get the XML
+   retrieveXML(&buffer, &bufferLen);
+
+   // Then print it
+   buffer[bufferLen] = '\0';
+   printf("%s\n", buffer);
 }
 

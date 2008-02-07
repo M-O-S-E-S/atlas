@@ -9,14 +9,6 @@
 #include "atString.h++"
 
 
-// CONSTANTS
-#define AT_XML_UNKNOWN_FAMILY    0
-#define AT_XML_CONTROL_FAMILY    1
-#define AT_XML_REQUEST_FAMILY    2
-#define AT_XML_RESPONSE_FAMILY   3
-#define AT_XML_COMMAND_FAMILY    4
-
-
 // TYPES
 // These types help encapsulate the particular XML library we are using
 // (theoretically, we could switch from libxml2 to something else by just
@@ -40,9 +32,6 @@ class atXMLDocument : public atItem
       atXMLDocument(atXMLDocument * doc);
       virtual ~atXMLDocument();
 
-      char *                 getClass();
-      u_long                 getFamily();
-
       atXMLDocumentDocPtr    getDoc();
 
       atXMLDocumentNodePtr   getRootNode();
@@ -55,7 +44,10 @@ class atXMLDocument : public atItem
       char *                 getNodeText(atXMLDocumentNodePtr node);
 
       void                   retrieveXML(u_char ** buffer, u_long * bufferLen);
+
+      void                   print();
 };
+
 
 #endif
 
