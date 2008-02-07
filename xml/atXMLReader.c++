@@ -10,7 +10,10 @@ atXMLReader::atXMLReader(char * filename)
 
    // Check to make sure it worked okay
    if (xml_reader == NULL)
-      notify(AT_WARN, "XML Reader cannot process file.\n");
+{
+      notify(AT_WARN, "XML Reader cannot process file (%s).\n", filename);
+abort();
+}
 }
 
 
@@ -32,7 +35,7 @@ atXMLReader::atXMLReader(char * memory, u_long memorySize)
 
    // Check to make sure it worked okay
    if (xml_reader == NULL)
-      notify(AT_WARN, "XML Reader cannot process file.\n");
+      notify(AT_WARN, "XML Reader cannot process memory.\n");
 }
 
 
@@ -46,7 +49,7 @@ atXMLReader::atXMLReader(atXMLDocument * doc)
 
    // Check to make sure it worked okay
    if (xml_reader == NULL)
-      notify(AT_WARN, "XML Reader cannot process file.\n");
+      notify(AT_WARN, "XML Reader cannot process document.\n");
 }
 
 
