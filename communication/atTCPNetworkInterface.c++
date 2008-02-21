@@ -115,11 +115,32 @@ void atTCPNetworkInterface::allowConnections(int backlog)
 
 int atTCPNetworkInterface::acceptConnection()
 {
+   fd_set               readFds;
+   fd_set               writeFds;
+   struct timeval       timeout;
    int                  newSocket;
    struct sockaddr_in   connectingName;
    socklen_t            connectingNameLength;
    int                  max;
    char *               address;
+
+   // If we are in non-blocking mode, we use select() to see if
+   // there is a client connecting; othwew
+   FD_ZERO(&readFds);
+   FD_SET(socket_value, &readFds);
+   timeout.tv_sec = 0;
+   timeout.tv_usec = 100000;
+   if (select(socket_value+1, &readFds, NULL, NULL, &timeout) <= 0)
+   {
+      // We did not get a connection in time so determine our action
+      // based on whether we're in non-blocking mode or not
+      if ( (fcntl(socket_value, F_GETFL) & FNONBLOCK) != 0 )
+      {
+         // We're in non-blocking mode so just return -1; otherwise, we
+         // we fill fall through and just call accept() and block
+         return -1;
+      }
+   }
 
    // Try to accept a connection
    connectingNameLength = sizeof(connectingName);
