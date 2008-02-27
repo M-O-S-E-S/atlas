@@ -197,7 +197,8 @@ void atString::setString(const char * stringToCopy, u_long maxLength)
       if (local_string != NULL)
       {
          // We did so copy the string in
-         strcpy(local_string, stringToCopy);
+         strncpy(local_string, stringToCopy, lengthOfNewString);
+         local_string[lengthOfNewString] = '\0';
          string_length = lengthOfNewString;
       }
    }
