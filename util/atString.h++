@@ -19,6 +19,7 @@ class atString : public atItem
    public:
       atString();
       atString(char * stringToCopy);
+      atString(char * stringToCopy, u_long maxLength);
       atString(const atString & stringToCopy);
       virtual ~atString();
 
@@ -28,6 +29,8 @@ class atString : public atItem
       virtual atString       concat(const atString & stringToConcat) const;
 
       virtual void           setString(const char * stringToCopy);
+      virtual void           setString(const char * stringToCopy, 
+                                       u_long maxLength);
       virtual void           setString(const atString & stringToCopy);
 
       virtual const char *   getString() const;

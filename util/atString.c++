@@ -25,6 +25,17 @@ atString::atString(char * stringToCopy)
 }
 
 
+atString::atString(char * stringToCopy, u_long maxLength) 
+{
+   // Initialize string to not being allocated
+   local_string = NULL;
+   string_length = 0;
+
+   // Copy the string into our string
+   setString(stringToCopy, maxLength); 
+}
+
+
 atString::atString(const atString & stringToCopy)
 {
    // Initialize string to not being allocated
@@ -136,6 +147,49 @@ void atString::setString(const char * stringToCopy)
       // Get the length of the new string
       lengthOfNewString = strlen(stringToCopy);
 
+      // Here we add one to the length to include the \0 character
+      local_string = (char *) calloc((lengthOfNewString + 1), sizeof(char));
+
+      // Make sure we allocated space okay
+      if (local_string != NULL)
+      {
+         // We did so copy the string in
+         strcpy(local_string, stringToCopy);
+         string_length = lengthOfNewString;
+      }
+   }
+   else
+   {
+      // We received a NULL string (even though we shouldn't have) so
+      // just set an empty string
+      local_string = (char *) calloc(1, sizeof(char));
+      if (local_string != NULL)
+         local_string[0] = '\0';
+      string_length = 0;
+   }
+}
+
+
+void atString::setString(const char * stringToCopy, u_long maxLength)
+{
+   int   lengthOfNewString;
+
+   // Handle the case where there are fewer characters than given
+   if (strlen(stringToCopy) < maxLength)
+      lengthOfNewString = strlen(stringToCopy);
+   else
+      lengthOfNewString = maxLength;
+
+   // If we had a string stored already, get rid of it
+   if (local_string != NULL)
+   {
+      free(local_string);
+      local_string = NULL;
+   }
+
+   // Make sure there is something to copy
+   if (stringToCopy != NULL)
+   {
       // Here we add one to the length to include the \0 character
       local_string = (char *) calloc((lengthOfNewString + 1), sizeof(char));
 
