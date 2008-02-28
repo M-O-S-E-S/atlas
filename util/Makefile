@@ -8,7 +8,7 @@ LIBRARY_NAME = util
 
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
-LIB_OBJS = atConfigFile.o atBufferHandler.o atString.o \
+LIB_OBJS = atConfigFile.o atBufferHandler.o atString.o atStringBuffer.o \
            atStringTokenizer.o atTimer.o atJoint.o
 
 

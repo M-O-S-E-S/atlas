@@ -16,7 +16,7 @@ atStringTokenizer::atStringTokenizer(atString str)
 
 atStringTokenizer::~atStringTokenizer()
 {
-   // Toss the string
+   // Toss the strings
    if (the_string != NULL)
       delete the_string;
 }
