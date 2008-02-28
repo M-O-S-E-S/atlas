@@ -129,7 +129,7 @@ int atTCPNetworkInterface::acceptConnection()
    FD_ZERO(&readFds);
    FD_SET(socket_value, &readFds);
    timeout.tv_sec = 0;
-   timeout.tv_usec = 100000;
+   timeout.tv_usec = 10000;
    if (select(socket_value+1, &readFds, NULL, NULL, &timeout) <= 0)
    {
       // We did not get a connection in time so determine our action
