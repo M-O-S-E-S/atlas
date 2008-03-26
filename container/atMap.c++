@@ -142,7 +142,8 @@ bool atMap::deleteEntry(atItem * key)
 atItem * atMap::removeEntry(atItem * key)
 {
     atMapNode * targetNode;
-    atItem * value;
+    atItem * targetKey;
+    atItem * targetValue;
     
     // Find the node in the tree with the given key. Abort if there
     // is no such node.
@@ -150,8 +151,10 @@ atItem * atMap::removeEntry(atItem * key)
     if (targetNode == NULL)
         return NULL;
 
-    // Get the node's value entry so we can return it
-    value = targetNode->nodeValue;
+    // Get the node's key and value entries before we remove the node
+    // (we'll need them later)
+    targetKey = targetNode->nodeKey;
+    targetValue = targetNode->nodeValue;
 
     // Call an internal function to do the actual node removal
     removeNode(targetNode);
@@ -160,8 +163,8 @@ atItem * atMap::removeEntry(atItem * key)
     // different objects (i.e.: two different instances), we need to
     // delete the stored key to avoid a memory leak.  This should be
     // OK, as the user will still have the given key if needed
-    if ((void *)key != (void *)targetNode->nodeKey)
-       delete targetNode->nodeKey;
+    if ((void *)key != (void *)targetKey)
+       delete targetKey;
 
     // The last part of cleaning up the tree, which is the only part that
     // removeNode() doesn't do by itself, is forcing the root node to be
@@ -171,7 +174,7 @@ atItem * atMap::removeEntry(atItem * key)
 
     // Decrease entry count by one and return success
     treeSize--;
-    return value;
+    return targetValue;
 }
 
 // ------------------------------------------------------------------------
