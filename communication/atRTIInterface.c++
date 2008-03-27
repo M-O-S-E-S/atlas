@@ -100,6 +100,9 @@ atRTIInterface::~atRTIInterface()
    catch (rti13::Exception& e)
    {
    }
+
+   // Set singleton to NULL
+   rti_interface_instance = NULL;
 }
 
 
