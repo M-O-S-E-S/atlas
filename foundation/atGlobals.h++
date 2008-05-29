@@ -39,10 +39,8 @@ enum
 #define AT_EQUAL(x,y)  ( fabs((x) - (y)) < AT_DEFAULT_TOLERANCE )
 
 // Find the maximum (or minimum) of any two values
-#define AT_MAX(x,y) ({typeof (x) _x = x; typeof (y) _y = y; \
-                    _x > _y ? _x : _y; })
-#define AT_MIN(x,y) ({typeof (x) _x = x; typeof (y) _y = y; \
-                    _x < _y ? _x : _y; })                    
+#define AT_MAX(x,y) ( ((x) > (y)) ? (x) : (y) )
+#define AT_MIN(x,y) ( ((x) < (y)) ? (x) : (y) )
 
 
 // Constants for use in conversion to/from Euler rotations
