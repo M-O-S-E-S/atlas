@@ -84,42 +84,6 @@ enum atMathEulerAxisOrder
     AT_EULER_ANGLES_ZYZ_R
 };
 
-// Windows-specific DLL linkage directives.  Windows requires explicit export
-// and import instructions for its shared libraries (DLL's).  The following
-// sections define a token AT_*_DLL for the ATLAS library that specifies
-// the linkage.  The token is defined conditionally. If the library itself 
-// is being compiled the token expands into an export directive.  If a module 
-// that is using the library is being compiled, the token expands into an
-// import directive.  On platforms other than Windows, the tokens expand to
-// nothing.
-//
-#ifdef WIN32
-    // Atlas library
-    #ifdef ATLAS_EXPORTS
-        #define ATLAS_DLL  __declspec(dllexport)
-    #else
-        #define ATLAS_DLL  __declspec(dllimport)
-    #endif
-#else
-    // Define all tokens to be nothing
-    #define ATLAS_DLL
-#endif
-
-// Under Windows, define the sleep() and usleep() functions as macros of
-// the Windows Sleep() function
-#ifdef _MSC_VER
-    #include <windows.h>
-    #include <wingdi.h>
-
-    // Sleep() takes milliseconds so multiply x by 1000 for sleep()
-    #define sleep(x)  Sleep((x) * 1000)
-
-    // Sleep() takes milliseconds, so divide x by 1000 for usleep()
-    // if the result of (x/1000) is zero, the thread will still sleep
-    // (give up the processor).
-    #define usleep(x) Sleep((x) / 1000)
-#endif
-
 
 #endif
 
