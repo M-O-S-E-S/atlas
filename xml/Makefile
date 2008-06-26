@@ -10,6 +10,7 @@ LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
 LIB_OBJS = atXMLBuffer.o atXMLDocument.o atXMLReader.o
 
+OS_DIR = ../os
 FOUNDATION_DIR = ../foundation
 UTIL_DIR = ../util
 CONTAINER_DIR = ../container
@@ -26,7 +27,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< -I$(XML_LIB_DIR) -I$(FOUNDATION_DIR) -I$(UTIL_DIR) -I$(CONTAINER_DIR)
+	$(CC) $(CFLAGS) -c -DATLAS_SYM=EXPORT $< -I$(OS_DIR) -I$(XML_LIB_DIR) -I$(FOUNDATION_DIR) -I$(UTIL_DIR) -I$(CONTAINER_DIR)
 
 
 clean:

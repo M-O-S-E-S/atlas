@@ -4,10 +4,11 @@
 
 
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 #include "atString.h++"
 
 
-class atStringTokenizer : public atNotifier
+class ATLAS_SYM atStringTokenizer : public atNotifier
 {
    protected:
       atString *   the_string;

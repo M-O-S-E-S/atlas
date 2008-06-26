@@ -9,10 +9,11 @@ class atQuat;
 #include "atGlobals.h++"
 #include "atItem.h++"
 #include "atMatrix.h++"
+#include "atOSDefs.h"
 #include "atVector.h++"
 
 
-class ATLAS_DLL atQuat : public atItem
+class ATLAS_SYM atQuat : public atItem
 {
 private:
 
@@ -94,6 +95,6 @@ public:
     virtual int    compare(atItem * otherItem);
 };
 
-atQuat operator*(double multiplier, atQuat operand);
+ATLAS_SYM atQuat operator*(double multiplier, atQuat operand);
 
 #endif

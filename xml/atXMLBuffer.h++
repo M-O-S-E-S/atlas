@@ -8,6 +8,7 @@
 
 #include "atNotifier.h++"
 #include "atList.h++"
+#include "atOSDefs.h"
 
 #include "atXMLDocument.h++"
 #include "atBufferHandler.h++"
@@ -19,7 +20,7 @@
 #define MAX_XML_TAG_SIZE         256
 
 
-class atXMLBuffer : public atNotifier
+class ATLAS_SYM atXMLBuffer : public atNotifier
 {
    protected:
       u_char         xml_buffer[MAX_XML_DOCUMENT_SIZE];

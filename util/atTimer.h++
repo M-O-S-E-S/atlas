@@ -4,9 +4,10 @@
 
 
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 
 
-class atTimer : public atNotifier
+class ATLAS_SYM atTimer : public atNotifier
 {
    private:
 

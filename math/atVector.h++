@@ -8,9 +8,10 @@ class atVector;
 
 #include "atGlobals.h++"
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
-class ATLAS_DLL atVector : public atItem
+class ATLAS_SYM atVector : public atItem
 {
 private:
 
@@ -78,6 +79,6 @@ public:
     virtual int     compare(atItem * otherItem);
 };
 
-atVector operator*(double multiplier, atVector operand);
+ATLAS_SYM atVector operator*(double multiplier, atVector operand);
 
 #endif

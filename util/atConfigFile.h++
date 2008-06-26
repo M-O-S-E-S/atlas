@@ -4,6 +4,7 @@
 
 
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 #include "atString.h++"
 #include "atStringTokenizer.h++"
 
@@ -35,7 +36,7 @@ typedef struct atCfgKey
 } atTupleKey;
 
 
-class atConfigFile : public atNotifier
+class ATLAS_SYM atConfigFile : public atNotifier
 {
    protected:
       atTupleKey *          tuple_list;

@@ -8,9 +8,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 
 
-class atItem : public atNotifier
+class ATLAS_SYM atItem : public atNotifier
 {
    public:
       atItem();

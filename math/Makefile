@@ -11,6 +11,7 @@ LIB_DIR = .
 LIB_OBJS = atVector.o atMatrix.o atQuat.o
 
 
+OS_DIR = ../os
 FOUNDATION_DIR = ../foundation
 CONTAINER_DIR = ../container
 UTIL_DIR = ../util
@@ -26,7 +27,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR) -I$(CONTAINER_DIR) -I$(UTIL_DIR)
+	$(CC) $(CFLAGS) -c -DATLAS_SYM=EXPORT $< -I$(OS_DIR) -I$(FOUNDATION_DIR) -I$(CONTAINER_DIR) -I$(UTIL_DIR)
 
 
 clean:

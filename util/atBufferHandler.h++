@@ -5,9 +5,10 @@
 
 #include <sys/types.h>
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
-class atBufferHandler : public atItem
+class ATLAS_SYM atBufferHandler : public atItem
 {
    protected:
       u_char *   buffer_text;

@@ -6,6 +6,8 @@
 // INCLUDES
 #include <stdio.h>
 
+#include "atOSDefs.h"
+
 
 // CONSTANTS
 // Simple error notification constants used by setNotifyLevel() and notify()
@@ -24,7 +26,7 @@ enum atNotifyLevel
 };
 
 
-class atNotifier
+class ATLAS_SYM atNotifier
 {
    protected:
       char            header_name[80];

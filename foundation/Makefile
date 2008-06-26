@@ -10,6 +10,7 @@ LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
 LIB_OBJS = atNotifier.o atItem.o
 
+OS_DIR = ../os
 
 .SUFFIXES: .c++
 
@@ -21,7 +22,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< 
+	$(CC) $(CFLAGS) -c -DATLAS_SYM=EXPORT $< -I$(OS_DIR)
 
 
 clean:

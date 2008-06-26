@@ -5,6 +5,7 @@
 
 #include <libxml/xmlreader.h>
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 #include "atXMLDocument.h++"
 
 
@@ -15,7 +16,7 @@
 typedef xmlTextReaderPtr    atXMLTextReaderPtr;
 
 
-class atXMLReader : public atNotifier
+class ATLAS_SYM atXMLReader : public atNotifier
 {
    protected:
       atXMLTextReaderPtr   xml_reader;

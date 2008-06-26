@@ -6,12 +6,13 @@
 // INCLUDES
 #include <sys/types.h>
 #include "atItem.h++"
+#include "atOSDefs.h"
 #include "atString.h++"
 #include "atVector.h++"
 #include "atQuat.h++"
 
 
-class atJoint : public atItem
+class ATLAS_SYM atJoint : public atItem
 {
    protected:
       atString   joint_name;

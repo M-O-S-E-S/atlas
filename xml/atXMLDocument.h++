@@ -6,6 +6,7 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include "atItem.h++"
+#include "atOSDefs.h"
 #include "atString.h++"
 
 
@@ -17,7 +18,7 @@ typedef xmlDocPtr    atXMLDocumentDocPtr;
 typedef xmlNodePtr   atXMLDocumentNodePtr;
 
 
-class atXMLDocument : public atItem
+class ATLAS_SYM atXMLDocument : public atItem
 {
    protected:
       xmlDocPtr    xml_doc;

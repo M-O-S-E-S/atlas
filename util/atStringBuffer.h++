@@ -8,10 +8,11 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include "atItem.h++"
+#include "atOSDefs.h"
 #include "atString.h++"
 
 
-class atStringBuffer : public atItem
+class ATLAS_SYM atStringBuffer : public atItem
 {
    protected:
       char *   local_buffer;

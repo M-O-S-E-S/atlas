@@ -8,9 +8,10 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
-class atString : public atItem
+class ATLAS_SYM atString : public atItem
 {
    protected:
       char *   local_string;

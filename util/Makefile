@@ -14,6 +14,7 @@ LIB_OBJS = atConfigFile.o atBufferHandler.o atString.o atStringBuffer.o \
 
 FOUNDATION_DIR = ../foundation
 MATH_DIR = ../math
+OS_DIR = ../os
 
 
 .SUFFIXES: .c++
@@ -26,7 +27,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR) -I$(MATH_DIR)
+	$(CC) $(CFLAGS) -c -DATLAS_SYM=EXPORT $< -I$(OS_DIR) -I$(FOUNDATION_DIR) -I$(MATH_DIR)
 
 
 clean:
