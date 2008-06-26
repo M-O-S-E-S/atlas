@@ -15,7 +15,7 @@ class atStringBuffer : public atItem
 {
    protected:
       char *   local_buffer;
-      int      buffer_size;
+      u_long   buffer_size;
 
    public:
       atStringBuffer();
@@ -39,8 +39,8 @@ class atStringBuffer : public atItem
       virtual char *           getString();
       virtual atString         getAsString();
 
-      virtual char             getCharAt(int index);
-      virtual int              getLength();
+      virtual char             getCharAt(u_long index);
+      virtual u_long           getLength();
 
       virtual bool             equals(atItem * otherItem);
       virtual int              compare(atItem * otherItem);

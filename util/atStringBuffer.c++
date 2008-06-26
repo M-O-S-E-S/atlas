@@ -7,7 +7,7 @@ atStringBuffer::atStringBuffer()
 {
    // Initialize string buffer to starting size
    buffer_size = 256;
-   local_buffer = (char *) calloc(buffer_size, sizeof(char));
+   local_buffer = (char *) calloc((size_t) buffer_size, sizeof(char));
 
    // Set a default string
    setString("\0");
@@ -18,7 +18,7 @@ atStringBuffer::atStringBuffer(char * stringToCopy)
 {
    // Initialize string to not being allocated
    buffer_size = 256;
-   local_buffer = (char *) calloc(buffer_size, sizeof(char));
+   local_buffer = (char *) calloc((size_t) buffer_size, sizeof(char));
 
    // Copy the string into our string
    setString(stringToCopy); 
@@ -29,7 +29,7 @@ atStringBuffer::atStringBuffer(char * stringToCopy, u_long maxLength)
 {
    // Initialize string to not being allocated
    buffer_size = 256;
-   local_buffer = (char *) calloc(buffer_size, sizeof(char));
+   local_buffer = (char *) calloc((size_t) buffer_size, sizeof(char));
 
    // Copy the string into our string
    setString(stringToCopy, maxLength); 
@@ -69,11 +69,11 @@ atStringBuffer atStringBuffer::concat(const atString & stringToConcat)
 
 void atStringBuffer::append(char * stringToAppend)
 {
-   int      need;
-   int      newBufferSize;
+   u_long   need;
+   u_long   newBufferSize;
 
    // First, make sure we have enough space to append this string
-   need = strlen(local_buffer) + strlen(stringToAppend) + 1;
+   need = (u_long ) (strlen(local_buffer) + strlen(stringToAppend) + 1);
    if (need >= buffer_size)
    {
       // Make more space if we need it
@@ -85,7 +85,7 @@ void atStringBuffer::append(char * stringToAppend)
       }
 
       // Expand the buffer
-      local_buffer = (char *) realloc(local_buffer, newBufferSize);
+      local_buffer = (char *) realloc(local_buffer, (size_t) newBufferSize);
       buffer_size = newBufferSize;
    }
 
@@ -115,11 +115,11 @@ atStringBuffer atStringBuffer::concat(char * stringToConcat)
 
 void atStringBuffer::setString(char * stringToCopy)
 {
-   int      need;
-   int      newBufferSize;
+   u_long   need;
+   u_long   newBufferSize;
 
    // First, make sure we have enough space to append this string
-   need = strlen(stringToCopy) + 1;
+   need = (u_long ) (strlen(stringToCopy) + 1);
    if (need >= buffer_size)
    {
       // Make more space if we need it
@@ -131,7 +131,7 @@ void atStringBuffer::setString(char * stringToCopy)
       }
 
       // Expand the buffer
-      local_buffer = (char *) realloc(local_buffer, newBufferSize);
+      local_buffer = (char *) realloc(local_buffer, (size_t) newBufferSize);
       buffer_size = newBufferSize;
    }
 
@@ -152,12 +152,12 @@ void atStringBuffer::setString(char * stringToCopy)
 
 void atStringBuffer::setString(char * stringToCopy, u_long maxLength)
 {
-   int   need;
-   int   newBufferSize;
+   u_long   need;
+   u_long   newBufferSize;
 
    // Handle the case where there are fewer characters than given
    if (strlen(stringToCopy) < maxLength)
-      need = strlen(stringToCopy);
+      need = (u_long ) strlen(stringToCopy);
    else
       need = maxLength;
 
@@ -173,7 +173,7 @@ void atStringBuffer::setString(char * stringToCopy, u_long maxLength)
       }
 
       // Expand the buffer
-      local_buffer = (char *) realloc(local_buffer, newBufferSize);
+      local_buffer = (char *) realloc(local_buffer, (size_t) newBufferSize);
       buffer_size = newBufferSize;
    }
 
@@ -181,7 +181,7 @@ void atStringBuffer::setString(char * stringToCopy, u_long maxLength)
    if (stringToCopy != NULL)
    {
       // There is so copy the string in
-      strncpy(local_buffer, stringToCopy, need);
+      strncpy(local_buffer, stringToCopy, (size_t ) need);
       local_buffer[need] = '\0';
    }
    else
@@ -214,7 +214,7 @@ atString atStringBuffer::getAsString()
 }
 
 
-char atStringBuffer::getCharAt(int index)
+char atStringBuffer::getCharAt(u_long index)
 {
    // Return the NULL char if the index is out of bounds or if the 
    // string itself is null; otherwise, return the requested character
@@ -226,10 +226,10 @@ char atStringBuffer::getCharAt(int index)
 }
 
 
-int atStringBuffer::getLength()
+u_long atStringBuffer::getLength()
 {
    // Return the length of the string
-   return strlen(local_buffer);
+   return (u_long ) strlen(local_buffer);
 }
 
 

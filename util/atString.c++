@@ -66,7 +66,7 @@ atString atString::clone()
 
 void atString::append(const atString & stringToAppend)
 {
-   int      lengthOfNewString;
+   u_long   lengthOfNewString;
    char *   oldString;
 
    // If we don't have a local string already, just set the string to
@@ -132,7 +132,7 @@ atString atString::concat(const atString & stringToConcat) const
 
 void atString::setString(const char * stringToCopy)
 {
-   int   lengthOfNewString;
+   u_long   lengthOfNewString;
 
    // If we had a string stored already, get rid of it
    if (local_string != NULL)
@@ -172,11 +172,11 @@ void atString::setString(const char * stringToCopy)
 
 void atString::setString(const char * stringToCopy, u_long maxLength)
 {
-   int   lengthOfNewString;
+   u_long   lengthOfNewString;
 
    // Handle the case where there are fewer characters than given
    if (strlen(stringToCopy) < maxLength)
-      lengthOfNewString = strlen(stringToCopy);
+      lengthOfNewString = (u_long ) strlen(stringToCopy);
    else
       lengthOfNewString = maxLength;
 
@@ -191,7 +191,8 @@ void atString::setString(const char * stringToCopy, u_long maxLength)
    if (stringToCopy != NULL)
    {
       // Here we add one to the length to include the \0 character
-      local_string = (char *) calloc((lengthOfNewString + 1), sizeof(char));
+      local_string = (char *) calloc((size_t ) (lengthOfNewString + 1), 
+                                     sizeof(char));
 
       // Make sure we allocated space okay
       if (local_string != NULL)
@@ -235,18 +236,18 @@ const char * atString::getString() const
 }
 
 
-char atString::getCharAt(int index)
+char atString::getCharAt(u_long index)
 {
    // Return the NULL char if the index is out of bounds or if the 
    // string itself is null; otherwise, return the requested character
-   if ( (index >= string_length) || (index < 0) || (local_string == NULL) )
+   if ( (index >= string_length) || (local_string == NULL) )
       return '\0';
    else
       return local_string[index];
 }
 
 
-int atString::getLength()
+u_long atString::getLength()
 {
    // Return the length of the string
    return string_length;

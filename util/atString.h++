@@ -14,7 +14,7 @@ class atString : public atItem
 {
    protected:
       char *   local_string;
-      int      string_length;
+      u_long   string_length;
 
    public:
       atString();
@@ -36,14 +36,15 @@ class atString : public atItem
       virtual const char *   getString() const;
       virtual char *         getString();
 
-      virtual char           getCharAt(int index);
-      virtual int            getLength();
+      virtual char           getCharAt(u_long index);
+      virtual u_long         getLength();
 
       virtual bool           equals(atItem * otherItem);
       virtual int            compare(atItem * otherItem);
 
       virtual void           operator=(atString stringToCopy);
 };
+
 
 #endif
 
