@@ -1,8 +1,4 @@
 
-#ifndef AT_TIME_H
-#define AT_TIME_H
-
-
 // Under Windows, define the gettimeofday() function with corresponding types
 #ifdef _MSC_VER
     #include "atTime.h"
@@ -72,8 +68,5 @@
           tz->tz_dsttime = _daylight;
        }
     }
-#endif
-
-
 #endif
 
