@@ -10,7 +10,7 @@
 
 // Include other files to give OS-independent interfaces
 #include "atSleep.h"
-#include "atStrCaseCmp.h"
+#include "atStr.h"
 #include "atSymbols.h"
 #include "atTime.h"
 
