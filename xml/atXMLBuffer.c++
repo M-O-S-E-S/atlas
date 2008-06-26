@@ -139,7 +139,6 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
    u_char *   endTag;
    int        partialChunkSize;
    int        numWhiteSpace;
-   char       header[255];
 
    // Get the info from this buffer
    packetBuffer->retrieveBuffer(&buffer, &lengthRead);
@@ -206,7 +205,8 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
       {
          // Copy through the ending footer to the internal
          // collected xml buffer
-         partialChunkSize = (endTag - &newBuffer[0]) + strlen(xml_footer);
+         partialChunkSize = (int ) (endTag - &newBuffer[0]) + 
+                            (int ) strlen(xml_footer);
          memcpy(&xml_buffer[xml_buffer_size], newBuffer, partialChunkSize);
          xml_buffer_size += partialChunkSize;
 
@@ -216,7 +216,7 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
          lengthRead -= partialChunkSize;
 
          // Eliminate any leading white space lines left in the buffer
-         numWhiteSpace = strspn((const char *) newBuffer, " \r\n\t");
+         numWhiteSpace = (int ) strspn((const char *) newBuffer, " \r\n\t");
          if ( (numWhiteSpace > 0) && (numWhiteSpace <= lengthRead) )
          {
             // Move up the remaining part of the buffer (+1 for the NULL
