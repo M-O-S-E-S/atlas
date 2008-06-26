@@ -9,9 +9,10 @@
 #include <sys/types.h>
 #include "atNotifier.h++"
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
-class atArray : public atNotifier
+class ATLAS_SYM atArray : public atNotifier
 {
    protected:
       atItem **       array_items;

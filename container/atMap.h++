@@ -6,6 +6,7 @@
 #include "atList.h++"
 #include "atItem.h++"
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 
 enum atMapColor
 {
@@ -31,7 +32,7 @@ struct atMapNode
     atItem *      nodeValue;
 };
 
-class atMap : public atNotifier
+class ATLAS_SYM atMap : public atNotifier
 {
 private:
 

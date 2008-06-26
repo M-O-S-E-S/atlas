@@ -15,6 +15,7 @@ LIB_OBJS = atArray.o \
 
 
 FOUNDATION_DIR = ../foundation
+OS_DIR = ../os
 UTIL_DIR = ../util
 
 
@@ -28,7 +29,7 @@ $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
 .c++.o:
-	$(CC) $(CFLAGS) -c $< -I$(FOUNDATION_DIR) -I$(UTIL_DIR)
+	$(CC) $(CFLAGS) -c -DATLAS_SYM=EXPORT $< -I$(OS_DIR) -I$(FOUNDATION_DIR) -I$(UTIL_DIR)
 
 
 clean:

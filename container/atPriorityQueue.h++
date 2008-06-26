@@ -5,6 +5,7 @@
 
 #include "atNotifier.h++"
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
 #define AT_PRIORITY_QUEUE_DEFAULT_CAPACITY   15
@@ -16,7 +17,7 @@ typedef struct atPriorityQueueEntry
 };
 
 
-class atPriorityQueue : public atNotifier
+class ATLAS_SYM atPriorityQueue : public atNotifier
 {
    protected:
       atPriorityQueueEntry *   heap_array;

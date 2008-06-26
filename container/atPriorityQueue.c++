@@ -45,8 +45,6 @@ bool atPriorityQueue::addEntry(atItem * item)
 {
    int                      newCapacity;
    atPriorityQueueEntry *   newHeap;
-   atPriorityQueueEntry *   newEntry;
-   int                      bubbleIndex;
 
    // If this new item exceeds the current capacity, more space must be
    // allocated.

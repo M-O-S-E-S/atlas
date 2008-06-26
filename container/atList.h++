@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include "atNotifier.h++"
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
 // TYPES
@@ -20,7 +21,7 @@ typedef struct atEntry
 } atListEntry;
 
 
-class atList : public atNotifier
+class ATLAS_SYM atList : public atNotifier
 {
    protected:
       atListEntry *   list_head;
