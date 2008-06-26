@@ -37,8 +37,8 @@
           // JTS: Casted the ft.dwHighDateTime to be a 64 bit integer
           // instead of 32 this way the 32 bit shift will or the high
           // and low components together properly.
-          atTimeBaseTime = ((__int64)ft.dwHighDateTime << 32) |
-             (ft.dwLowDateTime);
+          atTimeBaseTime = ((__int64 ) ft.dwHighDateTime << 32) |
+                           (ft.dwLowDateTime);
           atTimeBaseTime = (atTimeBaseTime / 10) - DELTA_EPOCH_IN_MICROSECS;
 
           // Initialize the timezone
@@ -56,8 +56,8 @@
        }
 
        // Compute real world time (in microseconds)
-       currentTime = (__int64)(atTimeBaseTime + (nextTime - atTimeStartTime) /
-          1000.0);
+       currentTime = (__int64 ) (atTimeBaseTime + 
+                                 (nextTime - atTimeStartTime) / 1000.0);
 
        // Set the time if asked for
        if (tv != NULL)
