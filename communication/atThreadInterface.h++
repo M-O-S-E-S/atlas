@@ -6,10 +6,11 @@
 // INCLUDES
 #include <sys/types.h>
 #include "atIPCInterface.h++"
+#include "atOSDefs.h"
 #include "atThreadQueue.h++"
 
 
-class atThreadInterface : public atIPCInterface
+class ATLAS_SYM atThreadInterface : public atIPCInterface
 {
    protected:
       atThreadQueue *   read_queue;

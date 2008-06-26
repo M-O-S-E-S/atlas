@@ -67,7 +67,6 @@ int atHLAInterface::read(u_char * buffer, u_long length)
    atNameValuePair *   pair;
    time_t              timestamp;
    u_long              len;
-   atNameValuePair *   timePair;
 
    // Initialize where we are in the buffer building process
    bufferIndex = 0;

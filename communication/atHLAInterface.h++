@@ -7,6 +7,7 @@
 #include "atRTIInterface.h++"
 #include "atList.h++"
 #include "atConfigFile.h++"
+#include "atOSDefs.h"
 
 
 typedef struct
@@ -36,7 +37,7 @@ typedef struct
 } atParameterDefinition;
 
 
-class atHLAInterface : public atIPCInterface
+class ATLAS_SYM atHLAInterface : public atIPCInterface
 {
    protected:
       atRTIInterface *          rti_interface;

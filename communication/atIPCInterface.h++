@@ -6,9 +6,10 @@
 // INCLUDES
 #include <sys/types.h>
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
-class atIPCInterface : public atItem
+class ATLAS_SYM atIPCInterface : public atItem
 {
    public:
       atIPCInterface();

@@ -6,9 +6,10 @@
 // INCLUDES
 #include <sys/types.h>
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 
 
-class atThreadQueue : public atNotifier
+class ATLAS_SYM atThreadQueue : public atNotifier
 {
    protected:
       u_long     memory_increment_size;

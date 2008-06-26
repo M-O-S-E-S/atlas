@@ -5,9 +5,10 @@
 
 // INCLUDES
 #include "atIPCInterface.h++"
+#include "atOSDefs.h"
 
 
-class atSerialInterface : public atIPCInterface
+class ATLAS_SYM atSerialInterface : public atIPCInterface
 {
    public:
       atSerialInterface();

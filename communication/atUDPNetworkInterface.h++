@@ -5,9 +5,10 @@
 
 // INCLUDES
 #include "atNetworkInterface.h++"
+#include "atOSDefs.h"
 
 
-class atUDPNetworkInterface : public atNetworkInterface
+class ATLAS_SYM atUDPNetworkInterface : public atNetworkInterface
 {
    protected:
       bool   ignore_our_own;

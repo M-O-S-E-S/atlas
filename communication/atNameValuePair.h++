@@ -5,9 +5,10 @@
 
 // INCLUDES
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
-class atNameValuePair : public atItem
+class ATLAS_SYM atNameValuePair : public atItem
 {
    protected:
       char     pair_name[255];

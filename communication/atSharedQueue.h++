@@ -6,9 +6,10 @@
 // INCLUDES
 #include <sys/types.h>
 #include "atNotifier.h++"
+#include "atOSDefs.h"
 
 
-class atSharedQueue : public atNotifier
+class ATLAS_SYM atSharedQueue : public atNotifier
 {
    protected:
       key_t      sem_key;

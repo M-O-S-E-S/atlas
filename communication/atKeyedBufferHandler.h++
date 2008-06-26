@@ -5,9 +5,10 @@
 
 #include <sys/types.h>
 #include "atItem.h++"
+#include "atOSDefs.h"
 
 
-class atKeyedBufferHandler : public atItem
+class ATLAS_SYM atKeyedBufferHandler : public atItem
 {
    protected:
       u_long     buffer_type;

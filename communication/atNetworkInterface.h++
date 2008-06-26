@@ -6,9 +6,10 @@
 // INCLUDES
 #include <netinet/in.h>
 #include "atIPCInterface.h++"
+#include "atOSDefs.h"
 
 
-class atNetworkInterface : public atIPCInterface
+class ATLAS_SYM atNetworkInterface : public atIPCInterface
 {
    protected:
       int                  socket_value;

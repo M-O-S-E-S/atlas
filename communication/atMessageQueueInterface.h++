@@ -6,9 +6,10 @@
 // INCLUDES
 #include <sys/types.h>
 #include "atIPCInterface.h++"
+#include "atOSDefs.h"
 
 
-class atMessageQueueInterface : public atIPCInterface
+class ATLAS_SYM atMessageQueueInterface : public atIPCInterface
 {
    protected:
       key_t   msg_key;

@@ -5,6 +5,7 @@
 
 // INCLUDES
 #include "atNetworkInterface.h++"
+#include "atOSDefs.h"
 
 
 // TYPES
@@ -15,7 +16,7 @@ typedef struct
 } ClientAddr;
 
 
-class atTCPNetworkInterface : public atNetworkInterface
+class ATLAS_SYM atTCPNetworkInterface : public atNetworkInterface
 {
    protected:
       int          client_sockets[256];

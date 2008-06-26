@@ -6,6 +6,7 @@
 #include "atNotifier.h++"
 #include "atList.h++"
 #include "atKeyedBufferHandler.h++"
+#include "atOSDefs.h"
 
 #define RTI_USES_STD_FSTREAM
 #include "NullFederateAmbassador13.h"
@@ -52,7 +53,7 @@ typedef struct atObjectInstance
 };
 
 
-class atRTIInterface : public atNotifier
+class ATLAS_SYM atRTIInterface : public atNotifier
 {
    protected:
       static atRTIInterface *          rti_interface_instance;
