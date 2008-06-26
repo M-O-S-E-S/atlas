@@ -18,6 +18,8 @@
        FILETIME   ft;
        DWORD      nextTime;
        __int64    currentTime;
+       int        secondsUTCLocal;
+       int        hoursUTCLocal;
 
        // Check to see if we have run a first time
        if (atTimeStartTime == 0)
@@ -32,7 +34,11 @@
           atTimeStartTime = timeGetTime();
 
           // Compute the base time in microseconds
-          atTimeBaseTime = (ft.dwHighDateTime << 32) | (ft.swLowDateTime);
+          // JTS: Casted the ft.dwHighDateTime to be a 64 bit integer
+          // instead of 32 this way the 32 bit shift will or the high
+          // and low components together properly.
+          atTimeBaseTime = ((__int64)ft.dwHighDateTime << 32) |
+             (ft.dwLowDateTime);
           atTimeBaseTime = (atTimeBaseTime / 10) - DELTA_EPOCH_IN_MICROSECS;
 
           // Initialize the timezone
@@ -50,7 +56,8 @@
        }
 
        // Compute real world time (in microseconds)
-       currentTime = atTimeBaseTime + (nextTime - atTimeStartTime) / 1000.0;
+       currentTime = (__int64)(atTimeBaseTime + (nextTime - atTimeStartTime) /
+          1000.0);
 
        // Set the time if asked for
        if (tv != NULL)
@@ -63,10 +70,22 @@
        // Set the timezone if asked for
        if (tz != NULL)
        {
+          // Set the difference of seconds between UTC and local time
+          // to be 28800
+          // Set the difference of hours between UTC and local time to be 1
+          // These are the defaults from msdn
+          secondsUTCLocal = 28800;
+          hoursUTCLocal = 1;
+      
+          // JTS: Replacing the _timezone and _daylight to the non depricated 
+          //      function equivilent
           // Set the timezone struct fields
-          tz->tz_minuteswest = _timezone / 60;
-          tz->tz_dsttime = _daylight;
+          tz->tz_minuteswest = _get_timezone(&secondsUTCLocal) / 60;
+          tz->tz_dsttime = _get_daylight(&hoursUTCLocal);
        }
+
+       // Returning 0 for a success. I never fail!
+       return 0;
     }
 #endif
 
