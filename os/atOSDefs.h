@@ -3,9 +3,16 @@
 #define AT_OS_DEFS_H
 
 
+// Include the window files if this is the windows version.
+#ifdef _MSC_VER
+    #include <windows.h>
+#endif
+
 // Include other files to give OS-independent interfaces
-#include "atSymbols.h"
 #include "atSleep.h"
+#include "atStrCaseCmp.h"
+#include "atSymbols.h"
+#include "atTime.h"
 
 
 #endif
