@@ -1,7 +1,6 @@
 
 // Under Windows, define the gettimeofday() function with corresponding types
 #ifdef _MSC_VER
-#include <windows.h>
     #include "atTime.h"
 
     // CONSTANTS
@@ -35,9 +34,6 @@
           atTimeStartTime = timeGetTime();
 
           // Compute the base time in microseconds
-          // JTS: Casted the ft.dwHighDateTime to be a 64 bit integer
-          // instead of 32 this way the 32 bit shift will or the high
-          // and low components together properly.
           atTimeBaseTime = ((__int64 ) ft.dwHighDateTime << 32) |
                            (ft.dwLowDateTime);
           atTimeBaseTime = (atTimeBaseTime / 10) - DELTA_EPOCH_IN_MICROSECS;
@@ -71,21 +67,17 @@
        // Set the timezone if asked for
        if (tz != NULL)
        {
-          // Get the difference of seconds between UTC and local time
-          // Get the difference of hours between UTC and local time
-          // The defaults will be 28800 seconds which is the pacific timezone
-          // and 1 for a one hour offset of daylight savings time
+          // Get the difference of seconds between UTC and local time and
+          // get the difference of hours between UTC and local time
           _get_timezone(&secondsUTCLocal);
           _get_daylight(&hoursUTCLocal);
       
-          // JTS: Replacing the _timezone and _daylight to the answer
-          //      returned from the non depricated function equivilent
           // Set the timezone struct fields
           tz->tz_minuteswest = secondsUTCLocal / 60;
           tz->tz_dsttime = hoursUTCLocal;
        }
 
-       // Returning 0 for a success. I never fail!
+       // Returning 0 for a success (I never fail!)
        return 0;
     }
 #endif
