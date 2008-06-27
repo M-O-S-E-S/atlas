@@ -121,6 +121,8 @@ int atHLAInterface::read(u_char * buffer, u_long length)
 
 int atHLAInterface::write(u_char * buffer, u_long length)
 {
+   // Return that everything was written (for now)
+   return (int ) length;
 }
 
 
