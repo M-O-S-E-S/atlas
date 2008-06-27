@@ -5,7 +5,7 @@
 atRTIInterface * atRTIInterface::rti_interface_instance = NULL;
 
 
-atRTIInterface::atRTIInterface(char *fedExecName, char *fedFilename)
+atRTIInterface::atRTIInterface(char * fedExecName, char * fedFilename)
 {
    bool   joined;
    int    numTries;
@@ -53,7 +53,7 @@ atRTIInterface::atRTIInterface(char *fedExecName, char *fedFilename)
       try
       {
          // My mind to your mind, my thoughts to your thoughts...
-         federate_id = rti_amb.joinFederationExecution("GEMINI",
+         federate_id = rti_amb.joinFederationExecution("IST-ATLAS",
                                                        fedExecName,
                                                        &fed_amb);
 
@@ -272,6 +272,7 @@ void atRTIInterface::publishInteractions(u_long numInteractions,
 
 atInstanceID atRTIInterface::createInstance(atClassID classTypeID)
 {
+   return -1;
 }
 
 

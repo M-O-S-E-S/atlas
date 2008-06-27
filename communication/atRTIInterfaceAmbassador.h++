@@ -5,8 +5,8 @@
 
 #define RTI_USES_STD_FSTREAM
 
-#include "atOSDefs.h"
 #include "NullFederateAmbassador13.h"
+#include "atOSDefs.h"
 
 
 class ATLAS_SYM atRTIInterfaceAmbassador : public rti13::NullFederateAmbassador

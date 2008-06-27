@@ -12,7 +12,6 @@ LIB_OBJS = atIPCInterface.o \
            atNetworkInterface.o \
            atUDPNetworkInterface.o atTCPNetworkInterface.o \
            atSharedMemoryInterface.o atSharedQueue.o \
-           atMessageQueueInterface.o \
            atThreadInterface.o atThreadQueue.o \
            atSerialInterface.o \
            atHLAInterface.o atRTIInterface.o atRTIInterfaceAmbassador.o \

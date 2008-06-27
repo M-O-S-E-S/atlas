@@ -18,6 +18,7 @@ class ATLAS_SYM atUDPNetworkInterface : public atNetworkInterface
                             short port);
       atUDPNetworkInterface(char * writeAddress, short port);
       atUDPNetworkInterface(short port);
+      atUDPNetworkInterface(char * address, short srcPort, short dstPort);
       virtual ~atUDPNetworkInterface();
 
       int   read(u_char * buffer, u_long len);

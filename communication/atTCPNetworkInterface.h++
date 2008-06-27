@@ -19,7 +19,7 @@ typedef struct
 class ATLAS_SYM atTCPNetworkInterface : public atNetworkInterface
 {
    protected:
-      int          client_sockets[256];
+      Socket       client_sockets[256];
       ClientAddr   client_addrs[256];
       int          num_client_sockets;
 
@@ -32,6 +32,12 @@ class ATLAS_SYM atTCPNetworkInterface : public atNetworkInterface
       int          acceptConnection();
       void         enableBlockingOnClient(int clientID);
       void         disableBlockingOnClient(int clientID);
+
+      void         enableDelay();
+      void         disableDelay();
+      void         enableDelayOnClient(int clientID);
+      void         disableDelayOnClient(int clientID);
+
       ClientAddr   getClientInfo(int clientID);
 
       int          makeConnection();
@@ -41,6 +47,7 @@ class ATLAS_SYM atTCPNetworkInterface : public atNetworkInterface
       int          write(u_char * buffer, u_long len);
       int          write(int clientID, u_char * buffer, u_long len);
 };
+
 
 #endif
 

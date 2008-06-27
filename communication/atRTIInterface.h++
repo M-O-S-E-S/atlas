@@ -1,6 +1,6 @@
 
-#ifndef AT_RTI_INTERFACE
-#define AT_RTI_INTERFACE
+#ifndef AT_RTI_INTERFACE_H
+#define AT_RTI_INTERFACE_H
 
 
 #include "atNotifier.h++"
@@ -14,10 +14,10 @@
 #include "atRTIInterfaceAmbassador.h++"
 
 
-#define AT_RTI_MAX_CLASS_HANDLES       100
-#define AT_RTI_MAX_OBJECT_HANDLES      300
-#define AT_RTI_MAX_ATTRIBUTE_HANDLES   300
-#define AT_RTI_MAX_PARAMETER_HANDLES   300
+#define AT_RTI_MAX_CLASS_HANDLES       500
+#define AT_RTI_MAX_OBJECT_HANDLES      1000
+#define AT_RTI_MAX_ATTRIBUTE_HANDLES   1000
+#define AT_RTI_MAX_PARAMETER_HANDLES   1000
 
 #define AT_RTI_MAX_MAP_ENTRIES         AT_RTI_MAX_CLASS_HANDLES * AT_RTI_MAX_PARAMETER_HANDLES
 
@@ -62,7 +62,7 @@ class ATLAS_SYM atRTIInterface : public atNotifier
       atRTIInterfaceAmbassador         fed_amb;
 
       rti13::FederateHandle            federate_id;
-      char                             fed_exec_name[255];
+      char                             fed_exec_name[256];
 
       u_long                           num_class_handles;
       rti13::ObjectClassHandle         class_handles[AT_RTI_MAX_CLASS_HANDLES];
@@ -134,7 +134,6 @@ class ATLAS_SYM atRTIInterface : public atNotifier
       void   tick();
 
       atKeyedBufferHandler *   read();
-
 };
 
 

@@ -1,21 +1,13 @@
 
 // INCLUDES
-#include <unistd.h>
-#include <string.h>
-#include <netdb.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/param.h>
 #include "atUDPNetworkInterface.h++"
 
 
 atUDPNetworkInterface::atUDPNetworkInterface(char * readAddress, 
    char * writeAddress, short port)
 {
-   char               hostname[MAXHOSTNAMELEN];
    struct hostent *   host;
-   int                on;
+   SocketOptionFlag   on;
    u_long             firstOctet;
    struct ip_mreq     mreq;
 
@@ -75,7 +67,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * writeAddress, short port)
 {
    char               hostname[MAXHOSTNAMELEN];
    struct hostent *   host;
-   int                on;
+   SocketOptionFlag   on;
    u_long             firstOctet;
    struct ip_mreq     mreq;
 
@@ -134,7 +126,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * writeAddress, short port)
 
 atUDPNetworkInterface::atUDPNetworkInterface(short port)
 {
-   int   on;
+   SocketOptionFlag   on;
 
    // Open the socket
    if ( (socket_value = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
@@ -162,6 +154,50 @@ atUDPNetworkInterface::atUDPNetworkInterface(short port)
 
    // Ignore our own broadcasted packets by default
    ignore_our_own = true;
+}
+
+
+atUDPNetworkInterface::atUDPNetworkInterface(char * address, short srcPort,
+                                             short dstPort)
+{
+   char               hostname[MAXHOSTNAMELEN];
+   struct hostent *   host;
+
+   // Open the socket
+   if ( (socket_value = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
+      notify(AT_ERROR, "Unable to open socket for communication.\n");
+
+   // Get information about remote host and initialize the write name field
+   host = gethostbyname(address);
+   write_name.sin_family = AF_INET;
+   memcpy(&write_name.sin_addr.s_addr, host->h_addr_list[0], host->h_length);
+   write_name.sin_port = htons(dstPort);
+
+   // check the source port field and see if it's valid (i.e.: positive)
+   if (srcPort > 0)
+   {
+      // Get information about this host and initialize the read name field
+      // (we mark it as reading from any node so that a node can respond
+      // to the broadcast address if desired and we'll still get it)
+      gethostname(hostname, sizeof(hostname));
+      host = gethostbyname(hostname);
+      read_name.sin_family = AF_INET;
+      read_name.sin_addr.s_addr = htonl(INADDR_ANY);
+      read_name.sin_port = htons(srcPort);
+
+      // Bind to the port
+      if (bind(socket_value, (struct sockaddr *) &read_name,
+               sizeof(read_name)) < 0)
+      {
+         notify(AT_ERROR, "Unable to bind to the port.\n");
+      }
+   }
+   else
+   {
+      // In this case, this interface will only be used for outbound traffic
+      // and the system will bind to a random port on the first call to
+      // sendto() (write() in this class)
+   }
 }
 
 
@@ -204,7 +240,7 @@ int atUDPNetworkInterface::read(u_char * buffer, u_long len)
    
             // If we were not blocking, we should just return that nothing 
             // was read (if we were blocking, we just loop around again)
-            if ((fcntl(socket_value, F_GETFL) & FNONBLOCK) != 0)
+            if (blocking_mode == false)
             {
                // Set length to zero and stop looping
                packetLength = 0;

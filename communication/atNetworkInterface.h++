@@ -4,7 +4,6 @@
 
 
 // INCLUDES
-#include <netinet/in.h>
 #include "atIPCInterface.h++"
 #include "atOSDefs.h"
 
@@ -12,7 +11,9 @@
 class ATLAS_SYM atNetworkInterface : public atIPCInterface
 {
    protected:
-      int                  socket_value;
+      Socket               socket_value;
+
+      bool                 blocking_mode;
 
       struct sockaddr_in   read_name;
       socklen_t            read_name_length;

@@ -1,13 +1,5 @@
 
 // INCLUDES
-#include <unistd.h>
-#include <string.h>
-#include <netdb.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/param.h>
 #include <sys/select.h>
 #include "atTCPNetworkInterface.h++"
 
@@ -18,7 +10,7 @@
 
 atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 {
-   int                max;
+   SocketOptionFlag   max;
    char               hostname[MAXHOSTNAMELEN];
    struct hostent *   host;
 
@@ -56,7 +48,7 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 
 atTCPNetworkInterface::atTCPNetworkInterface(short port)
 {
-   int                max;
+   SocketOptionFlag   max;
    char               hostname[MAXHOSTNAMELEN];
    struct hostent *   host;
 
@@ -93,6 +85,12 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
 
 atTCPNetworkInterface::~atTCPNetworkInterface()
 {
+   u_long   i;
+
+   // Close all the client sockets
+   for (i=0; i < num_client_sockets; i++)
+      close(client_sockets[i]);
+
    // Close the socket
    if (socket_value != -1)
       close(socket_value);
@@ -118,11 +116,15 @@ int atTCPNetworkInterface::acceptConnection()
    fd_set               readFds;
    fd_set               writeFds;
    struct timeval       timeout;
-   int                  newSocket;
+   Socket               newSocket;
    struct sockaddr_in   connectingName;
    socklen_t            connectingNameLength;
-   int                  max;
-   char *               address;
+   SocketOptionFlag     max;
+   u_char *             address;
+   u_short              addr0;
+   u_short              addr1;
+   u_short              addr2;
+   u_short              addr3;
 
    // If we are in non-blocking mode, we use select() to see if
    // there is a client connecting; othwew
@@ -134,7 +136,7 @@ int atTCPNetworkInterface::acceptConnection()
    {
       // We did not get a connection in time so determine our action
       // based on whether we're in non-blocking mode or not
-      if ( (fcntl(socket_value, F_GETFL) & FNONBLOCK) != 0 )
+      if (blocking_mode == false)
       {
          // We're in non-blocking mode so just return -1; otherwise, we
          // we fill fall through and just call accept() and block
@@ -153,7 +155,7 @@ int atTCPNetworkInterface::acceptConnection()
    if (newSocket == -1)
    {
       // Output to user if necessary and return
-      if (errno != EWOULDBLOCK) 
+      if (getLastError() != EWOULDBLOCK) 
          notify(AT_ERROR, "Could not accept a connection.\n");
       return -1;
    }
@@ -169,11 +171,16 @@ int atTCPNetworkInterface::acceptConnection()
                      &max, sizeof(max)) < 0)
          perror("setsockopt sndbuf");
 
-      // Store the data for this connection
+      // Store the data for this connection (address handling is a bit
+      // nasty so that it also works in Windows)
       client_sockets[num_client_sockets] = newSocket;
-      address = (char *) &connectingName.sin_addr.s_addr;
-      sprintf(client_addrs[num_client_sockets].address, "%u.%u.%u.%u",
-              address[0], address[1], address[2], address[3]);
+      address = (u_char *) &connectingName.sin_addr.s_addr;
+      addr0 = 0x00ff & address[0];
+      addr1 = 0x00ff & address[1];
+      addr2 = 0x00ff & address[2];
+      addr3 = 0x00ff & address[3];
+      sprintf(client_addrs[num_client_sockets].address, "%hhu.%hhu.%hhu.%hhu",
+              addr0, addr1, addr2, addr3);
       client_addrs[num_client_sockets].port = connectingName.sin_port;
       num_client_sockets++;
       return num_client_sockets - 1;
@@ -183,38 +190,71 @@ int atTCPNetworkInterface::acceptConnection()
 
 void atTCPNetworkInterface::enableBlockingOnClient(int clientID)
 {
-   int   statusFlags;
-
-   // Get the current flags on the socket (return an error if we fail)
-   if ( (statusFlags = fcntl(client_sockets[clientID], F_GETFL)) < 0 )
-      notify(AT_ERROR, "Unable to get status of socket.\n");
-   else
-   {
-      // Now set the flags back while removing the non-blocking bit
-      if (fcntl(client_sockets[clientID], F_SETFL, 
-                statusFlags & (~FNONBLOCK)) < 0)
-      {
-         // Report an error if we fail
-         notify(AT_ERROR, "Unable to disable blocking on socket.\n");
-      }
-   }
+   // Set the client socket to blocking
+   setBlockingFlag(client_sockets[clientID], true);
 }
 
 
 void atTCPNetworkInterface::disableBlockingOnClient(int clientID)
 {
-   int   statusFlags;
+   // Set the client socket to non-blocking
+   setBlockingFlag(client_sockets[clientID], false);
+}
 
-   // Get the current flags on the socket (return an error if we fail)
-   if ( (statusFlags = fcntl(client_sockets[clientID], F_GETFL)) < 0 )
-      notify(AT_ERROR, "Unable to get status of socket.\n");
-   else
-   {
-      // Now set the flags back while adding the non-blocking bit (report any
-      // errors we get if we fail)
-      if (fcntl(client_sockets[clientID], F_SETFL, statusFlags | FNONBLOCK) < 0)
-         notify(AT_ERROR, "Unable to disable blocking on socket.\n");
-   }
+
+void atTCPNetworkInterface::enableDelay()
+{
+   SocketOptionFlag   flag;
+
+   // Set the NO_DELAY flag to false
+   flag = 0;
+
+   // Try to enable TCP delay on the socket
+   if (setsockopt(socket_value, IPPROTO_TCP, TCP_NODELAY,
+                  &flag, sizeof(int)) < 0)
+      notify(AT_ERROR, "Unable to enable TCP delay on socket.\n");
+}
+
+
+void atTCPNetworkInterface::disableDelay()
+{
+   SocketOptionFlag   flag;
+
+   // Set the NO_DELAY flag to true
+   flag = 1;
+
+   // Try to disable TCP delay on the socket
+   if (setsockopt(socket_value, IPPROTO_TCP, TCP_NODELAY,
+                  &flag, sizeof(int)) < 0)
+      notify(AT_ERROR, "Unable to disable TCP delay on socket.\n");
+}
+
+
+void atTCPNetworkInterface::enableDelayOnClient(int clientID)
+{
+   SocketOptionFlag   flag;
+
+   // Set the NO_DELAY flag to false
+   flag = 0;
+
+   // Try to enable TCP delay on the socket
+   if (setsockopt(client_sockets[clientID], IPPROTO_TCP, TCP_NODELAY,
+                  &flag, sizeof(int)) < 0)
+      notify(AT_ERROR, "Unable to enable TCP delay on socket.\n");
+}
+
+
+void atTCPNetworkInterface::disableDelayOnClient(int clientID)
+{
+   SocketOptionFlag   flag;
+
+   // Set the NO_DELAY flag to true
+   flag = 1;
+
+   // Try to disable TCP delay on the socket
+   if (setsockopt(client_sockets[clientID], IPPROTO_TCP, TCP_NODELAY,
+                  &flag, sizeof(int)) < 0)
+      notify(AT_ERROR, "Unable to disable TCP delay on socket.\n");
 }
 
 
@@ -227,7 +267,6 @@ ClientAddr atTCPNetworkInterface::getClientInfo(int clientID)
 
 int atTCPNetworkInterface::makeConnection()
 {
-   int                  statusFlags;
    int                  keepTrying;
    struct sockaddr_in   connectingName;
    fd_set               readFds;
@@ -237,11 +276,7 @@ int atTCPNetworkInterface::makeConnection()
    socklen_t            errorLength;
    int                  max;
 
-   // Get flags on our current socket (so we can put them on new sockets if
-   // needed)
-   if ( (statusFlags = fcntl(socket_value, F_GETFL)) < 0 )
-      notify(AT_ERROR, "Unable to get status of socket.\n");
-
+   // Loop until we stop it
    keepTrying = 1;
    while (keepTrying == 1)
    {
@@ -258,12 +293,12 @@ int atTCPNetworkInterface::makeConnection()
          // If we are not in blocking mode, tell the loop to stop (we give up);
          // Otherwise, tell the user the info that we failed this time and
          // re-open the socket
-         if ( (fcntl(socket_value, F_GETFL) & FNONBLOCK) != 0 )
+         if (blocking_mode == false)
          {
             // We are non-blocking so we could be failing to connect
             // or we could just need more time (EINPROGRESS) so
             // use select() to give it some time and then check again
-            if (errno == EINPROGRESS)
+            if (getLastError() == EINPROGRESS)
             {
                notify(AT_INFO, "Waiting for connection.\n");
                FD_ZERO(&readFds);
@@ -332,8 +367,10 @@ int atTCPNetworkInterface::makeConnection()
                notify(AT_ERROR, "Unable to open socket for communication.\n");
 
             // Put flags from previous socket on this new socket
-            if (fcntl(socket_value, F_SETFL, statusFlags) < 0)
-               notify(AT_ERROR, "Unable to disable blocking on socket.\n");
+            if (blocking_mode == true)
+               enableBlocking();
+            else
+               disableBlocking();
 
             // Set the max buffer size for this new socket (Windows has very
             // low defaults so we fix them across our applications)
@@ -357,8 +394,10 @@ int atTCPNetworkInterface::makeConnection()
          notify(AT_ERROR, "Unable to open socket for communication.\n");
 
       // Put flags from previous socket on this new socket
-      if (fcntl(socket_value, F_SETFL, statusFlags) < 0)
-         notify(AT_ERROR, "Unable to disable blocking on socket.\n");
+      if (blocking_mode == true)
+         enableBlocking();
+      else
+         disableBlocking();
 
       return -1;
    }
@@ -375,7 +414,7 @@ int atTCPNetworkInterface::read(u_char * buffer, u_long len)
 
    // Get a packet
    fromAddressLength = sizeof(fromAddress);
-   packetLength = recvfrom(socket_value, buffer, len, MSG_WAITALL, 
+   packetLength = recvfrom(socket_value, (char *) buffer, len, MSG_WAITALL, 
                            (struct sockaddr *) &fromAddress, 
                            &fromAddressLength);
 
@@ -392,7 +431,8 @@ int atTCPNetworkInterface::read(int clientID, u_char * buffer, u_long len)
 
    // Get a packet
    fromAddressLength = sizeof(fromAddress);
-   packetLength = recvfrom(client_sockets[clientID], buffer, len, MSG_WAITALL,
+   packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
+                           MSG_WAITALL,
                            (struct sockaddr *) &fromAddress, 
                            &fromAddressLength);
 
@@ -406,7 +446,7 @@ int atTCPNetworkInterface::write(u_char * buffer, u_long len)
    int   lengthWritten;
 
    // Write the packet
-   lengthWritten = sendto(socket_value, buffer, len, 0, 
+   lengthWritten = sendto(socket_value, (const char *) buffer, len, 0, 
                           (struct sockaddr *) &write_name, write_name_length);
 
    // Tell user how many bytes we wrote (-1 if error)
@@ -419,7 +459,8 @@ int atTCPNetworkInterface::write(int clientID, u_char * buffer, u_long len)
    int   lengthWritten;
 
    // Write the packet
-   lengthWritten = sendto(client_sockets[clientID], buffer, len, 0,  
+   lengthWritten = sendto(client_sockets[clientID], (const char *) buffer, len,
+                          0,  
                           (struct sockaddr *) &write_name, write_name_length);
 
    // Tell user how many bytes we wrote (-1 if error)

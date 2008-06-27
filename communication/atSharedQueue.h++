@@ -12,12 +12,12 @@
 class ATLAS_SYM atSharedQueue : public atNotifier
 {
    protected:
-      key_t      sem_key;
-      int        sem_id;
-      key_t      control_shm_key;
-      int        control_shm_id;
-      key_t      data_shm_key;
-      int        data_shm_id;
+      SemKey     sem_key;
+      SemID      sem_id;
+      ShmKey     control_shm_key;
+      ShmID      control_shm_id;
+      ShmKey     data_shm_key;
+      ShmID      data_shm_id;
 
       u_long     memory_increment_size;
 
@@ -41,7 +41,7 @@ class ATLAS_SYM atSharedQueue : public atNotifier
 
 
    public:
-      atSharedQueue(key_t controlKey, key_t dataKey, u_long initialSize, 
+      atSharedQueue(ShmKey controlKey, ShmKey dataKey, u_long initialSize, 
                     u_long incrementSize);
       virtual ~atSharedQueue();
 

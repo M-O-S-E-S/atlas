@@ -7,6 +7,13 @@
 
 atNetworkInterface::atNetworkInterface()
 {
+   // Initialize the network library if necessary
+   initNetwork();
+
+   // Initialize blocking mode
+   blocking_mode = false;
+   disableBlocking();
+
    // Clear the name fields
    read_name_length = sizeof(read_name);
    memset(&read_name, 0, read_name_length);
@@ -17,33 +24,23 @@ atNetworkInterface::atNetworkInterface()
 
 atNetworkInterface::~atNetworkInterface()
 {
+   // Clean-up the network library if necessary
+   cleanupNetwork();
 }
 
 
 void atNetworkInterface::enableBlocking()
 {
-   int   statusFlags;
-
-   if ( (statusFlags = fcntl(socket_value, F_GETFL)) < 0 )
-      notify(AT_ERROR, "Unable to get status of socket.\n");
-   else
-   {
-      if (fcntl(socket_value, F_SETFL, statusFlags & (~FNONBLOCK)) < 0)
-         notify(AT_ERROR, "Unable to enable blocking on socket.\n");
-   }
+   // Set the socket to be blocking
+   setBlockingFlag(socket_value, true);
+   blocking_mode = true;
 }
 
 
 void atNetworkInterface::disableBlocking()
 {
-   int   statusFlags;
-
-   if ( (statusFlags = fcntl(socket_value, F_GETFL)) < 0 )
-      notify(AT_ERROR, "Unable to get status of socket.\n");
-   else
-   {
-      if (fcntl(socket_value, F_SETFL, statusFlags | FNONBLOCK) < 0)
-         notify(AT_ERROR, "Unable to disable blocking on socket.\n");
-   }
+   // Set the socket to be non-blocking
+   setBlockingFlag(socket_value, false);
+   blocking_mode = false;
 }
 
