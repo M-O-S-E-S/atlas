@@ -63,7 +63,7 @@
          else
          {
             // Set socket to non-blocking
-            if (fcntl(socket_value, F_SETFL, statusFlags | FNONBLOCK) < 0)
+            if (fcntl(socket, F_SETFL, statusFlags | FNONBLOCK) < 0)
                notify(AT_ERROR, "Unable to disable blocking on socket.\n");
          }
       }
