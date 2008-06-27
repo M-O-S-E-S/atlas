@@ -12,7 +12,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * readAddress,
    struct ip_mreq     mreq;
 
    // Open the socket
-   if ( (socket_value = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
+   if ( (socket_value = openSocket(AF_INET, SOCK_DGRAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
 
    // Get information about the read address and initialize the read name field
@@ -72,7 +72,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * writeAddress, short port)
    struct ip_mreq     mreq;
 
    // Open the socket
-   if ( (socket_value = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
+   if ( (socket_value = openSocket(AF_INET, SOCK_DGRAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
 
    // Get information about this host and initialize the read name field
@@ -129,7 +129,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(short port)
    SocketOptionFlag   on;
 
    // Open the socket
-   if ( (socket_value = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
+   if ( (socket_value = openSocket(AF_INET, SOCK_DGRAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
 
    // Initialize the name fields
@@ -164,7 +164,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * address, short srcPort,
    struct hostent *   host;
 
    // Open the socket
-   if ( (socket_value = socket(AF_INET, SOCK_DGRAM, 0)) < 0 )
+   if ( (socket_value = openSocket(AF_INET, SOCK_DGRAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
 
    // Get information about remote host and initialize the write name field
@@ -204,7 +204,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * address, short srcPort,
 atUDPNetworkInterface::~atUDPNetworkInterface()
 {
    // Close the socket
-   close(socket_value);
+   closeSocket(socket_value);
 }
 
 

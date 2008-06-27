@@ -15,7 +15,7 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
    struct hostent *   host;
 
    // Open the socket
-   if ( (socket_value = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
+   if ( (socket_value = openSocket(AF_INET, SOCK_STREAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
 
    // Set the max buffer size for this new socket (Windows has very
@@ -53,7 +53,7 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
    struct hostent *   host;
 
    // Open the socket
-   if ( (socket_value = socket(AF_INET, SOCK_STREAM, 0)) < 0 )
+   if ( (socket_value = openSocket(AF_INET, SOCK_STREAM, 0)) < 0 )
       notify(AT_ERROR, "Unable to open socket for communication.\n");
 
    // Set the max buffer size for this new socket (Windows has very
@@ -89,11 +89,11 @@ atTCPNetworkInterface::~atTCPNetworkInterface()
 
    // Close all the client sockets
    for (i=0; i < num_client_sockets; i++)
-      close(client_sockets[i]);
+      closeSocket(client_sockets[i]);
 
    // Close the socket
    if (socket_value != -1)
-      close(socket_value);
+      closeSocket(socket_value);
 }
 
 
