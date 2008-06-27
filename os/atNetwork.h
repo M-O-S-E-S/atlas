@@ -39,7 +39,7 @@
 void   initNetwork();
 void   cleanupNetwork();
 
-int    setBlockingFlag(Socket socket, bool block);
+void   setBlockingFlag(Socket socket, bool block);
 bool   getBlockingFlag(Socket socket);
 
 

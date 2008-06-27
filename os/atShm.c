@@ -29,8 +29,7 @@
    void shmRemove(ShmID id)
    {
       // Clear the shared memory
-      if (CloseHandle(id) == FALSE)
-         notify)AT_WARN, "Failed to remove shared memory.\n");
+      CloseHandle(id);
    }
 
 
@@ -50,10 +49,7 @@
    {
       // Unmap the memory
       if (UnmapViewOfFile(mem) == FALSE)
-      {
-         notify(AT_WARN, "Failed to detach from memory.\n");
          return 0;
-      }
       else
          return 1;
    }
@@ -75,12 +71,6 @@
             // Save the fact that we did not create the shared memory
             created = false;
          }
-         else
-         {
-            // Failed big time
-            notify(AT_FATAL_ERROR, 
-                   "Failed to get memory for shared queue info.\n");
-         }
       }
       else
       {
@@ -99,8 +89,7 @@
    void shmRemove(ShmID id)
    {
       // Remove shared memory
-      if (shmctl(id, IPC_RMID, NULL) == -1)
-         notify(AT_WARN, "Failed to remove shared memory.\n");
+      shmctl(id, IPC_RMID, NULL);
    }
 
 
@@ -110,8 +99,6 @@
 
       // Attach the shared memory
       mem = (u_char *) shmat(id, NULL, 0);
-      if ((int ) mem == -1)
-         notify(AT_FATAL_ERROR, "Failed to attach to shared memory.\n");
 
       // Return what we have
       return mem;
@@ -121,11 +108,7 @@
    int shmDetach(u_char * mem)
    {
       // Detach from the shared memory
-      if (shmdt(mem) == -1)
-         notify(AT_WARN, "Failed to detach from shared memory.\n");
+      shmdt(mem);
    }
-#endif
-
-
 #endif
 

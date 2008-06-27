@@ -32,8 +32,7 @@
       else
          blockMode = 0;
 
-      if (ioctlsocket(socket, FIONBIO, &blockMode) == SOCKET_ERROR)
-         notify(AT_ERROR, "Unable to set blocking on socket.\n");
+      ioctlsocket(socket, FIONBIO, &blockMode);
    }
 #else
    void initNetwork()
@@ -48,23 +47,21 @@
 
    void setBlockingFlag(Socket socket, bool block)
    {
+      int statusFlags;
+
       // First, get the current status of the socket
-      if ( (statusFlags = fcntl(socket, F_GETFL)) < 0 )
-         notify(AT_ERROR, "Unable to get status of socket.\n");
-      else
+      if ( !((statusFlags = fcntl(socket, F_GETFL)) < 0) )
       {
          // Set new status as appropriate
          if (block == true)
          {
             // Set socket to blocking
-            if (fcntl(socket, F_SETFL, statusFlags & (~FNONBLOCK)) < 0)
-               notify(AT_ERROR, "Unable to enable blocking on socket.\n");
+            fcntl(socket, F_SETFL, statusFlags & (~FNONBLOCK));
          }
          else
          {
             // Set socket to non-blocking
-            if (fcntl(socket, F_SETFL, statusFlags | FNONBLOCK) < 0)
-               notify(AT_ERROR, "Unable to disable blocking on socket.\n");
+            fcntl(socket, F_SETFL, statusFlags | FNONBLOCK);
          }
       }
    }

@@ -110,16 +110,10 @@
          if (errno == EEXIST)
          {
             // It does exist so get it "non-exclusively" then
-            sem_id = semget(sem_key, 1, 0666 | IPC_CREAT);
+            semID = semget(key, 1, 0666 | IPC_CREAT);
 
             // Save the fact that we did not create the control semaphore
             created = false;
-         }
-         else
-         {
-            // Having serious issues so tell user and bail
-            notify(AT_FATAL_ERROR,
-                   "Failed to get lock mechanism on semaphore.\n");
          }
       }
       else
@@ -155,13 +149,9 @@
       // Try to do the lock and return either success or failure.  If we 
       // failed because of a reason besides that we were interrupted 
       // (by a signal), then // notify that fact to the user as well.
-      if (semop(sem_id, &atShqLockSequence[0], 
+      if (semop(id, &atShqLockSequence[0], 
                 AT_SHQ_NUM_LOCK_SEQUENCE_OPS) == -1)
       {
-         // Warn user if applicable
-         if (errno != EINTR)
-            notify(AT_ERROR, "Failed to lock access on semaphore.\n");
-
          // Return that we failed
          return 0;
       }
@@ -178,13 +168,9 @@
       // Try to do the unlock and return either success or failure.  If we 
       // failed because of a reason besides that we were interrupted 
       // (by a signal), then // notify that fact to the user as well.
-      if (semop(sem_id, &atShqUnlockSequence[0], 
+      if (semop(id, &atShqUnlockSequence[0], 
                 AT_SHQ_NUM_UNLOCK_SEQUENCE_OPS) == -1)
       {
-         // Warn user if applicable
-         if (errno != EINTR)
-            notify(AT_ERROR, "Failed to unlock access on semaphore.\n");
-
          // Return that we failed
          return 0;
       }
@@ -194,8 +180,5 @@
          return 1;
       }
    }
-#endif
-
-
 #endif
 

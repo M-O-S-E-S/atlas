@@ -14,7 +14,7 @@
 
     // Sleep() takes milliseconds, so divide x by 1000 for usleep()
     // if the result of (x/1000) is zero, the thread will still sleep
-    // (give up the processor).
+    // (give up the processor)
     #define usleep(x) Sleep((x) / 1000)
 #endif
 

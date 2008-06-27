@@ -8,6 +8,7 @@
    typedef HANDLE   SemID;
    typedef u_long   SemKey;
 #else
+   #include <errno.h>
    #include <sys/sem.h>
 
    typedef int     SemID;

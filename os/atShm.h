@@ -8,8 +8,10 @@
    typedef HANDLE   ShmID;
    typedef u_long   ShmKey;
 #else
-   #include <sys/sem.h>
+   #include <errno.h>
+   #include <stdlib.h>
    #include <sys/ipc.h>
+   #include <sys/sem.h>
    #include <sys/shm.h>
 
    typedef int     ShmID;
