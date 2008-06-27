@@ -22,6 +22,20 @@
    }
 
 
+   Socket openSocket(int domain, int type, int protocol)
+   {
+      // Create a socket and return it
+      return socket(domain, type, protocol);
+   }
+
+
+   void closeSocket(Socket socket)
+   {
+      // Close the socket
+      closesocket(socket);
+   }
+
+
    void setBlockingFlag(Socket socket, bool block)
    {
       u_long   blockMode;
@@ -42,6 +56,20 @@
 
    void cleanupNetwork()
    {
+   }
+
+
+   Socket openSocket(int domain, int type, int protocol)
+   {
+      // Create a socket and return it
+      return socket(domain, type, protocol);
+   }
+
+
+   void closeSocket(Socket socket)
+   {
+      // Close the socket
+      close(socket);
    }
 
 

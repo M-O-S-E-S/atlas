@@ -16,8 +16,6 @@
     typedef SOCKET   Socket;
     typedef int      socklen_t;
     typedef char     SocketOptionFlag;
-
-    #define close(x)   closesocket((x))
 #else
     #include <unistd.h>
     #include <string.h>
@@ -36,11 +34,14 @@
 #endif
 
 
-void   initNetwork();
-void   cleanupNetwork();
+void     initNetwork();
+void     cleanupNetwork();
 
-void   setBlockingFlag(Socket socket, bool block);
-bool   getBlockingFlag(Socket socket);
+Socket   openSocket(int domain, int type, int protocol);
+void     closeSocket(Socket socket);
+
+void     setBlockingFlag(Socket socket, bool block);
+bool     getBlockingFlag(Socket socket);
 
 
 #endif
