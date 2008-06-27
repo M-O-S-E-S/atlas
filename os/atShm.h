@@ -9,6 +9,8 @@
    typedef u_long   ShmKey;
 #else
    #include <sys/sem.h>
+   #include <sys/ipc.h>
+   #include <sys/shm.h>
 
    typedef int     ShmID;
    typedef key_t   ShmKey;
