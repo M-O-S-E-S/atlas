@@ -2,7 +2,6 @@
 #include "atTimer.h++"
 
 #include <stdio.h>
-#include <sys/time.h>
 
 
 atTimer::atTimer()
