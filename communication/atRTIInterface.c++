@@ -342,7 +342,7 @@ void atRTIInterface::processAmbDiscover(rti13::ObjectHandle obj,
 
 void atRTIInterface::processAmbRemove(rti13::ObjectHandle obj)
 {
-   int                      i;
+   u_long                   i;
    u_long                   c;
    atClassID                classID;
    atKeyedBufferHandler *   buf;
