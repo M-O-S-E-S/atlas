@@ -38,7 +38,9 @@
    {
       u_long   waitResult;
 
-      // Try to do the lock and return either success or failure
+      // Try to do the lock and return either success or failure (return
+      // 1 if we succeeded, -1 if we were interrupted, or 0 for all other
+      // failures)
       waitResult = WaitForSingleObject(id, INFINITE);
       if (waitResult == WAIT_OBJECT_0)
          return 1;
@@ -152,15 +154,15 @@
    {
       // Try to do the lock and return either success or failure.  If we 
       // failed because of a reason besides that we were interrupted 
-      // (by a signal), then // notify that fact to the user as well.
+      // (by a signal), then notify that fact to the user as well.
       if (semop(id, &atShqLockSequence[0], 
                 AT_SHQ_NUM_LOCK_SEQUENCE_OPS) == -1)
       {
          // See if an interrupt occured that caused the failure
          if (errno != EINTR)
          {
-             // This means an interrupt occured.
-             return -1;
+            // Return that we were interrupted
+            return -1;
          }
 
          // Return that we failed
@@ -178,14 +180,14 @@
    {
       // Try to do the unlock and return either success or failure.  If we 
       // failed because of a reason besides that we were interrupted 
-      // (by a signal), then // notify that fact to the user as well.
+      // (by a signal), then notify that fact to the user as well.
       if (semop(id, &atShqUnlockSequence[0], 
                 AT_SHQ_NUM_UNLOCK_SEQUENCE_OPS) == -1)
       {
          // See if an interrupt occured that caused the failure
          if (errno != EINTR)
          {
-            // This means an interrupt occured.
+            // Return that we were interrupted
             return -1;
          }
 

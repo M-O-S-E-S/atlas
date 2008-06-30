@@ -439,8 +439,8 @@ atInteractionID atHLAInterface::lookupRTIInteraction(char * name)
 void atHLAInterface::addPair(atList * list, char * name, char * value)
 {
    // Add a name-value pair to the given list
-   list->addEntry(new atNameValuePair(name, (u_long)strlen(name),
-                                      value, (u_long)strlen(value)));
+   list->addEntry(new atNameValuePair(name, (u_long ) strlen(name),
+                                      value, (u_long ) strlen(value)));
 }
 
 
@@ -448,7 +448,7 @@ void atHLAInterface::addPair(atList * list, char * name,
                              char * value, int valueSize)
 {
    // Add a name-value pair to the given list
-   list->addEntry(new atNameValuePair(name, (u_long)strlen(name),
+   list->addEntry(new atNameValuePair(name, (u_long ) strlen(name),
                                       value, valueSize));
 }
 

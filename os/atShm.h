@@ -10,7 +10,7 @@
    typedef HANDLE   ShmID;
    typedef u_long   ShmKey;
 
-   #define INVALID_SHM_ID INVALID_HANDLE_VALUE
+   #define INVALID_SHM_ID   INVALID_HANDLE_VALUE
 #else
    #include <errno.h>
    #include <stdlib.h>
@@ -21,8 +21,9 @@
    typedef int     ShmID;
    typedef key_t   ShmKey;
 
-   #define INVALID_SHM_ID -1
+   #define INVALID_SHM_ID   -1
 #endif
+
 
 extern "C"
 {
