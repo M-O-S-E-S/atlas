@@ -85,7 +85,7 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
 
 atTCPNetworkInterface::~atTCPNetworkInterface()
 {
-   int   i;
+   u_long   i;
 
    // Close all the client sockets
    for (i=0; i < num_client_sockets; i++)
@@ -322,8 +322,8 @@ int atTCPNetworkInterface::makeConnection()
                   // so check the socket to make sure all is okay before
                   // declaring success
                   errorLength = sizeof(errorCode);
-                  getsockopt(socket_value, SOL_SOCKET, SO_ERROR, (char *)&errorCode, 
-                             &errorLength);
+                  getsockopt(socket_value, SOL_SOCKET, SO_ERROR, 
+                             (char * ) &errorCode, &errorLength);
 
                   // Check the socket error status
                   if (errorCode == 0)

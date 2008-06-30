@@ -1,5 +1,4 @@
 
-#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -139,22 +138,30 @@ int atSharedQueue::lock()
 {
    int   result;
 
-   // Try to do the lock and return either success or failure.  If we failed
+   // Try to do the lock and return either success or failure (if we failed
    // because of a reason besides that we were interrupted (by a signal), then
-   // notify that fact to the user as well.
+   // notify that fact to the user as well)
    result = semLock(sem_id);
    
+   // Process the result accordingly
    if (result == -1)
    {
-      // This means an interrupt occured
+      // This means an interrupt occurred
       notify(AT_ERROR, "Failed to lock access to shared queue.\n");
 
+      // Return failure
       return 0;
    }
    else if (result == 0)
+   {
+      // Return failure
       return 0;
+   }
    else
+   {
+      // Return success
       return 1;
+   }
 }
 
 
@@ -162,22 +169,30 @@ int atSharedQueue::unlock()
 {
    int   result;
 
-   // Try to do the unlock and return either success or failure.  If we failed
+   // Try to do the unlock and return either success or failure (if we failed
    // because of a reason besides that we were interrupted (by a signal), then
-   // notify that fact to the user as well.
+   // notify that fact to the user as well)
    result = semUnlock(sem_id);
    
+   // Process the result accordingly
    if (result == -1)
    {
       // This means that an interrupt occured
       notify(AT_ERROR, "Failed to unlock access to shared queue.\n");
 
+      // Return failure
       return 0;
    }
    else if (result == 0)
+   {
+      // Return failure
       return 0;
+   }
    else
+   {
+      // Return success
       return 1;
+   }
 }
 
 

@@ -54,7 +54,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * readAddress,
       memcpy(&mreq.imr_multiaddr.s_addr, host->h_addr_list[0], host->h_length);
       mreq.imr_interface.s_addr = htonl(INADDR_ANY);
       if (setsockopt(socket_value, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-                     (const char *)&mreq, sizeof(mreq)) < 0)
+                     (char * ) &mreq, sizeof(mreq)) < 0)
          notify(AT_WARN, "Unable to join multicast group on socket.\n");
    }
 
@@ -115,7 +115,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * writeAddress, short port)
       memcpy(&mreq.imr_multiaddr.s_addr, host->h_addr_list[0], host->h_length);
       mreq.imr_interface.s_addr = htonl(INADDR_ANY);
       if (setsockopt(socket_value, IPPROTO_IP, IP_ADD_MEMBERSHIP,
-                     (const char *)&mreq, sizeof(mreq)) < 0)
+                     (char * ) &mreq, sizeof(mreq)) < 0)
          notify(AT_WARN, "Unable to join multicast group on socket.\n");
    }
 
@@ -223,7 +223,7 @@ int atUDPNetworkInterface::read(u_char * buffer, u_long len)
    {
       // Get a packet
       fromAddressLength = sizeof(fromAddress);
-      packetLength = recvfrom(socket_value, (char *)buffer, len, 0, 
+      packetLength = recvfrom(socket_value, (char * ) buffer, len, 0, 
                               (struct sockaddr *) &fromAddress, 
                               &fromAddressLength);
 
@@ -270,7 +270,7 @@ int atUDPNetworkInterface::write(u_char * buffer, u_long len)
    int   lengthWritten;
 
    // Write the packet
-   lengthWritten = sendto(socket_value, (char *)buffer, len, 0, 
+   lengthWritten = sendto(socket_value, (char * ) buffer, len, 0, 
                           (struct sockaddr *) &write_name, write_name_length);
 
    // Tell user how many bytes we wrote (-1 if error)
