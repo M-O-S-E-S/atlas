@@ -5,6 +5,8 @@
 #ifdef _MSC_VER
    #include <windows.h>
 
+   static char dlErrorMessage[1024] = "No Error";
+
    void * dlOpen(const char * filename, int flag)
    {
       HMODULE   moduleHandle;
@@ -150,5 +152,4 @@
       return dlclose(handle);
    }
 #endif
-
 
