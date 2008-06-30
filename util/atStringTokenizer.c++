@@ -66,7 +66,7 @@ atString * atStringTokenizer::getToken(char delimiters[])
                             minChar - &the_chars[string_index]);
 
       // Move the string index to after this location
-      string_index = minChar - the_chars + 1;
+      string_index = (u_long)(minChar - the_chars + 1);
    }
    else
    {
@@ -77,7 +77,7 @@ atString * atStringTokenizer::getToken(char delimiters[])
          // We had a substring left so we have an implicit delimiter
          // of the NULL character (\0)
          newStr = new atString(&the_chars[string_index]);
-         string_index = strlen(the_chars);
+         string_index = (u_long)strlen(the_chars);
       }
       else
       {
