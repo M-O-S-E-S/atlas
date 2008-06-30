@@ -63,7 +63,7 @@ atString * atStringTokenizer::getToken(char delimiters[])
    {
       // Create a string with this token
       newStr = new atString(&the_chars[string_index],
-                            minChar - &the_chars[string_index]);
+                            (u_long)(minChar - &the_chars[string_index]));
 
       // Move the string index to after this location
       string_index = (u_long)(minChar - the_chars + 1);
