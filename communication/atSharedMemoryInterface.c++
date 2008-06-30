@@ -7,7 +7,7 @@
 #define AT_SHM_INC_QUEUE_SIZE   10000
 
 
-atSharedMemoryInterface::atSharedMemoryInterface(key_t readKey, key_t writeKey)
+atSharedMemoryInterface::atSharedMemoryInterface(ShmKey readKey, ShmKey writeKey)
 {
    // Create a read queue and a write queue for communication messages
    // through shared memory (we create a second key by subtracting it from

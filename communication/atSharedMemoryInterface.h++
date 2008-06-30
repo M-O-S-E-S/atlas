@@ -17,7 +17,7 @@ class ATLAS_SYM atSharedMemoryInterface : public atIPCInterface
       atSharedQueue *   write_queue;
 
    public:
-      atSharedMemoryInterface(key_t readKey, key_t writeKey);
+      atSharedMemoryInterface(ShmKey readKey, ShmKey writeKey);
       virtual ~atSharedMemoryInterface();
 
       int   read(u_char * buffer, u_long length);
