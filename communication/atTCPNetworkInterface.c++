@@ -1,6 +1,6 @@
 
 // INCLUDES
-#include <sys/select.h>
+
 #include "atTCPNetworkInterface.h++"
 
 
@@ -85,7 +85,7 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
 
 atTCPNetworkInterface::~atTCPNetworkInterface()
 {
-   u_long   i;
+   int   i;
 
    // Close all the client sockets
    for (i=0; i < num_client_sockets; i++)
@@ -114,7 +114,6 @@ void atTCPNetworkInterface::allowConnections(int backlog)
 int atTCPNetworkInterface::acceptConnection()
 {
    fd_set               readFds;
-   fd_set               writeFds;
    struct timeval       timeout;
    Socket               newSocket;
    struct sockaddr_in   connectingName;
@@ -313,7 +312,7 @@ int atTCPNetworkInterface::makeConnection()
                   // We didn't connect so close the socket
                   notify(AT_INFO, "Failed to connect to server.  Giving up.\n");
                   keepTrying = 0;
-                  close(socket_value);
+                  closeSocket(socket_value);
                   socket_value = -1;
                }
                else
@@ -323,7 +322,7 @@ int atTCPNetworkInterface::makeConnection()
                   // so check the socket to make sure all is okay before
                   // declaring success
                   errorLength = sizeof(errorCode);
-                  getsockopt(socket_value, SOL_SOCKET, SO_ERROR, &errorCode, 
+                  getsockopt(socket_value, SOL_SOCKET, SO_ERROR, (char *)&errorCode, 
                              &errorLength);
 
                   // Check the socket error status
@@ -340,7 +339,7 @@ int atTCPNetworkInterface::makeConnection()
                      notify(AT_INFO,
                             "Failed to connect to server.  Giving up.\n");
                      keepTrying = 0;
-                     close(socket_value);
+                     closeSocket(socket_value);
                      socket_value = -1;
                   }
                }
@@ -350,14 +349,14 @@ int atTCPNetworkInterface::makeConnection()
                // Just give up
                notify(AT_INFO, "Failed to connect to server.  Giving up.\n");
                keepTrying = 0;
-               close(socket_value);
+               closeSocket(socket_value);
                socket_value = -1;
             }
          }
          else
          {
             // We didn't connect so close the socket
-            close(socket_value);
+            closeSocket(socket_value);
             socket_value = -1;
 
             notify(AT_INFO, "Failed to connect to server.  Trying again.\n");
