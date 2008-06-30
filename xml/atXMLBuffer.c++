@@ -216,7 +216,7 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
          lengthRead -= partialChunkSize;
 
          // Eliminate any leading white space lines left in the buffer
-         numWhiteSpace = (int ) strspn((const char *) newBuffer, " \r\n\t");
+         numWhiteSpace = (u_long ) strspn((const char *) newBuffer, " \r\n\t");
          if ( (numWhiteSpace > 0) && (numWhiteSpace <= lengthRead) )
          {
             // Move up the remaining part of the buffer (+1 for the NULL
