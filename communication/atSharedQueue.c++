@@ -1,4 +1,5 @@
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -26,7 +27,7 @@ atSharedQueue::atSharedQueue(ShmKey controlKey, ShmKey dataKey,
 
    // Get a semaphore to control access to this shared memory buffer
    createdControl = semGet(sem_key, &sem_id);
-   if (sem_id == -1)
+   if (sem_id == INVALID_SEM_ID)
    {
       // Having serious issues so tell user and bail
       notify(AT_FATAL_ERROR, 
@@ -35,7 +36,7 @@ atSharedQueue::atSharedQueue(ShmKey controlKey, ShmKey dataKey,
 
    // Get shared memory for the control info
    shmGet(control_shm_key, queueInfoSize, &control_shm_id);
-   if (control_shm_id == -1)
+   if (control_shm_id == INVALID_SHM_ID)
    {
       // Failed big time
       notify(AT_FATAL_ERROR, "Failed to get memory for shared queue info.\n");
@@ -43,7 +44,7 @@ atSharedQueue::atSharedQueue(ShmKey controlKey, ShmKey dataKey,
 
    // Get shared memory for the data buffer
    shmGet(data_shm_key, initialSize, &data_shm_id);
-   if (data_shm_id == -1)
+   if (data_shm_id == INVALID_SHM_ID)
    {
       // Failed big time
       notify(AT_FATAL_ERROR, "Failed to get memory for shared queue.\n");
@@ -136,16 +137,22 @@ atSharedQueue::~atSharedQueue()
 
 int atSharedQueue::lock()
 {
+   int   result;
+
    // Try to do the lock and return either success or failure.  If we failed
    // because of a reason besides that we were interrupted (by a signal), then
    // notify that fact to the user as well.
-   if (semLock(sem_id) == -1)
+   result = semLock(sem_id);
+   
+   if (result == -1)
    {
-      if (errno != EINTR)
-         notify(AT_ERROR, "Failed to lock access to shared queue.\n");
+      // This means an interrupt occured
+      notify(AT_ERROR, "Failed to lock access to shared queue.\n");
 
       return 0;
    }
+   else if (result == 0)
+      return 0;
    else
       return 1;
 }
@@ -153,16 +160,22 @@ int atSharedQueue::lock()
 
 int atSharedQueue::unlock()
 {
+   int   result;
+
    // Try to do the unlock and return either success or failure.  If we failed
    // because of a reason besides that we were interrupted (by a signal), then
    // notify that fact to the user as well.
-   if (semUnlock(sem_id) == -1)
+   result = semUnlock(sem_id);
+   
+   if (result == -1)
    {
-      if (errno != EINTR)
-         notify(AT_ERROR, "Failed to unlock access to shared queue.\n");
+      // This means that an interrupt occured
+      notify(AT_ERROR, "Failed to unlock access to shared queue.\n");
 
       return 0;
    }
+   else if (result == 0)
+      return 0;
    else
       return 1;
 }
@@ -229,7 +242,7 @@ void atSharedQueue::reallocateQueue(u_long minimumToAdd)
 
       // Get new shared memory buffer
       shmGet(data_shm_key, *queue_size + increment, &data_shm_id);
-      if (data_shm_id == -1)
+      if (data_shm_id == INVALID_SHM_ID)
          notify(AT_FATAL_ERROR, "Failed to get memory for shared queue.\n");
 
       // Attach to the new shared memory
@@ -273,7 +286,7 @@ void atSharedQueue::checkForReallocatedQueue()
 
       // Get new shared memory buffer
       shmGet(data_shm_key, *queue_size, &data_shm_id);
-      if (data_shm_id == -1)
+      if (data_shm_id == INVALID_SHM_ID)
          notify(AT_FATAL_ERROR, "Failed to get memory for shared queue.\n");
 
       // Attach to the new shared memory
