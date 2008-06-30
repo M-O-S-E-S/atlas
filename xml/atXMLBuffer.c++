@@ -138,7 +138,7 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
    atItem *   item;
    u_char *   endTag;
    int        partialChunkSize;
-   int        numWhiteSpace;
+   u_long     numWhiteSpace;
 
    // Get the info from this buffer
    packetBuffer->retrieveBuffer(&buffer, &lengthRead);
