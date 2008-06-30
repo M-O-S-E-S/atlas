@@ -16,6 +16,7 @@
     typedef SOCKET   Socket;
     typedef int      socklen_t;
     typedef char     SocketOptionFlag;
+    typedef int      SocketOptionValue;
 #else
     #include <unistd.h>
     #include <string.h>
@@ -31,6 +32,7 @@
 
     typedef int   Socket;
     typedef int   SocketOptionFlag;
+    typedef int   SocketOptionValue;
 #endif
 
 
