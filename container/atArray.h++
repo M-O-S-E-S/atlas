@@ -29,13 +29,13 @@ class ATLAS_SYM atArray : public atNotifier
       virtual u_long     getNumEntries();
 
       virtual bool       addEntry(atItem * item);
-      virtual atItem *   setEntry(long index, atItem * item);
-      virtual bool       insertEntry(long index, atItem * item);
+      virtual atItem *   setEntry(u_long index, atItem * item);
+      virtual bool       insertEntry(u_long index, atItem * item);
       virtual bool       removeEntry(atItem * item);
-      virtual bool       removeEntryAtIndex(long index);
+      virtual bool       removeEntryAtIndex(u_long index);
       virtual bool       removeAllEntries();
 
-      virtual atItem *   getEntry(long index);
+      virtual atItem *   getEntry(u_long index);
       virtual long       getIndexOf(atItem * item);
 };
 
