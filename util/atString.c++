@@ -78,8 +78,8 @@ void atString::append(const atString & stringToAppend)
    else if (stringToAppend.getString() != NULL)
    {
       // Get the combined length of the current string and the new string
-      lengthOfNewString = (u_long)(strlen(local_string) + 
-         strlen(stringToAppend.getString()));
+      lengthOfNewString = (u_long ) (strlen(local_string) + 
+                                     strlen(stringToAppend.getString()));
 
       // Keep a copy of the old string until we're done
       oldString = local_string;
@@ -145,7 +145,7 @@ void atString::setString(const char * stringToCopy)
    if (stringToCopy != NULL)
    {
       // Get the length of the new string
-      lengthOfNewString = (u_long)strlen(stringToCopy);
+      lengthOfNewString = (u_long ) strlen(stringToCopy);
 
       // Here we add one to the length to include the \0 character
       local_string = (char *) calloc((lengthOfNewString + 1), sizeof(char));
