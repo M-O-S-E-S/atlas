@@ -3,6 +3,8 @@
 
 
 #ifdef _MSC_VER
+   #include <stdio.h>
+
    bool semGet(SemKey key, SemID * id)
    {
       char    semName[256];
@@ -38,8 +40,10 @@
 
       // Try to do the lock and return either success or failure
       waitResult = WaitForSingleObject(id, INFINITE);
-      if (waitResults == WAIT_OBJECT_0)
+      if (waitResult == WAIT_OBJECT_0)
          return 1;
+      else if (waitResult == WAIT_FAILED)
+         return -1;
       else
          return 0;
    }
@@ -152,6 +156,13 @@
       if (semop(id, &atShqLockSequence[0], 
                 AT_SHQ_NUM_LOCK_SEQUENCE_OPS) == -1)
       {
+         // See if an interrupt occured that caused the failure
+         if (errno != EINTR)
+         {
+             // This means an interrupt occured.
+             return -1;
+         }
+
          // Return that we failed
          return 0;
       }
@@ -171,6 +182,13 @@
       if (semop(id, &atShqUnlockSequence[0], 
                 AT_SHQ_NUM_UNLOCK_SEQUENCE_OPS) == -1)
       {
+         // See if an interrupt occured that caused the failure
+         if (errno != EINTR)
+         {
+            // This means an interrupt occured.
+            return -1;
+         }
+
          // Return that we failed
          return 0;
       }
