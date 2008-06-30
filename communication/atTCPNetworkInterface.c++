@@ -10,9 +10,9 @@
 
 atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 {
-   SocketOptionFlag   max;
-   char               hostname[MAXHOSTNAMELEN];
-   struct hostent *   host;
+   SocketOptionValue   max;
+   char                hostname[MAXHOSTNAMELEN];
+   struct hostent *    host;
 
    // Open the socket
    if ( (socket_value = openSocket(AF_INET, SOCK_STREAM, 0)) < 0 )
@@ -22,10 +22,10 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
    // low defaults so we fix them across our applications)
    max = AT_TCP_MAX_PACKET_SIZE;
    if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
-                  &max, sizeof(max)) < 0)
+                  (char *) &max, sizeof(max)) < 0)
       perror("setsockopt sndbuf");
    if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
-                  &max, sizeof(max)) < 0)
+                  (char *) &max, sizeof(max)) < 0)
       perror("setsockopt sndbuf");
 
    // Get information about this host and initialize the read name field
@@ -48,9 +48,9 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 
 atTCPNetworkInterface::atTCPNetworkInterface(short port)
 {
-   SocketOptionFlag   max;
-   char               hostname[MAXHOSTNAMELEN];
-   struct hostent *   host;
+   SocketOptionValue   max;
+   char                hostname[MAXHOSTNAMELEN];
+   struct hostent *    host;
 
    // Open the socket
    if ( (socket_value = openSocket(AF_INET, SOCK_STREAM, 0)) < 0 )
@@ -60,10 +60,10 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
    // low defaults so we fix them across our applications)
    max = AT_TCP_MAX_PACKET_SIZE;
    if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
-                  &max, sizeof(max)) < 0)
+                  (char *) &max, sizeof(max)) < 0)
       perror("setsockopt sndbuf");
    if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
-                  &max, sizeof(max)) < 0)
+                  (char *) &max, sizeof(max)) < 0)
       perror("setsockopt sndbuf");
 
    // Get information about this host and initialize the read name field
@@ -119,7 +119,7 @@ int atTCPNetworkInterface::acceptConnection()
    Socket               newSocket;
    struct sockaddr_in   connectingName;
    socklen_t            connectingNameLength;
-   SocketOptionFlag     max;
+   SocketOptionValue    max;
    u_char *             address;
    u_short              addr0;
    u_short              addr1;
@@ -165,10 +165,10 @@ int atTCPNetworkInterface::acceptConnection()
       // low defaults so we fix them across our applications)
       max = AT_TCP_MAX_PACKET_SIZE;
       if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
-                     &max, sizeof(max)) < 0)
+                     (char *) &max, sizeof(max)) < 0)
          perror("setsockopt sndbuf");
       if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
-                     &max, sizeof(max)) < 0)
+                     (char *) &max, sizeof(max)) < 0)
          perror("setsockopt sndbuf");
 
       // Store the data for this connection (address handling is a bit
@@ -274,7 +274,7 @@ int atTCPNetworkInterface::makeConnection()
    struct timeval       timeout;
    int                  errorCode;
    socklen_t            errorLength;
-   int                  max;
+   SocketOptionValue    max;
 
    // Loop until we stop it
    keepTrying = 1;
@@ -376,10 +376,10 @@ int atTCPNetworkInterface::makeConnection()
             // low defaults so we fix them across our applications)
             max = AT_TCP_MAX_PACKET_SIZE;
             if (setsockopt(socket_value, SOL_SOCKET, SO_SNDBUF, 
-                           &max, sizeof(max)) < 0)
+                           (char *) &max, sizeof(max)) < 0)
                perror("setsockopt sndbuf");
             if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
-                           &max, sizeof(max)) < 0)
+                           (char *) &max, sizeof(max)) < 0)
                perror("setsockopt sndbuf");
          }
       }
