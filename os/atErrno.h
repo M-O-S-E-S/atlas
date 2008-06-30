@@ -3,7 +3,10 @@
 #define AT_ERRNO_H
 
 
-int   getLastError();
+extern "C"
+{
+   int   getLastError();
+}
 
 
 #endif
