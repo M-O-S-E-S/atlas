@@ -69,7 +69,7 @@ bool atArray::addEntry(atItem * item)
 }
 
 
-atItem * atArray::setEntry(u_long index, atItem * item)
+atItem * atArray::setEntry(long index, atItem * item)
 {
    atItem * oldItem;
 
@@ -107,7 +107,7 @@ atItem * atArray::setEntry(u_long index, atItem * item)
 }
 
 
-bool atArray::insertEntry(u_long index, atItem * item)
+bool atArray::insertEntry(long index, atItem * item)
 {
    // See if the given index is within the bounds of the current array
    if ((index >= 0) && (index < num_entries))
@@ -174,7 +174,7 @@ bool atArray::insertEntry(u_long index, atItem * item)
 }
 
 
-bool atArray::removeEntryAtIndex(u_long index)
+bool atArray::removeEntryAtIndex(long index)
 {
    // Make sure the index is valid
    if ((index >= 0) && (index < num_entries))
@@ -244,7 +244,7 @@ bool atArray::removeAllEntries()
 }
 
 
-atItem * atArray::getEntry(u_long index)
+atItem * atArray::getEntry(long index)
 {
    // See if the index is within the current array bounds.  Return the
    // specified item if so, or NULL if not.
@@ -257,7 +257,7 @@ atItem * atArray::getEntry(u_long index)
 
 long atArray::getIndexOf(atItem * item)
 {
-   u_long index;
+   long index;
 
    // Start at the beginning of the array, and scan until we find an
    // item in the array that mataches the given item
