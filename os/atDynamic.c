@@ -116,6 +116,7 @@
    }
 #else
    #include <dlfcn.h>
+   #include <stdio.h>
 
    void * dlOpen(const char * filename, int flag)
    {
@@ -150,6 +151,4 @@
    }
 #endif
 
-
-#endif
 
