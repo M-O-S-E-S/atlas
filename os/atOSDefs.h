@@ -9,6 +9,7 @@
 #endif
 
 // Include other files to give OS-independent interfaces
+#include "atDynamic.h"
 #include "atErrno.h"
 #include "atNetwork.h"
 #include "atSem.h"
