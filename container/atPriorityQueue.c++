@@ -166,8 +166,8 @@ void atPriorityQueue::bubbleUp(int index)
 
 void atPriorityQueue::trickleDown(int index)
 {
-   int        leftChildIndex;
-   int        rightChildIndex;
+   u_long     leftChildIndex;
+   u_long     rightChildIndex;
    bool       leftChildHigher;
    bool       rightChildHigher;
    atItem *   swapItem;
