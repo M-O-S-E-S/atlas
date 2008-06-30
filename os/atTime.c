@@ -1,6 +1,7 @@
 
 // Under Windows, define the gettimeofday() function with corresponding types
 #ifdef _MSC_VER
+    #include <windows.h>
     #include "atTime.h"
 
     // CONSTANTS
@@ -18,7 +19,7 @@
        FILETIME   ft;
        DWORD      nextTime;
        __int64    currentTime;
-       int        secondsUTCLocal;
+       long       secondsUTCLocal;
        int        hoursUTCLocal;
 
        // Check to see if we have run a first time
