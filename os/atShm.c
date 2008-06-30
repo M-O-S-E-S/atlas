@@ -3,6 +3,8 @@
 
 
 #ifdef _MSC_VER
+   #include <stdio.h>
+
    bool shmGet(ShmKey key, u_long memSize, ShmID * id)
    {
       char    shmName[256];
@@ -12,7 +14,7 @@
       sprintf(shmName, "%lld", key);
 
       // Get shared memory (with a FileMapping)
-      shmID = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_REWRITE,
+      shmID = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE,
                                 0, memSize, shmName);
 
       // Set the return shared memory ID
