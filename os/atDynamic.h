@@ -5,8 +5,8 @@
 
 #ifdef _MSC_VER
    #define RTLD_GLOBAL   0
-   #define RTLD_LAZY   0
-   #define RTLD_NOW   0
+   #define RTLD_LAZY     0
+   #define RTLD_NOW     0
 #endif
 
 
