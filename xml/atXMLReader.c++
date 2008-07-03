@@ -10,10 +10,7 @@ atXMLReader::atXMLReader(char * filename)
 
    // Check to make sure it worked okay
    if (xml_reader == NULL)
-{
       notify(AT_WARN, "XML Reader cannot process file (%s).\n", filename);
-abort();
-}
 }
 
 
