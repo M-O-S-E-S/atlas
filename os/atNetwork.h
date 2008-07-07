@@ -11,6 +11,8 @@
     #define EINPROGRESS   WSAEINPROGRESS
     #define MSG_WAITALL   0
 
+    #define MAXHOSTNAMELEN   64
+
     typedef SOCKET   Socket;
     typedef int      socklen_t;
     typedef char     SocketOptionFlag;
@@ -28,13 +30,14 @@
     #include <netinet/in.h>
     #include <netinet/tcp.h>
 
+    #ifndef MAXHOSTNAMELEN
+       #define MAXHOSTNAMELEN   64
+    #endif
+
     typedef int   Socket;
     typedef int   SocketOptionFlag;
     typedef int   SocketOptionValue;
 #endif
-
-
-#define MAXHOSTNAMELEN   64
 
 
 extern "C"
