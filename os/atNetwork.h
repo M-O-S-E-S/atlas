@@ -7,8 +7,6 @@
 #ifdef _MSC_VER
     #include <winsock.h>
 
-    #define MAXHOSTNAMELEN   64
-
     #define EWOULDBLOCK   WSAEWOULDBLOCK
     #define EINPROGRESS   WSAEINPROGRESS
     #define MSG_WAITALL   0
@@ -34,6 +32,9 @@
     typedef int   SocketOptionFlag;
     typedef int   SocketOptionValue;
 #endif
+
+
+#define MAXHOSTNAMELEN   64
 
 
 extern "C"
