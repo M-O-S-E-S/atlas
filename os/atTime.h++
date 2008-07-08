@@ -7,7 +7,7 @@
 #ifdef _MSC_VER
     #include <windows.h>
     #include <time.h>
-    #include "atSymbols.h"
+    #include "atSymbols.h++"
 
 
     // TYPES
@@ -19,7 +19,14 @@
 
 
     // FUNCTIONS
-    ATLAS_SYM int gettimeofday(struct timeval * tv, struct timezone * tz);
+    #ifdef __cplusplus
+       extern "C"
+       {
+          ATLAS_SYM int gettimeofday(struct timeval * tv, struct timezone * tz);
+       }
+    #else
+       ATLAS_SYM int gettimeofday(struct timeval * tv, struct timezone * tz);
+    #endif
 #else
    #include <sys/time.h>
 #endif

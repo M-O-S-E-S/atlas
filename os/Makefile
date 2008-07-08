@@ -1,6 +1,4 @@
 
-#CC = CC
-#CFLAGS = -mips3 -g
 CC = g++
 CFLAGS = -fpic -g
 
@@ -15,7 +13,7 @@ LIB_OBJS = atDynamic.o \
            atShm.o \
            atTime.o \
 
-.SUFFIXES: .c
+.SUFFIXES: .c++
 
 
 all: $(LIB).a
@@ -24,7 +22,7 @@ all: $(LIB).a
 $(LIB).a: $(LIB_OBJS)
 	ar -ruc $@ $?
 
-.c.o:
+.c++.o:
 	$(CC) $(CFLAGS) -c -DATLAS_SYM=EXPORT $<
 
 clean:

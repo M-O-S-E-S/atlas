@@ -2,7 +2,7 @@
 // Under Windows, define the gettimeofday() function with corresponding types
 #ifdef _MSC_VER
     #include <windows.h>
-    #include "atTime.h"
+    #include "atTime.h++"
 
     // CONSTANTS
     #define DELTA_EPOCH_IN_MICROSECS   11644473600000000Ui64

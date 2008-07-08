@@ -1,5 +1,5 @@
 
-#include "atShm.h"
+#include "atShm.h++"
 
 
 #ifdef _MSC_VER

@@ -1,5 +1,5 @@
 
-#include "atDynamic.h"
+#include "atDynamic.h++"
 
 
 #ifdef _MSC_VER

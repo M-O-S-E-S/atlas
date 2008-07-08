@@ -22,13 +22,20 @@
 #endif
 
 
-extern "C"
-{
+#ifdef __cplusplus
+   extern "C"
+   {
+      bool   semGet(SemKey key, SemID * id);
+      void   semRemove(SemID id);
+      int    semLock(SemID id);
+      int    semUnlock(SemID id);
+   }
+#else
    bool   semGet(SemKey key, SemID * id);
    void   semRemove(SemID id);
    int    semLock(SemID id);
    int    semUnlock(SemID id);
-}
+#endif
 
 
 #endif

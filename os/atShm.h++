@@ -25,13 +25,20 @@
 #endif
 
 
-extern "C"
-{
+#ifdef __cplusplus
+   extern "C"
+   {
+      bool       shmGet(ShmKey key, u_long memSize, ShmID * id);
+      void       shmRemove(ShmID id);
+      u_char *   shmAttach(ShmID id);
+      int        shmDetach(u_char * mem);
+   }
+#else
    bool       shmGet(ShmKey key, u_long memSize, ShmID * id);
    void       shmRemove(ShmID id);
    u_char *   shmAttach(ShmID id);
    int        shmDetach(u_char * mem);
-}
+#endif
 
 
 #endif

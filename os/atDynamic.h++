@@ -3,7 +3,7 @@
 #define AT_DYNAMIC_H
 
 
-#include "atSymbols.h"
+#include "atSymbols.h++"
 
 
 #ifdef _MSC_VER
@@ -15,13 +15,20 @@
 #endif
 
 
-extern "C"
-{
+#ifdef __cplusplus
+   extern "C"
+   {
+      ATLAS_SYM void *   dlOpen(const char * filename, int flag);
+      ATLAS_SYM char *   dlError();
+      ATLAS_SYM void *   dlSym(void * handle, const char * symbol);
+      ATLAS_SYM int      dlClose(void * handle);
+   }
+#else
    ATLAS_SYM void *   dlOpen(const char * filename, int flag);
    ATLAS_SYM char *   dlError();
    ATLAS_SYM void *   dlSym(void * handle, const char * symbol);
    ATLAS_SYM int      dlClose(void * handle);
-}
+#endif
 
 
 #endif
