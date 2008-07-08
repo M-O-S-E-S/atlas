@@ -6,7 +6,7 @@
 // INCLUDES
 #include <sys/types.h>
 #include "atIPCInterface.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 #include "atSharedQueue.h++"
 
 

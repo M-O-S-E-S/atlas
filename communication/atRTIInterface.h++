@@ -6,7 +6,7 @@
 #include "atNotifier.h++"
 #include "atList.h++"
 #include "atKeyedBufferHandler.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 #define RTI_USES_STD_FSTREAM
 #include "NullFederateAmbassador13.h"

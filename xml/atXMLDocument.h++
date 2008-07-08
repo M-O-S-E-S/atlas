@@ -6,7 +6,7 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include "atItem.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 #include "atString.h++"
 
 

@@ -6,7 +6,7 @@
 #include "atList.h++"
 #include "atItem.h++"
 #include "atNotifier.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 enum atMapColor
 {

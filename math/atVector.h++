@@ -8,7 +8,7 @@ class atVector;
 
 #include "atGlobals.h++"
 #include "atItem.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 
 class ATLAS_SYM atVector : public atItem

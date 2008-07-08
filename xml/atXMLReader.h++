@@ -5,7 +5,7 @@
 
 #include <libxml/xmlreader.h>
 #include "atNotifier.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 #include "atXMLDocument.h++"
 
 

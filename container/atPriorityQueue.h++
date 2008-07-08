@@ -5,7 +5,7 @@
 
 #include "atNotifier.h++"
 #include "atItem.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 
 #define AT_PRIORITY_QUEUE_DEFAULT_CAPACITY   15

@@ -6,7 +6,7 @@
 // INCLUDES
 #include <stdio.h>
 
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 
 // CONSTANTS

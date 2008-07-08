@@ -5,7 +5,7 @@
 
 // INCLUDES
 #include "atNetworkInterface.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 
 class ATLAS_SYM atUDPNetworkInterface : public atNetworkInterface

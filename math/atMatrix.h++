@@ -8,7 +8,7 @@ class atMatrix;
 
 #include "atGlobals.h++"
 #include "atItem.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 #include "atQuat.h++"
 #include "atVector.h++"
 

@@ -8,7 +8,7 @@
 
 #include "atNotifier.h++"
 #include "atList.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 #include "atXMLDocument.h++"
 #include "atBufferHandler.h++"

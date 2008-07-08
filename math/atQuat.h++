@@ -9,7 +9,7 @@ class atQuat;
 #include "atGlobals.h++"
 #include "atItem.h++"
 #include "atMatrix.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 #include "atVector.h++"
 
 

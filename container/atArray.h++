@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include "atNotifier.h++"
 #include "atItem.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 
 class ATLAS_SYM atArray : public atNotifier

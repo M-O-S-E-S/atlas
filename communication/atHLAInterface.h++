@@ -7,7 +7,7 @@
 #include "atRTIInterface.h++"
 #include "atList.h++"
 #include "atConfigFile.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 
 typedef struct

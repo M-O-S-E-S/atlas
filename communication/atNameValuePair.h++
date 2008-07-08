@@ -5,7 +5,7 @@
 
 // INCLUDES
 #include "atItem.h++"
-#include "atOSDefs.h"
+#include "atOSDefs.h++"
 
 
 class ATLAS_SYM atNameValuePair : public atItem
