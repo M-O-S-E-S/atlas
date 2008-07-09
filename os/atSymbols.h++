@@ -24,7 +24,7 @@
 // will be used by others, and import symbols when making an
 // application that uses the library.
 
-#ifdef WIN32
+#ifdef _WIN32
    #define IMPORT __declspec(dllimport)
    #define EXPORT __declspec(dllexport)
 #else
