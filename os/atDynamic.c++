@@ -121,10 +121,12 @@
 #else
    #include <dlfcn.h>
    #include <stdio.h>
+   #include <string.h>
 
    void * dlOpen(const char * filename, int flag)
    {
-      char   tmp[1024];
+      char *   slash;
+      char     tmp[1024];
 
       // Add the extension, but handle directory names so look for a slash
       slash = strrchr(filename, '/');
