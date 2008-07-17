@@ -126,8 +126,24 @@
    {
       char   tmp[1024];
 
-      // Add the extension
-      sprintf(tmp, "%s.so", filename);
+      // Add the extension, but handle directory names so look for a slash
+      slash = strrchr(filename, '/');
+      if (slash != NULL)
+      {
+         // We found the last slash so copy everything up to that point and
+         // then add the rest (this is not straight-forward because we
+         // have to insert the "lib" between the directory and the
+         // SO filename)
+         strncpy(tmp, filename, slash - filename + 1);
+         strcat(tmp, "lib");
+         strcat(tmp, slash + 1);
+         strcat(tmp, ".so");
+      }
+      else
+      {
+         // No slash so just make a standard filename
+         sprintf(tmp, "lib%s.so", filename);
+      }
 
       // Just call dlopen() and return what it does
       return dlopen(tmp, flag);
