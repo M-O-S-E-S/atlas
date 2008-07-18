@@ -5,7 +5,9 @@
 
 // Under Windows, define stuff that we need
 #ifdef _MSC_VER
+    #define WIN32_LEAN_AND_MEAN
     #include <winsock.h>
+    #undef WIN32_LEAN_AND_MEAN
 
     #define EWOULDBLOCK   WSAEWOULDBLOCK
     #define EINPROGRESS   WSAEINPROGRESS

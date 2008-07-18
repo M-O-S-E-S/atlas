@@ -5,7 +5,9 @@
 
 // Under Windows, define stuff that we need
 #ifdef _MSC_VER
+   #define WIN32_LEAN_AND_MEAN
    #include <windows.h>
+   #include <winsock.h>
 
    typedef HANDLE   ShmID;
    typedef u_long   ShmKey;

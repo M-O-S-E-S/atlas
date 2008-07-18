@@ -6,8 +6,9 @@
 // Under Windows some common string functions are not named the same
 #ifdef _MSC_VER
 
-    // There is no strcasecmp in windows, they have stricmp
-    #define strcasecmp _stricmp
+   // There is no strcasecmp or strncasecmp in windows, they have stricmp and strnicmp
+   #define strcasecmp _stricmp
+   #define strncasecmp _strnicmp
 
 #endif
 
