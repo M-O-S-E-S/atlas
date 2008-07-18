@@ -4,6 +4,7 @@
 
 
 // Include other files to give OS-independent interfaces
+#include "atByteSwap.h++"
 #include "atDynamic.h++"
 #include "atErrno.h++"
 #include "atNetwork.h++"
