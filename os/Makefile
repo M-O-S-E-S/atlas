@@ -9,6 +9,7 @@ LIB_DIR = .
 LIB_OBJS = atByteSwap.o \
            atDynamic.o \
            atErrno.o \
+           atFile.o \
            atNetwork.o \
            atSem.o \
            atShm.o \

@@ -7,6 +7,7 @@
 #include "atByteSwap.h++"
 #include "atDynamic.h++"
 #include "atErrno.h++"
+#include "atFile.h++"
 #include "atNetwork.h++"
 #include "atSem.h++"
 #include "atShm.h++"
