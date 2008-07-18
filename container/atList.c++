@@ -94,7 +94,8 @@ bool atList::insertEntry(atItem * item)
    atListEntry *   newEntry;
 
    // If we don't have a current node but we do have nodes, return a failure
-   if ( (current_entry == NULL) && (list_head == NULL) )
+   // since we do not know where to insert the node
+   if ( (current_entry == NULL) && (list_head != NULL) )
       return false;
    else
    {
@@ -114,7 +115,7 @@ bool atList::insertEntry(atItem * item)
          newEntry->previous = NULL;
       }
                                                                                 
-      // Insert the entry
+      // Insert the entry *before* the current node
       if (list_head == NULL)
       {
          // We are inserting into an empty list
