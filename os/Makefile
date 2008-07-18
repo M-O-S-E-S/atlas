@@ -7,6 +7,7 @@ LIBRARY_NAME = os
 LIB = lib$(LIBRARY_NAME)
 LIB_DIR = .
 LIB_OBJS = atDynamic.o \
+           atByteSwap.o \
            atErrno.o \
            atNetwork.o \
            atSem.o \
