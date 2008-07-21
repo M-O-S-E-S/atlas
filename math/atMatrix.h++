@@ -70,6 +70,7 @@ public:
     void              setQuatRotation(const atQuat &quat);
     void              setTranslation(double dx, double dy, double dz);
     void              getTranslation(double *dx, double *dy, double *dz) const;
+    atVector          getTranslation() const;
     void              setScale(double sx, double sy, double sz);
     void              getScale(double *sx, double *sy, double *sz) const;
 

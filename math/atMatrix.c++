@@ -1023,7 +1023,7 @@ void atMatrix::setTranslation(double dx, double dy, double dz)
 
 // ------------------------------------------------------------------------
 // Gets the translation represented in this matrix. May include the effects
-// of any scale matricies that have been multiplied into this matrix.
+// of any scale matrices that have been multiplied into this matrix.
 // ------------------------------------------------------------------------
 void atMatrix::getTranslation(double *dx, double *dy, double *dz) const
 {
@@ -1036,6 +1036,19 @@ void atMatrix::getTranslation(double *dx, double *dy, double *dz) const
         (*dy) = data[1][3];
     if (dz)
         (*dz) = data[2][3];
+}
+
+// ------------------------------------------------------------------------
+// Gets the translation represented in this matrix as a 3-component
+// atVector. May include the effects of any scale matrices that have been
+// multiplied into this matrix.
+// ------------------------------------------------------------------------
+atVector atMatrix::getTranslation() const
+{
+    // The matrix's translation is stored in the top three elements of the
+    // last column of the matrix. Simply return those three values without
+    // any extra processing.
+    return atVector(data[0][3], data[1][3], data[2][3]);
 }
 
 // ------------------------------------------------------------------------
