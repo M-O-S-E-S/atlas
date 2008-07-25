@@ -139,6 +139,9 @@ bool atList::insertEntry(atItem * item)
          newEntry->next = current_entry;
       }
 
+      // Increment the number of entries since we just added one
+      num_entries++;
+
       // We succeeded
       return true;
    }
