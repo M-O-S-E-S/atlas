@@ -104,9 +104,6 @@ if str(Platform()) == 'win32':
    # Additional flags to disable useless warnings in Windows
    flags += Split('/wd4091 /wd4275 /wd4290')
 
-   # Set-up ATLAS symbols for exporting
-   defines = Split('ATLAS_SYM=EXPORT')
-
    # Disable deprecation warnings for "insecure" and "nonstandard" functions
    # in Windows
    defines += Split('_CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE')
