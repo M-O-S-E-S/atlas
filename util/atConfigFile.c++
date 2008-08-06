@@ -145,7 +145,7 @@ atString * atConfigFile::getToken()
    char         token[4096];
 
    // Get the token
-   lineToken = current_tokenizer->getToken(" \t\n");
+   lineToken = current_tokenizer->getToken(" \t\r\n");
 
    // If the token starts with a quote, we're getting a string
    if ( (lineToken != NULL) && (lineToken->getCharAt(0) == '"') )
@@ -164,7 +164,7 @@ atString * atConfigFile::getToken()
       else
       {
          // Get the next part of string (until terminating quote)
-         lineToken = current_tokenizer->getToken("\"\n");
+         lineToken = current_tokenizer->getToken("\"\r\n");
 
          // Put the two pieces back together
          strcat(token, " ");
