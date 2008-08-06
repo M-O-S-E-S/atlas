@@ -318,27 +318,27 @@ atItem * atList::getLastEntry()
 
 atItem * atList::getNthEntry(u_long n)
 {
-   u_long count;
+   u_long     count;
+   atItem *   item;
 
    // Walk the list until we reach the n'th element
    count = 0;
-   getFirstEntry();
-   while ((count < n) && (current_entry != NULL))
+   item = getFirstEntry();
+   while ((count < n) && (item != NULL))
    {
        // Increment the count
        count++;
 
        // Advance the current entry pointer
-       getNextEntry();
+       item = getNextEntry();
    }
 
-   // If the current_entry is NULL (the index is greater than the number
-   // of elements in the list), return NULL
-   if (current_entry == NULL)
-      return NULL;
+   // If the count reached the target number, return the corresponding item
+   if (count == n)
+      return item;
 
-   // Otherwise, return the item at the given list entry
-   return current_entry->item;
+   // Otherwise return NULL, since we never got to the requested item
+   return NULL;
 }
 
 

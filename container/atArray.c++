@@ -120,7 +120,7 @@ bool atArray::insertEntry(long index, atItem * item)
          // We have room, so we need to shift the elements at the index
          // in question, and all subsequent elements, down one space
          memmove(&array_items[index+1], &array_items[index],
-            sizeof(atItem *) * (num_entries - index + 1));
+            sizeof(atItem *) * (num_entries - index));
 
          // Add the entry and increment the entry count
          array_items[index] = item;
@@ -145,7 +145,7 @@ bool atArray::insertEntry(long index, atItem * item)
          // the new index are also implicitly filled.  We need to make sure
          // these implicit items are set to NULL to avoid any confusion
          memset(&array_items[num_entries], 0, 
-            sizeof(atItem *) * (index - num_entries));
+            sizeof(atItem *) * (index - num_entries + 1));
 
          // Add the entry at the specified index
          array_items[index] = item;
@@ -187,7 +187,7 @@ bool atArray::removeEntryAtIndex(long index)
          // Use a memmove to slide the elements after the given one to the
          // left
          memmove(&array_items[index], &array_items[index+1],
-            sizeof(atItem *) * (num_entries - index));
+            sizeof(atItem *) * (num_entries - index - 1));
       }
 
       // Update the entry count and return true to indicate success
