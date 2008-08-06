@@ -286,7 +286,7 @@ bool atArray::ensureCapacity(u_long capacity)
       // capacity.  Using this policy, figure out the new array size so
       // that it is at least as big as the requested capacity
       newCapacity = current_capacity;
-      while (capacity > newCapacity)
+      while (capacity >= newCapacity)
          newCapacity *= 2;
 
       // Try to resize the array to the new capacity
