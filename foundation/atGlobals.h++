@@ -21,7 +21,7 @@ enum
     AT_ALPHA = 3
 };
 
-#define AT_PI    (3.14159265358979)
+#define AT_PI    (3.14159265358979323846)
 
 #define AT_DEFAULT_TOLERANCE    (1E-12)
 
