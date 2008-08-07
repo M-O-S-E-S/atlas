@@ -57,7 +57,7 @@
 
       // Compute real world time (in microseconds)
       currentTime = (__int64 ) (atTimeBaseTime + 
-                                (nextTime - atTimeStartTime) / 1000.0);
+                                (nextTime - atTimeStartTime) * 1000.0);
 
       // Set the time if asked for
       if (tv != NULL)
