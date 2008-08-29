@@ -62,7 +62,7 @@ mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
 osDir = 'os'
 osSrc = 'atByteSwap.c++ atDynamic.c++ atErrno.c++ atNetwork.c++ \
-         atSem.c++ atShm.c++ atTime.c++'
+         atSem.c++ atShm.c++ atSpawn.c++ atTime.c++'
 
 utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ \
