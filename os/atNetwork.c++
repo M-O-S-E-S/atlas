@@ -38,15 +38,15 @@
 
    void setBlockingFlag(Socket socket, bool block)
    {
-      u_long   blockMode;
+      u_long   nonblockMode;
 
       // Set up a mode field
       if (block == true)
-         blockMode = 1;
+         nonblockMode = 0;
       else
-         blockMode = 0;
+         nonblockMode = 1;
 
-      ioctlsocket(socket, FIONBIO, &blockMode);
+      ioctlsocket(socket, FIONBIO, &nonblockMode);
    }
 #else
    void initNetwork()
