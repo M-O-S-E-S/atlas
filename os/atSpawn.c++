@@ -5,11 +5,13 @@
 #ifdef _MSC_VER
    #define WIN32_LEAN_AND_MEAN
    #include <windows.h>
+   #include <stdio.h>
 
 
    bool spawn(char * execName, char * cmdParameters)
    {
       STARTUPINFO           si;
+      char                  fullCmdLine[1024];
       PROCESS_INFORMATION   pi;
 
       // Initialize the start-up stuff
