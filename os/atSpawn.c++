@@ -44,6 +44,7 @@
 
    bool spawn(char * execName, char * cmdParameters)
    {
+      pid_t                 pid;
       atStringTokenizer *   tokenizer;
       atString*             tokens[1024];
       char *                params[1024];
@@ -53,7 +54,8 @@
 
       // We'll spawn by forking first and then having the child exec the
       // new process
-      if (fork() == 0)
+      pid = fork();
+      if (pid == 0)
       {
          // All the exec() calls in Linux want each parameter separated
          // out so build that up first
@@ -92,6 +94,17 @@
                   delete tokens[i];
             }
          }
+      }
+      else if (pid == -1)
+      {
+         // Failed so return false
+         printf("Failed to spawn application.\n");
+         return false;
+      }
+      else
+      {
+         // Succeeded so return true
+         return true;
       }
    }
 #endif
