@@ -74,7 +74,6 @@ void atXMLBuffer::processXMLDocument()
    {
       // We didn't recognize the XML at all so warn the user and bail out
       notify(AT_WARN, "XML document not parsed successfully.\n");
-      xmlFreeDoc(doc);
       return;
    }
 
