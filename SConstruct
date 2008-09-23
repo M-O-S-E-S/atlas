@@ -7,6 +7,8 @@ if str(Platform()) == 'win32':
    xmlPath = 'L:/libxml2-2.6.27'
    # iconv
    iconvPath = 'L:/iconv-1.9.1'
+   # inttypes.h for MSVC
+   msinttypesPath = 'L:/msinttypes-r21'
 else:
    # HLA RTI
    rtiPath = '/irl/tools/libs/rtis-1.3_D18A'
@@ -32,6 +34,13 @@ def addExternal(basePath, subIncPath, subLibPath, libs):
    extLibPath.extend(libDir)
    extLibs.extend(Split(libs))
    
+# Embeds a Visual Studio-style manifest into the given output target
+# (only under Windows)
+def embedManifest(environment, target, suffix):
+   # The suffix indicates the file type (1=.exe, 2=.dll)
+   environment.AddPostAction(target,
+                             'mt.exe -nologo -manifest ${TARGET}.manifest \
+                             -outputresource:$TARGET;' + str(suffix))
 
 # Create an exportable environment; this will be used as the basis
 # environment for all of the modules we create (though they can add
@@ -98,18 +107,28 @@ if str(Platform()) == 'win32':
    # /Zc:forScope = Use standard C++ scoping rules in for loops
    # /GR          = Enable C++ run-time type information
    # /Gd          = Use __cdecl calling convention
-   # /Zi          = Generate debug information
-   flags = Split('/nologo /MD /O2 /EHsc /W3 /Zc:forScope /GR /Gd /Zi')
+   # /Z7          = Generate debug information
+   compileFlags = Split('/nologo /MD /O2 /EHsc /W3 /Zc:forScope /GR /Gd /Z7')
 
    # Additional flags to disable useless warnings in Windows
-   flags += Split('/wd4091 /wd4275 /wd4290')
+   compileFlags += Split('/wd4091 /wd4275 /wd4290')
 
    # Disable deprecation warnings for "insecure" and "nonstandard" functions
    # in Windows
    defines += Split('_CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE')
+
+   # Flags for the VC++ linker
+   # /DEBUG          = Generate debugging information
+   # /OPT:REF        = Optimize away unreferenced code
+   # /OPT:ICF        = Optimize away redundant function packages
+   # /INCREMENTAL:NO = Do not perform incremental linking
+   linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO')
 else:
    # Flags for gcc (generate debug information and optimize)
-   flags = Split('-g -O')
+   compileFlags = Split('-g -O')
+
+   # No linker flags
+   linkFlags = []
 
 
 # Set the initial paths and libraries
@@ -136,6 +155,9 @@ if str(Platform()) == 'win32':
    # Add iconv
    addExternal(iconvPath, '/include', '/lib', 'iconv')
 
+   # Add msinttypes headers
+   extIncPath.extend(Split(msinttypesPath + '/include'))
+
    # Add the Windows-specific libraries (already in main path)
    extLibs.extend(Split('ws2_32 winmm'))
 else:
@@ -153,13 +175,19 @@ libs.extend(extLibs)
 
 
 # Add the elements to the environment
-basisEnv.Append(CCFLAGS = flags)
+basisEnv.Append(CCFLAGS = compileFlags)
 basisEnv.Append(CPPDEFINES = defines)
 basisEnv.Append(CPPPATH = incPath)
 basisEnv.Append(LIBPATH = libPath)
 basisEnv.Append(LIBS = libs)
+basisEnv.Append(LINKFLAGS = linkFlags)
 
 
 # Now, compile the shared library for ATLAS
-basisEnv.SharedLibrary('atlas', source = atlasSource)
+atlasLib = basisEnv.SharedLibrary('atlas', source = atlasSource)
+
+
+# Under Windows, embed the manifest into the .dll
+if str(Platform()) == 'win32':
+   embedManifest(basisEnv, atlasLib, 2)
 
