@@ -31,6 +31,8 @@ atMap::~atMap()
 // ------------------------------------------------------------------------
 bool atMap::addEntry(atItem * key, atItem * value)
 {
+    bool found;
+
     // Make sure that a node with the given key isn't already in
     // the tree.
     if (containsKey(key))
@@ -50,7 +52,7 @@ bool atMap::addEntry(atItem * key, atItem * value)
     if (treeRoot == NULL)
     {
         // Set the root node, color it black (root nodes are always black),
-	// increment the entry count, and return success.
+        // increment the entry count, and return success.
         treeRoot = newNode;
         treeRoot->color = AT_MAP_BLACK;
         treeSize++;
@@ -60,7 +62,8 @@ bool atMap::addEntry(atItem * key, atItem * value)
     // The tree isn't empty. Do a binary search on the tree to determine
     // the correct location for the new node.
     atMapNode *nodeParent = treeRoot;
-    while (1)
+    found = false;
+    while (!found)
     {
         // Branch left or right based on key comparison
         if (newNode->nodeKey->compare(nodeParent->nodeKey) < 0)
@@ -71,13 +74,13 @@ bool atMap::addEntry(atItem * key, atItem * value)
                 // Place the new node as the left child
                 nodeParent->leftChild = newNode;
                 newNode->parent = nodeParent;
-                break;
+                found = true;
             }
             else
-	    {
-		// Move to the left child and keep searching
+            {
+                // Move to the left child and keep searching
                 nodeParent = nodeParent->leftChild;
-	    }
+            }
         }
         else
         {
@@ -87,13 +90,13 @@ bool atMap::addEntry(atItem * key, atItem * value)
                 // Place the new node as the right child
                 nodeParent->rightChild = newNode;
                 newNode->parent = nodeParent;
-                break;
+                found = true;
             }
             else
-	    {
-		// Move to the right child and keep searching
+            {
+                // Move to the right child and keep searching
                 nodeParent = nodeParent->rightChild;
-	    }
+            }
         }
     }
     
@@ -101,7 +104,7 @@ bool atMap::addEntry(atItem * key, atItem * value)
     rebalanceInsert(newNode);
     treeRoot->color = AT_MAP_BLACK;
 
-    // Increase entry cound by one and return success
+    // Increase entry count by one and return success
     treeSize++;
     return true;
 }
