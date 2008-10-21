@@ -8,9 +8,10 @@
    #define WIN32_LEAN_AND_MEAN
    #include <windows.h>
    #include <winsock.h>
+   #include <inttypes.h>
 
-   typedef HANDLE   SemID;
-   typedef u_long   SemKey;
+   typedef HANDLE     SemID;
+   typedef uint64_t   SemKey;
 
    #define INVALID_SEM_ID   INVALID_HANDLE_VALUE
 #else

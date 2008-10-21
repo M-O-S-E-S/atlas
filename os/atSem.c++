@@ -11,7 +11,7 @@
       SemID   semID;
 
       // Get a name for the semaphore
-      sprintf(semName, "%lld_mutex", key);
+      sprintf(semName, "%llu_mutex", key);
 
       // Create a semaphore (well, in Windows we really use a mutex)
       semID = CreateMutex(NULL, FALSE, semName);

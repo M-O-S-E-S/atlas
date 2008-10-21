@@ -8,9 +8,10 @@
    #define WIN32_LEAN_AND_MEAN
    #include <windows.h>
    #include <winsock.h>
+   #include <inttypes.h>
 
-   typedef HANDLE   ShmID;
-   typedef u_long   ShmKey;
+   typedef HANDLE     ShmID;
+   typedef uint64_t   ShmKey;
 
    #define INVALID_SHM_ID   INVALID_HANDLE_VALUE
 #else
