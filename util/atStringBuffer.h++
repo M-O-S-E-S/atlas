@@ -16,6 +16,7 @@ class ATLAS_SYM atStringBuffer : public atItem
 {
    protected:
       char *   local_buffer;
+      char *   buffer_tail;
       u_long   buffer_size;
 
    public:

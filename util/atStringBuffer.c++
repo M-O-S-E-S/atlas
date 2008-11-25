@@ -8,6 +8,7 @@ atStringBuffer::atStringBuffer()
    // Initialize string buffer to starting size
    buffer_size = 256;
    local_buffer = (char *) calloc((size_t) buffer_size, sizeof(char));
+   buffer_tail = local_buffer;
 
    // Set a default string
    setString("\0");
@@ -19,6 +20,7 @@ atStringBuffer::atStringBuffer(char * stringToCopy)
    // Initialize string to not being allocated
    buffer_size = 256;
    local_buffer = (char *) calloc((size_t) buffer_size, sizeof(char));
+   buffer_tail = local_buffer;
 
    // Copy the string into our string
    setString(stringToCopy); 
@@ -30,6 +32,7 @@ atStringBuffer::atStringBuffer(char * stringToCopy, u_long maxLength)
    // Initialize string to not being allocated
    buffer_size = 256;
    local_buffer = (char *) calloc((size_t) buffer_size, sizeof(char));
+   buffer_tail = local_buffer;
 
    // Copy the string into our string
    setString(stringToCopy, maxLength); 
@@ -42,8 +45,12 @@ atStringBuffer::~atStringBuffer()
    if (local_buffer != NULL)
    {
       free(local_buffer);
-      local_buffer = NULL;
    }
+
+   // Clear the buffer 
+   buffer_size = 0;
+   local_buffer = NULL;
+   buffer_tail = NULL;
 }
 
 
@@ -69,11 +76,19 @@ atStringBuffer atStringBuffer::concat(const atString & stringToConcat)
 
 void atStringBuffer::append(char * stringToAppend)
 {
+   u_long   bufferLength;
+   u_long   appendLength;
    u_long   need;
    u_long   newBufferSize;
+   u_long   offset;
 
-   // First, make sure we have enough space to append this string
-   need = (u_long ) (strlen(local_buffer) + strlen(stringToAppend) + 1);
+   // Get the current length of the buffer as well as the length of the
+   // string to append
+   bufferLength = buffer_tail - local_buffer;
+   appendLength = strlen(stringToAppend);
+
+   // Make sure we have enough space to append this string
+   need = (u_long ) (bufferLength + appendLength + 1);
    if (need >= buffer_size)
    {
       // Make more space if we need it
@@ -86,6 +101,7 @@ void atStringBuffer::append(char * stringToAppend)
 
       // Expand the buffer
       local_buffer = (char *) realloc(local_buffer, (size_t) newBufferSize);
+      buffer_tail = local_buffer + bufferLength;
       buffer_size = newBufferSize;
    }
 
@@ -93,7 +109,10 @@ void atStringBuffer::append(char * stringToAppend)
    if (stringToAppend != NULL)
    {
       // Append the string
-      strcat(local_buffer, stringToAppend);
+      strcpy(buffer_tail, stringToAppend);
+
+      // Update the buffer tail pointer
+      buffer_tail += appendLength;
    }
 }
 
@@ -133,6 +152,7 @@ void atStringBuffer::setString(char * stringToCopy)
       // Expand the buffer
       local_buffer = (char *) realloc(local_buffer, (size_t) newBufferSize);
       buffer_size = newBufferSize;
+      buffer_tail = local_buffer;
    }
 
    // Make sure there is something to copy
@@ -140,12 +160,16 @@ void atStringBuffer::setString(char * stringToCopy)
    {
       // There is so copy the string in
       strcpy(local_buffer, stringToCopy);
+
+      // Update the buffer tail pointer to point to the end of the string
+      buffer_tail = local_buffer + need - 1;
    }
    else
    {
       // We received a NULL string (even though we shouldn't have) so
       // just set an empty string
       local_buffer[0] = '\0';
+      buffer_tail = local_buffer;
    }
 }
 
@@ -175,6 +199,7 @@ void atStringBuffer::setString(char * stringToCopy, u_long maxLength)
       // Expand the buffer
       local_buffer = (char *) realloc(local_buffer, (size_t) newBufferSize);
       buffer_size = newBufferSize;
+      buffer_tail = local_buffer;
    }
 
    // Make sure there is something to copy
@@ -183,12 +208,16 @@ void atStringBuffer::setString(char * stringToCopy, u_long maxLength)
       // There is so copy the string in
       strncpy(local_buffer, stringToCopy, (size_t ) need);
       local_buffer[need] = '\0';
+
+      // Update the buffer tail pointer to point to the end of the string
+      buffer_tail = local_buffer + need;
    }
    else
    {
       // We received a NULL string (even though we shouldn't have) so
       // just set an empty string
       local_buffer[0] = '\0';
+      buffer_tail = local_buffer;
    }
 }
 
@@ -218,7 +247,7 @@ char atStringBuffer::getCharAt(u_long index)
 {
    // Return the NULL char if the index is out of bounds or if the 
    // string itself is null; otherwise, return the requested character
-   if ( (index >= strlen(local_buffer)) || (index < 0) || 
+   if ( (index >= (buffer_tail - local_buffer)) || (index < 0) || 
         (local_buffer == NULL) )
       return '\0';
    else
@@ -229,7 +258,7 @@ char atStringBuffer::getCharAt(u_long index)
 u_long atStringBuffer::getLength()
 {
    // Return the length of the string
-   return (u_long ) strlen(local_buffer);
+   return (u_long ) (buffer_tail - local_buffer);
 }
 
 
