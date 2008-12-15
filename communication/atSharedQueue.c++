@@ -51,12 +51,12 @@ atSharedQueue::atSharedQueue(ShmKey controlKey, ShmKey dataKey,
 
    // Attach to shared memory for the control info
    shared_control_info = shmAttach(control_shm_id);
-   if ((int ) shared_control_info == -1)
+   if ((long ) shared_control_info == -1)
       notify(AT_FATAL_ERROR, "Failed to attach to memory for queue info.\n");
 
    // Attach to shared memory for the data buffer
    shared_buffer = shmAttach(data_shm_id);
-   if ((int ) shared_buffer == -1)
+   if ((long ) shared_buffer == -1)
       notify(AT_FATAL_ERROR, "Failed to attach to memory for shared queue.\n");
 
    // Initialize queue (lock it to make sure we don't initialize it twice)
@@ -262,7 +262,7 @@ void atSharedQueue::reallocateQueue(u_long minimumToAdd)
 
       // Attach to the new shared memory
       shared_buffer = shmAttach(data_shm_id);
-      if ((int ) shared_buffer == -1)
+      if ((long ) shared_buffer == -1)
       {
          notify(AT_FATAL_ERROR, 
                 "Failed to attach to memory for shared queue.\n");
@@ -306,7 +306,7 @@ void atSharedQueue::checkForReallocatedQueue()
 
       // Attach to the new shared memory
       shared_buffer = shmAttach(data_shm_id);
-      if ((int ) shared_buffer == -1)
+      if ((long ) shared_buffer == -1)
       {
          notify(AT_FATAL_ERROR, 
                 "Failed to attach to memory for shared queue.\n");
