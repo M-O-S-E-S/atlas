@@ -132,16 +132,19 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
 
 void atXMLDocument::retrieveXML(u_char ** buffer, u_long * bufferLen)
 {
+   int   len;
+
    // If we previously called this method (xml_text is not NULL), then
    // we need to free it first
    if (xml_text != NULL)
       xmlFree(xml_text);
 
    // Now get the XML tree as text and save it in the internal text buffer
-   xmlDocDumpFormatMemory(xml_doc, &xml_text, (int *) bufferLen, 1);
+   xmlDocDumpFormatMemory(xml_doc, &xml_text, &len, 1);
 
    // Then point the user's pointer to this buffer
    *buffer = (u_char *) xml_text;
+   *bufferLen = (u_long ) len;
 }
 
 
