@@ -9,7 +9,6 @@
    {
       UUID       uuid;
       u_char *   uuidStr;
-      char *     id;
 
       // Create a UUID using Windows RPC services
       UuidCreate(&uuid);
@@ -31,7 +30,6 @@
    {
       uuid_t *   uuid;
       void *     uuidStr;
-      char *     id;
 
       // Get a UUID (Universally Unique Identifier) using the uuid library
       uuid_create(&uuid);

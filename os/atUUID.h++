@@ -9,10 +9,10 @@
 #ifdef __cplusplus
    extern "C"
    {
-      ATLAS_SYM void   getUUID();
+      ATLAS_SYM void   getUUID(char * id);
    }
 #else
-   ATLAS_SYM void   getUUID();
+   ATLAS_SYM void   getUUID(char * id);
 #endif
 
 
