@@ -12,6 +12,8 @@ if str(Platform()) == 'win32':
 else:
    # HLA RTI
    rtiPath = '/irl/tools/libs/rtis-1.3_D18A'
+   # uuid
+   uuidPath = '/irl/tools/libs/uuid-1.5.1'
    # libxml2 (see subpaths below)
    xmlPath = '/usr'
 
@@ -71,7 +73,7 @@ mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
 osDir = 'os'
 osSrc = 'atByteSwap.c++ atDynamic.c++ atErrno.c++ atNetwork.c++ \
-         atSem.c++ atShm.c++ atSpawn.c++ atTime.c++'
+         atSem.c++ atShm.c++ atSpawn.c++ atTime.c++ atUUID.c++'
 
 utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ \
@@ -159,10 +161,13 @@ if str(Platform()) == 'win32':
    extIncPath.extend(Split(msinttypesPath + '/include'))
 
    # Add the Windows-specific libraries (already in main path)
-   extLibs.extend(Split('ws2_32 winmm'))
+   extLibs.extend(Split('ws2_32 winmm rpcrt4'))
 else:
    # Add the RTI
    addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.1', 'rti13')
+
+   # Add the uuid library
+   addExternal(uuidPath, '/include', '/lib', 'uuid')
 
    # Add libxml2
    addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
