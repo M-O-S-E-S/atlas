@@ -16,6 +16,7 @@
 #include "atStr.h++"
 #include "atSymbols.h++"
 #include "atTime.h++"
+#include "atUUID.h++"
 
 
 #endif
