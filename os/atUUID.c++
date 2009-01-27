@@ -28,7 +28,6 @@
       // Return the new UUID string
       return id;
    }
-
 #else
    #include <stdlib.h>
    #include "uuid.h"
@@ -56,6 +55,5 @@
       // Return the exported UUID string
       return id;
    }
-
 #endif
 
