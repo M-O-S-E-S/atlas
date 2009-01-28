@@ -69,6 +69,9 @@ bool atPriorityQueue::addEntry(atItem * item)
       {
          // The original array may have been moved, so use the new pointer.
          heap_array = newHeap;
+         
+         // Set the new max capacity for the heap since allocation was success.
+         max_capacity = newCapacity;
       }
    }
 
