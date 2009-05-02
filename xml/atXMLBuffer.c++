@@ -9,7 +9,8 @@ atXMLBuffer::atXMLBuffer(char * xmlName)
    sprintf(xml_header, "<%s>", xmlName);
    sprintf(xml_footer, "</%s>", xmlName);
 
-   // Initialize the internal XML buffer length
+   // Initialize the internal XML buffer
+   xml_buffer = (u_char *) calloc(MAX_XML_DOCUMENT_SIZE, sizeof(u_char));
    xml_buffer_size = 0;
 
    // Initialize the xml DTD (we aren't using one in this case and also
@@ -28,7 +29,8 @@ atXMLBuffer::atXMLBuffer(char * xmlName, char * dtdFilename)
    sprintf((char *) xml_header, "<%s>", xmlName);
    sprintf((char *) xml_footer, "</%s>", xmlName);
 
-   // Initialize the internal XML buffer length
+   // Initialize the internal XML buffer
+   xml_buffer = (u_char *) calloc(MAX_XML_DOCUMENT_SIZE, sizeof(u_char));
    xml_buffer_size = 0;
 
    // Open and initialize the DTD file (used for validating XML)
@@ -48,6 +50,10 @@ atXMLBuffer::atXMLBuffer(char * xmlName, char * dtdFilename)
 
 atXMLBuffer::~atXMLBuffer()
 {
+   // Free up the buffer
+   if (xml_buffer != NULL)
+      free(xml_buffer);
+
    // Free up the DTD if we created it
    if (xml_dtd != NULL)
       xmlFreeDtd(xml_dtd);
