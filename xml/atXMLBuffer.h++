@@ -16,7 +16,7 @@
 #include "atString.h++"
 
 
-#define MAX_XML_DOCUMENT_SIZE    785432
+#define MAX_XML_DOCUMENT_SIZE    8000000
 #define MAX_XML_TAG_SIZE         256
 
 
