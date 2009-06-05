@@ -295,9 +295,11 @@ int atTCPNetworkInterface::makeConnection()
          if (blocking_mode == false)
          {
             // We are non-blocking so we could be failing to connect
-            // or we could just need more time (EINPROGRESS) so
-            // use select() to give it some time and then check again
-            if (getLastError() == EINPROGRESS)
+            // or we could just need more time (EINPROGRESS on normal systems, 
+            // EWOULDBLOCK on Windows) so use select() to give it some time and
+            // then check again
+            errorCode = getLastError();
+            if ((errorCode == EINPROGRESS) || (errorCode == EWOULDBLOCK))
             {
                notify(AT_INFO, "Waiting for connection.\n");
                FD_ZERO(&readFds);
