@@ -75,6 +75,8 @@ public:
 
     atQuat      getDecomposition(const atVector &targetAxis) const;
 
+    double      getRotationDifference(const atQuat &targetRotation) const;
+
     atVector    rotatePoint(const atVector &targetPoint) const;
 
     atQuat      slerp(const atQuat &destination, double parameter) const;

@@ -937,6 +937,28 @@ atQuat atQuat::getDecomposition(const atVector &targetAxis) const
 }
 
 // ------------------------------------------------------------------------
+// Returns a scalar value that is equivalent to the angle part of the
+// quaternion that would rotate this quaternion to targetRotation.  This
+// assumes that both this quaternion and the targetRotation quaternion are
+// unit quaternions that each represent rotations.
+// ------------------------------------------------------------------------
+double atQuat::getRotationDifference(const atQuat &targetRotation) const
+{
+    atQuat difference;
+    double angle;
+
+    // Get the difference between the two quaternions by multiplying this
+    // quaternion by the conjugate of the target rotation
+    difference = *this * targetRotation.getConjugate();
+
+    // Extract the angle measurement from the w component of the difference
+    // quaternion.
+    angle = AT_RAD2DEG(acos(difference[AT_W]) * 2.0);
+
+    return angle;
+}
+
+// ------------------------------------------------------------------------
 // Transforms the given point by this quaternion as a rotation. Equivalent
 // to changing the quaternion into a rotation matrix and multiplying the
 // point by the resulting matrix. The homogeneous coordinate value w of
