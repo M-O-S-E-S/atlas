@@ -269,25 +269,12 @@ void atMap::clear()
 // ------------------------------------------------------------------------
 void atMap::getSortedList(atList * keyList, atList * valueList)
 {
-    int arrayPos;
-
     // No work to do if the tree is empty
     if (treeSize == 0)
         return;
 
-    // Initialize the array position temporary variable
-    arrayPos = 0;
-    
     // Call a helper function to copy the tree data to the arrays
     fillLists(treeRoot, keyList, valueList);
-    
-    // Error checking
-    if (keyList->getNumEntries() != treeSize)
-    {
-        notify(AT_ERROR, "atMap::getSortedList: Map Inconsistency:\n");
-        notify(AT_ERROR, "   Number of entries in map %d is not equal to "
-            "the map's stated size %d\n", keyList->getNumEntries(), treeSize);
-    }
 }
 
 // ------------------------------------------------------------------------
