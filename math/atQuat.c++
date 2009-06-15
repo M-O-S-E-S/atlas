@@ -949,7 +949,7 @@ double atQuat::getRotationDifference(const atQuat &targetRotation) const
 
     // Get the difference between the two quaternions by multiplying this
     // quaternion by the conjugate of the target rotation
-    difference = *this * targetRotation.getConjugate();
+    difference = (*this) * targetRotation.getConjugate();
 
     // Extract the angle measurement from the w component of the difference
     // quaternion.
