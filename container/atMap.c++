@@ -276,9 +276,10 @@ void atMap::getSortedList(atList * keyList, atList * valueList)
     // Call a helper function to copy the tree data to the arrays
     fillLists(treeRoot, keyList, valueList);
 
-    // Error checking.
+    // Error checking
     if (keyList != NULL)
     {
+        // Make sure the key list makes sense
         if (keyList->getNumEntries() != treeSize)       
         {      
             notify(AT_ERROR, "atMap::getSortedList: Map Inconsistency:\n");   
@@ -289,6 +290,7 @@ void atMap::getSortedList(atList * keyList, atList * valueList)
     }
     else if (valueList != NULL)
     {
+        // Make sure the value list makes sense
         if (valueList->getNumEntries() != treeSize)       
         {      
             notify(AT_ERROR, "atMap::getSortedList: Map Inconsistency:\n");   
