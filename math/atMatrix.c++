@@ -68,18 +68,6 @@ void atMatrix::clear()
 // ------------------------------------------------------------------------
 void atMatrix::setValue(int row, int column, double value)
 {
-    // Bounds checking
-    if ((row < 0) || (row > 3))
-    {
-        printf("atMatrix::setValue: Bad row index\n");
-        return;
-    }
-    if ((column < 0) || (column > 3))
-    {
-        printf("atMatrix::setValue: Bad column index\n");
-        return;
-    }
-    
     // Set the specified value
     data[row][column] = value;
 }
@@ -89,18 +77,6 @@ void atMatrix::setValue(int row, int column, double value)
 // ------------------------------------------------------------------------
 double atMatrix::getValue(int row, int column) const
 {
-    // Bounds checking
-    if ((row < 0) || (row > 3))
-    {
-        printf("atMatrix::getValue: Bad row index\n");
-        return data[0].getValue(0);
-    }
-    if ((column < 0) || (column > 3))
-    {
-        printf("atMatrix::getValue: Bad column index\n");
-        return data[0].getValue(0);
-    }
-    
     // Return the desired value
     return data[row].getValue(column);
 }
@@ -255,11 +231,11 @@ atMatrix atMatrix::getTranspose() const
     int i, j;
     atMatrix result;
     
-    // Create the target matrix by copying the values from this matrix
-    // to the target matrix in a swapped-across-the-diagonal fashion
-    for (i = 0; i < 4; i++)
-        for (j = 0; j < 4; j++)
-            result.data[j][i] = data[i].getValue(j);
+    // Create the target matrix by copying it directly, and then transposing
+    // it (this involves fewer accesses than copying and transposing each
+    // element individually)
+    result = (*this);
+    result.transpose();
 
     // Return the target matrix
     return result;
@@ -457,34 +433,92 @@ atMatrix atMatrix::getInverse() const
 }
 
 // ------------------------------------------------------------------------
+// Inverts this matrix, with the assumpion that the matrix only contains
+// rotations and translations.  "Rigid" refers to rigid-body transforms,
+// which typically only consist of rotations and translations
+// ------------------------------------------------------------------------
+void atMatrix::invertRigid()
+{
+   atMatrix invMat;
+
+   // Get the inverse matrix and set the current matrix to match it
+   invMat = this->getInverseRigid();
+   (*this) = invMat;
+}
+
+// ------------------------------------------------------------------------
+// Returns a matrix that is the inverse of this matrix, with the assumption
+// that the matrix only contains rotations and translations.  "Rigid"
+// refers to rigid-body transforms, which typically only consist of
+// rotations and translations
+// ------------------------------------------------------------------------
+atMatrix atMatrix::getInverseRigid() const
+{
+   atMatrix invMat;
+   double tx, ty, tz;
+
+   // The inverse of the rotation can be done by transposing the upper 3x3
+   // portion of the matrix
+   invMat[0][0] = data[0][0];
+   invMat[0][1] = data[1][0];
+   invMat[0][2] = data[2][0];
+
+   invMat[1][0] = data[0][1];
+   invMat[1][1] = data[1][1];
+   invMat[1][2] = data[2][1];
+
+   invMat[2][0] = data[0][2];
+   invMat[2][1] = data[1][2];
+   invMat[2][2] = data[2][2];
+
+   // Now, invert the translation component by "rotating" it by the inverted
+   // rotation matrix and negating the result
+   tx = data[0][3];
+   ty = data[1][3];
+   tz = data[2][3];
+   invMat[0][3] = -(tx*invMat[0][0] + ty*invMat[0][1] + tz*invMat[0][2]);
+   invMat[1][3] = -(tx*invMat[1][0] + ty*invMat[1][1] + tz*invMat[1][2]);
+   invMat[2][3] = -(tx*invMat[2][0] + ty*invMat[2][1] + tz*invMat[2][2]);
+
+   // Finally, just fill out the last row of the matrix, which is constant
+   // in a rigid transform
+   invMat[3][0] = 0.0;
+   invMat[3][1] = 0.0;
+   invMat[3][2] = 0.0;
+   invMat[3][3] = 1.0;
+
+   return invMat;
+}
+
+// ------------------------------------------------------------------------
 // Multiplies this matrix with the given matrix; the operand matrix is
 // considered to be on the left. The result is stored.
 // ------------------------------------------------------------------------
 void atMatrix::preMultiply(const atMatrix &operand)
 {
-    double result[4][4];
+    double result[4];
     atMatrix thisTranspose = getTranspose();
-    int i, j;
+    int i;
 
     // Do a matrix-multiply operation between this matrix and the operand
     // matrix, with this matrix second; place the results in a temporary
     // matrix instead of this one so that we don't overwrite values that
     // may be needed for later calculations.
     for (i = 0; i < 4; i++)
-        for (j = 0; j < 4; j++)
-        {
-            // Since the second matrix is transposed, each element of the
-            // result can be computed by taking the dot product of the
-            // appropriate rows of each matrix. This should be a lot faster
-            // than accessing each element directly, as it avoids a good deal
-            // of the error checking on the atVector data accessors.
-            result[i][j] =
-                operand.data[i].getDotProduct(thisTranspose.data[j]);
-        }
+    {
+        // Since the second matrix is transposed, each element of the
+        // result can be computed by taking the dot product of the
+        // appropriate rows of each matrix. This should be a lot faster
+        // than accessing each element directly, as it avoids a good deal
+        // of the error checking on the atVector data accessors.
+        result[0] = operand.data[i].getDotProduct(thisTranspose.data[0]);
+        result[1] = operand.data[i].getDotProduct(thisTranspose.data[1]);
+        result[2] = operand.data[i].getDotProduct(thisTranspose.data[2]);
+        result[3] = operand.data[i].getDotProduct(thisTranspose.data[3]);
 
-    // Copy the result from the temporary matrix back to this one
-    for (i = 0; i < 4; i++)
-        data[i].set(result[i][0], result[i][1], result[i][2], result[i][3]);
+        // Copy the results to this matrix
+        data[i].set(result[0], result[1], result[2], result[3]);
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -494,26 +528,28 @@ void atMatrix::preMultiply(const atMatrix &operand)
 atMatrix atMatrix::getPreMultiplied(const atMatrix &operand) const
 {
     atMatrix result;
+    double temp[4];
     atMatrix thisTranspose = getTranspose();
-    int i, j;
+    int i;
 
     // Do a matrix-multiply operation between this matrix and the operand
     // matrix, with this matrix second; place the results in the target
     // matrix.
     for (i = 0; i < 4; i++)
-        for (j = 0; j < 4; j++)
-        {
-            // Since the second matrix is transposed, each element of the
-            // result can be computed by taking the dot product of the
-            // appropriate rows of each matrix. This should be a lot faster
-            // than accessing each element directly, as it avoids a good deal
-            // of the error checking on the atVector data accessors.
-            result.data[i][j] =
-                operand.data[i].getDotProduct(thisTranspose.data[j]);
-        }
+    {
+        // Since the second matrix is transposed, each element of the
+        // result can be computed by taking the dot product of the
+        // appropriate rows of each matrix. This should be a lot faster
+        // than accessing each element directly, as it avoids a good deal
+        // of the error checking on the atVector data accessors.
+        temp[0] = operand.data[i].getDotProduct(thisTranspose.data[0]);
+        temp[1] = operand.data[i].getDotProduct(thisTranspose.data[1]);
+        temp[2] = operand.data[i].getDotProduct(thisTranspose.data[2]);
+        temp[3] = operand.data[i].getDotProduct(thisTranspose.data[3]);
 
-    // Return the target matrix
-    return result;
+        // Copy this row to the result matrix
+        result[i].set(temp[0], temp[1], temp[2], temp[3]);
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -522,28 +558,28 @@ atMatrix atMatrix::getPreMultiplied(const atMatrix &operand) const
 // ------------------------------------------------------------------------
 void atMatrix::postMultiply(const atMatrix &operand)
 {
-    double result[4][4];
+    double result[4];
     atMatrix operandTranspose = operand.getTranspose();
-    int i, j;
+    int i;
 
     // Do a matrix-multiply operation between this matrix and the operand
-    // matrix, with this matrix first; place the results in a temporary
-    // matrix instead of this one so that we don't overwrite values that
-    // may be needed for later calculations.
+    // matrix, with this matrix first
     for (i = 0; i < 4; i++)
-        for (j = 0; j < 4; j++)
-        {
-            // Since the second matrix is transposed, each element of the
-            // result can be computed by taking the dot product of the
-            // appropriate rows of each matrix. This should be a lot faster
-            // than accessing each element directly, as it avoids a good deal
-            // of the error checking on the atVector data accessors.
-            result[i][j] = data[i].getDotProduct(operandTranspose.data[j]);
-        }
+    {
+        // Since the second matrix is transposed, each element of the
+        // result can be computed by taking the dot product of the
+        // appropriate rows of each matrix. This should be a lot faster
+        // than accessing each element directly, as it avoids a good deal
+        // of the error checking on the atVector data accessors.
+        result[0] = data[i].getDotProduct(operandTranspose.data[0]);
+        result[1] = data[i].getDotProduct(operandTranspose.data[1]);
+        result[2] = data[i].getDotProduct(operandTranspose.data[2]);
+        result[3] = data[i].getDotProduct(operandTranspose.data[3]);
 
-    // Copy the result from the temporary matrix back to this one
-    for (i = 0; i < 4; i++)
-        data[i].set(result[i][0], result[i][1], result[i][2], result[i][3]);
+        // We're done with this row of the matrix, so it's safe to just set
+        // the result in place
+        data[i].set(result[0], result[1], result[2], result[3]);
+    }
 }
 
 // ------------------------------------------------------------------------
@@ -553,23 +589,28 @@ void atMatrix::postMultiply(const atMatrix &operand)
 atMatrix atMatrix::getPostMultiplied(const atMatrix &operand) const
 {
     atMatrix result;
+    double temp[4];
     atMatrix operandTranspose = operand.getTranspose();
-    int i, j;
+    int i;
 
     // Do a matrix-multiply operation between this matrix and the operand
-    // matrix, with this matrix first; place the results in the target
+    // matrix, with this matrix first; place the results in the result
     // matrix.
     for (i = 0; i < 4; i++)
-        for (j = 0; j < 4; j++)
-        {
-            // Since the second matrix is transposed, each element of the
-            // result can be computed by taking the dot product of the
-            // appropriate rows of each matrix. This should be a lot faster
-            // than accessing each element directly, as it avoids a good deal
-            // of the error checking on the atVector data accessors.
-            result.data[i][j] =
-                data[i].getDotProduct(operandTranspose.data[j]);
-        }
+    {
+        // Since the second matrix is transposed, each element of the
+        // result can be computed by taking the dot product of the
+        // appropriate rows of each matrix. This should be a lot faster
+        // than accessing each element directly, as it avoids a good deal
+        // of the error checking on the atVector data accessors.
+        temp[0] = data[i].getDotProduct(operandTranspose.data[0]);
+        temp[1] = data[i].getDotProduct(operandTranspose.data[1]);
+        temp[2] = data[i].getDotProduct(operandTranspose.data[2]);
+        temp[3] = data[i].getDotProduct(operandTranspose.data[3]);
+
+        // Copy the results to the result matrix
+        result[i].set(temp[0], temp[1], temp[2], temp[3]);
+    }
 
     // Return the target matrix
     return result;
@@ -693,6 +734,16 @@ void atMatrix::setIdentity()
         data[i][i] = 1.0;
 }
 
+// ------------------------------------------------------------------------
+// Returns whether or not this matrix is an identity matrix
+// ------------------------------------------------------------------------
+bool atMatrix::isIdentity()
+{
+   return ((data[0] == atVector(1.0, 0.0, 0.0, 0.0)) &&
+           (data[1] == atVector(0.0, 1.0, 0.0, 0.0)) &&
+           (data[2] == atVector(0.0, 0.0, 1.0, 0.0)) &&
+           (data[3] == atVector(0.0, 0.0, 0.0, 1.0)));
+}
 
 // ------------------------------------------------------------------------
 // Sets this matrix to a rotation matrix. The rotation is specified as a
@@ -1112,7 +1163,7 @@ atVector &atMatrix::operator[](int index)
         printf("atMatrix::operator[]: Invalid index\n");
         return data[0];
     }
-    
+
     // Return the desired row
     return data[index];
 }
@@ -1130,7 +1181,7 @@ const atVector &atMatrix::operator[](int index) const
         printf("atMatrix::operator[]: Invalid index\n");
         return data[0];
     }
-    
+
     // Return the desired row
     return data[index];
 }
@@ -1178,6 +1229,7 @@ atMatrix atMatrix::operator-(const atMatrix &subtrahend) const
 // ------------------------------------------------------------------------
 atMatrix atMatrix::operator*(const atMatrix &operand) const
 {
+    double temp[4];
     atMatrix result;
     atMatrix operandTranspose = operand.getTranspose();
     int i, j;
@@ -1186,16 +1238,20 @@ atMatrix atMatrix::operator*(const atMatrix &operand) const
     // matrix, with this matrix first; place the results in the target
     // matrix.
     for (i = 0; i < 4; i++)
-        for (j = 0; j < 4; j++)
-        {
-            // Since the second matrix is transposed, each element of the
-            // result can be computed by taking the dot product of the
-            // appropriate rows of each matrix. This should be a lot faster
-            // than accessing each element directly, as it avoids a good deal
-            // of the error checking on the atVector data accessors.
-            result.data[i][j] =
-                data[i].getDotProduct(operandTranspose.data[j]);
-        }
+    {
+        // Since the second matrix is transposed, each element of the
+        // result can be computed by taking the dot product of the
+        // appropriate rows of each matrix. This should be a lot faster
+        // than accessing each element directly, as it avoids a good deal
+        // of the error checking on the atVector data accessors.
+        temp[0] = data[i].getDotProduct(operandTranspose.data[0]);
+        temp[1] = data[i].getDotProduct(operandTranspose.data[1]);
+        temp[2] = data[i].getDotProduct(operandTranspose.data[2]);
+        temp[3] = data[i].getDotProduct(operandTranspose.data[3]);
+
+        // Copy the results to the result matrix
+        result[i].set(temp[0], temp[1], temp[2], temp[3]);
+    }
 
     // Return the target matrix
     return result;

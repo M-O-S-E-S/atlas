@@ -50,6 +50,8 @@ public:
     double            getDeterminant() const;
     void              invert();
     atMatrix          getInverse() const;
+    void              invertRigid();
+    atMatrix          getInverseRigid() const;
     
     void              preMultiply(const atMatrix &operand);
     atMatrix          getPreMultiplied(const atMatrix &operand) const;
@@ -61,6 +63,7 @@ public:
     atVector          getFullXform(const atVector &operand) const;
     
     void              setIdentity();
+    bool              isIdentity();
     void              setEulerRotation(atMathEulerAxisOrder axisOrder,
                                  double axis1Degrees, double axis2Degrees,
                                  double axis3Degrees);
