@@ -550,6 +550,9 @@ atMatrix atMatrix::getPreMultiplied(const atMatrix &operand) const
         // Copy this row to the result matrix
         result[i].set(temp[0], temp[1], temp[2], temp[3]);
     }
+
+    // Return the target matrix
+    return result;
 }
 
 // ------------------------------------------------------------------------
