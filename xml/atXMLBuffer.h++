@@ -16,7 +16,7 @@
 #include "atString.h++"
 
 
-#define MAX_XML_DOCUMENT_SIZE    8000000
+#define INITIAL_XML_DOCUMENT_SIZE    2000000
 #define MAX_XML_TAG_SIZE         256
 
 
@@ -24,6 +24,7 @@ class ATLAS_SYM atXMLBuffer : public atNotifier
 {
    protected:
       u_char *       xml_buffer;
+      u_long         xml_buffer_len;
       u_long         xml_buffer_size;
 
       char           xml_header[MAX_XML_TAG_SIZE];
@@ -37,6 +38,7 @@ class ATLAS_SYM atXMLBuffer : public atNotifier
       float          xmlToFloat(xmlChar * tmpStr);
       int            xmlToInt(xmlChar * tmpStr);
 
+      void           checkBufferSize(u_long sizeNeeded);
       void           processXMLDocument();
 
    public:

@@ -10,8 +10,9 @@ atXMLBuffer::atXMLBuffer(char * xmlName)
    sprintf(xml_footer, "</%s>", xmlName);
 
    // Initialize the internal XML buffer
-   xml_buffer = (u_char *) calloc(MAX_XML_DOCUMENT_SIZE, sizeof(u_char));
-   xml_buffer_size = 0;
+   xml_buffer = (u_char *) calloc(INITIAL_XML_DOCUMENT_SIZE, sizeof(u_char));
+   xml_buffer_len = 0;
+   xml_buffer_size = sizeof(xml_buffer);
 
    // Initialize the xml DTD (we aren't using one in this case and also
    // don't need a context then)
@@ -30,8 +31,9 @@ atXMLBuffer::atXMLBuffer(char * xmlName, char * dtdFilename)
    sprintf((char *) xml_footer, "</%s>", xmlName);
 
    // Initialize the internal XML buffer
-   xml_buffer = (u_char *) calloc(MAX_XML_DOCUMENT_SIZE, sizeof(u_char));
-   xml_buffer_size = 0;
+   xml_buffer = (u_char *) calloc(INITIAL_XML_DOCUMENT_SIZE, sizeof(u_char));
+   xml_buffer_len = 0;
+   xml_buffer_size = sizeof(xml_buffer);
 
    // Open and initialize the DTD file (used for validating XML)
    xml_dtd = xmlParseDTD(NULL, (const xmlChar *) dtdFilename);
@@ -64,6 +66,20 @@ atXMLBuffer::~atXMLBuffer()
 }
 
 
+void atXMLBuffer::checkBufferSize(u_long sizeNeeded)
+{
+   // Check to make sure buffer is large enough for what is needed
+   if (xml_buffer_size < sizeNeeded)
+   {
+      // It isn't so re-allocate and track the new size (note that
+      // xml_buffer_len will remain the same)
+      xml_buffer = (u_char *) realloc(xml_buffer, 
+                                      2 * sizeNeeded * sizeof(u_char));
+      xml_buffer_size = sizeof(xml_buffer);
+   }
+}
+
+
 void atXMLBuffer::processXMLDocument()
 {
    xmlDocPtr         doc;
@@ -73,7 +89,7 @@ void atXMLBuffer::processXMLDocument()
    atXMLDocument *   xmlDoc;
 
    // Open the memory buffer as an XML document
-   doc = xmlParseMemory((const char *) xml_buffer, xml_buffer_size);
+   doc = xmlParseMemory((const char *) xml_buffer, xml_buffer_len);
 
    // Check to make sure the XML library understood the buffer
    if (doc == NULL)
@@ -162,7 +178,7 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
    }
 
    // Allocate a buffer to hold this buffer and left over from the last pass
-   newBuffer = (u_char *) calloc(xml_buffer_size+lengthRead+1, sizeof(u_char));
+   newBuffer = (u_char *) calloc(xml_buffer_len+lengthRead+1, sizeof(u_char));
    if (newBuffer == NULL)
    {
       // We failed to allocate space (bad!) so assume we have nothing
@@ -174,10 +190,10 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
       // Stick any partial buffer that was saved last go around in front
       // of the new buffer (this is necessary to cover the case when the
       // end tag footer gets split between packets)
-      memcpy(newBuffer, xml_buffer, xml_buffer_size);
-      memcpy(&newBuffer[xml_buffer_size], buffer, lengthRead);
-      lengthRead += xml_buffer_size;
-      xml_buffer_size = 0;
+      memcpy(newBuffer, xml_buffer, xml_buffer_len);
+      memcpy(&newBuffer[xml_buffer_len], buffer, lengthRead);
+      lengthRead += xml_buffer_len;
+      xml_buffer_len = 0;
    }
 
    // Make a string out of the buffer
@@ -212,8 +228,9 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
          // collected xml buffer
          partialChunkSize = (int ) (endTag - &newBuffer[0]) + 
                             (int ) strlen(xml_footer);
-         memcpy(&xml_buffer[xml_buffer_size], newBuffer, partialChunkSize);
-         xml_buffer_size += partialChunkSize;
+         checkBufferSize(xml_buffer_len + partialChunkSize);
+         memcpy(&xml_buffer[xml_buffer_len], newBuffer, partialChunkSize);
+         xml_buffer_len += partialChunkSize;
 
          // Delete the part we just used (+1 for the NULL we tacked on)
          memmove(&newBuffer[0], &newBuffer[partialChunkSize], 
@@ -235,7 +252,7 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
          processXMLDocument();
 
          // Clear the internal xml buffer
-         xml_buffer_size = 0;
+         xml_buffer_len = 0;
 
          // See if there is another footer (in case there are two
          // or more within the buffer)
@@ -247,22 +264,24 @@ atList * atXMLBuffer::processBuffer(atBufferHandler * packetBuffer)
       {
          // Copy remaining chunk into xml buffer and initialize
          // size to size of that remaining chunk
+         checkBufferSize(lengthRead);
          memcpy(&xml_buffer[0], &newBuffer[0], lengthRead);
-         xml_buffer_size = lengthRead;
+         xml_buffer_len = lengthRead;
       }
       else
       {
          // Nothing left in buffer so just initialize xml buffer
          xml_buffer[0] = '\0';
-         xml_buffer_size = 0;
+         xml_buffer_len = 0;
       }
    }
    else
    {
       // No ending found so just add what we received to the
       // internal collected xml buffer
-      memcpy(&xml_buffer[xml_buffer_size], newBuffer, lengthRead);
-      xml_buffer_size += lengthRead;
+      checkBufferSize(xml_buffer_len + lengthRead);
+      memcpy(&xml_buffer[xml_buffer_len], newBuffer, lengthRead);
+      xml_buffer_len += lengthRead;
    }
 
    // Free the temporary buffer
