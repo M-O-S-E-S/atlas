@@ -149,7 +149,7 @@ extLibs = []
 # (Windows requires more to be linked in than Linux does)
 if str(Platform()) == 'win32':
    # Add the RTI
-   addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-8.0', 'librti13')
+   addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-9.0', 'librti13')
 
    # Add libxml2
    addExternal(xmlPath, '/include', '/lib', 'libxml2')
