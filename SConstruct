@@ -76,7 +76,7 @@ osSrc = 'atByteSwap.c++ atDynamic.c++ atErrno.c++ atNetwork.c++ \
          atSem.c++ atShm.c++ atSpawn.c++ atTime.c++ atUUID.c++'
 
 utilDir = 'util'
-utilSrc = 'atConfigFile.c++ atBufferHandler.c++ \
+utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atImage.c++ \
            atString.c++ atStringBuffer.c++ atStringTokenizer.c++ \
            atTimer.c++ atJoint.c++'
 
