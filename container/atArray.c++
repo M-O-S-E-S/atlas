@@ -262,8 +262,16 @@ long atArray::getIndexOf(atItem * item)
    // Start at the beginning of the array, and scan until we find an
    // item in the array that mataches the given item
    index = 0;
-   while ((index < num_entries) && (!array_items[index]->equals(item)))
+   while (index < num_entries)
+   {
+      // Make sure that item in the array is not NULL before comparing it
+      // against the item we are looking for
+      if (array_items[index] != NULL && array_items[index]->equals(item))
+      {
+         break;
+      }
       index++;
+   }
 
    // If we found the item we were looking for, return its index.
    // Otherwise, return -1 to indicate we couldn't find the item.
