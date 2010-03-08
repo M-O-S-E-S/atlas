@@ -20,6 +20,9 @@ class ATLAS_SYM atPair : public atItem
 
       atItem *   getFirst();
       atItem *   getSecond();
+
+      virtual bool   equals(atItem * otherItem);
+      virtual int    compare(atItem * otherItem);
 };
 
 
