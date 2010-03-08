@@ -63,7 +63,7 @@ communicationSrc = 'atIPCInterface.c++ \
                     atNameValuePair.c++ atKeyedBufferHandler.c++'
 
 containerDir = 'container'
-containerSrc = 'atArray.c++ atList.c++ atMap.c++ atPriorityQueue.c++'
+containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ atPriorityQueue.c++'
 
 foundationDir = 'foundation'
 foundationSrc = 'atNotifier.c++ atItem.c++'
