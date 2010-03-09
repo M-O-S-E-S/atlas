@@ -34,6 +34,20 @@ atItem * atPair::getSecond()
 }
 
 
+void atPair::removeFirst()
+{
+   // Clear the first item
+   first_item = NULL;
+}
+
+
+void atPair::removeSecond()
+{
+   // Clear the second item
+   second_item = NULL;
+}
+
+
 bool atPair::equals(atItem * otherItem)
 {
    atPair *   pairItem;
