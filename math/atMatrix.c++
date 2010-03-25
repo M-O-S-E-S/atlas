@@ -228,7 +228,6 @@ void atMatrix::transpose()
 // ------------------------------------------------------------------------
 atMatrix atMatrix::getTranspose() const
 {
-    int i, j;
     atMatrix result;
     
     // Create the target matrix by copying it directly, and then transposing
@@ -1235,7 +1234,7 @@ atMatrix atMatrix::operator*(const atMatrix &operand) const
     double temp[4];
     atMatrix result;
     atMatrix operandTranspose = operand.getTranspose();
-    int i, j;
+    int i;
 
     // Do a matrix-multiply operation between this matrix and the operand
     // matrix, with this matrix first; place the results in the target
