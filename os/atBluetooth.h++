@@ -24,6 +24,18 @@
     #define BTPROTO_L2CAP    BTHPROTO_L2CAP
 
     typedef SOCKADDR_BTH   BluetoothSockAddr;
+
+   // FUNCTIONS
+   #ifdef __cplusplus
+      extern "C"
+      {
+         ATLAS_SYM int ba2str(const bdaddr_t * btaddr, char * straddr);
+         ATLAS_SYM int str2ba(const char * straddr, bdaddr_t * btaddr);
+      }
+   #else
+      ATLAS_SYM int ba2str(const bdaddr_t * btaddr, char * straddr);
+      ATLAS_SYM int str2ba(const char * straddr, bdaddr_t * btaddr);
+   #endif
 #else
     #include <bluetooth/bluetooth.h>
     #include <bluetooth/rfcomm.h>
@@ -36,10 +48,12 @@
 #ifdef __cplusplus
    extern "C"
    {
-      void   setBTAddress(BluetoothSockAddr * btAddr, 
-                          char * address, u_char channel);
-      void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
-      void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
+      ATLAS_SYM void   setBTAddress(BluetoothSockAddr * btAddr, 
+                                    char * address, u_char channel);
+      ATLAS_SYM void   getBTAddress(BluetoothSockAddr * btAddr, 
+                                    char * address);
+      ATLAS_SYM void   getBTChannel(BluetoothSockAddr * btAddr, 
+                                    u_char * channel);
    }
 
    // These are defined in atNetwork.c++
@@ -55,10 +69,10 @@
       bool   getBlockingFlag(Socket socket);
    }
 #else
-   void   setBTAddress(BluetoothSockAddr * btAddr, 
-                     char * address, u_char channel);
-   void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
-   void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
+   ATLAS_SYM void   setBTAddress(BluetoothSockAddr * btAddr, 
+                                 char * address, u_char channel);
+   ATLAS_SYM void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
+   ATLAS_SYM void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
 
 
    // These are defined in atNetwork.c++

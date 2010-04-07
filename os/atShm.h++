@@ -31,16 +31,16 @@
 #ifdef __cplusplus
    extern "C"
    {
-      bool       shmGet(ShmKey key, u_long memSize, ShmID * id);
-      void       shmRemove(ShmID id);
-      u_char *   shmAttach(ShmID id);
-      int        shmDetach(u_char * mem);
+      ATLAS_SYM bool       shmGet(ShmKey key, u_long memSize, ShmID * id);
+      ATLAS_SYM void       shmRemove(ShmID id);
+      ATLAS_SYM u_char *   shmAttach(ShmID id);
+      ATLAS_SYM int        shmDetach(u_char * mem);
    }
 #else
-   bool       shmGet(ShmKey key, u_long memSize, ShmID * id);
-   void       shmRemove(ShmID id);
-   u_char *   shmAttach(ShmID id);
-   int        shmDetach(u_char * mem);
+   ATLAS_SYM bool       shmGet(ShmKey key, u_long memSize, ShmID * id);
+   ATLAS_SYM void       shmRemove(ShmID id);
+   ATLAS_SYM u_char *   shmAttach(ShmID id);
+   ATLAS_SYM int        shmDetach(u_char * mem);
 #endif
 
 

@@ -45,24 +45,24 @@
 #ifdef __cplusplus
    extern "C"
    {
-      void   initNetwork();
-      void   cleanupNetwork();
+      ATLAS_SYM void   initNetwork();
+      ATLAS_SYM void   cleanupNetwork();
 
-      Socket   openSocket(int domain, int type, int protocol);
-      void     closeSocket(Socket socket);
+      ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
+      ATLAS_SYM void     closeSocket(Socket socket);
 
-      void   setBlockingFlag(Socket socket, bool block);
-      bool   getBlockingFlag(Socket socket);
+      ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
+      ATLAS_SYM bool   getBlockingFlag(Socket socket);
    }
 #else
-   void   initNetwork();
-   void   cleanupNetwork();
+   ATLAS_SYM void   initNetwork();
+   ATLAS_SYM void   cleanupNetwork();
 
-   Socket   openSocket(int domain, int type, int protocol);
-   void     closeSocket(Socket socket);
+   ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
+   ATLAS_SYM void     closeSocket(Socket socket);
 
-   void   setBlockingFlag(Socket socket, bool block);
-   bool   getBlockingFlag(Socket socket);
+   ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
+   ATLAS_SYM bool   getBlockingFlag(Socket socket);
 #endif
 
 

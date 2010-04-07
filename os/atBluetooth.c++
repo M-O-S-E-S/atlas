@@ -56,7 +56,7 @@
 
    void getBTChannel(BluetoothSockAddr * btAddr, u_char * channel)
    {
-      *channel = btAddr->port;
+      *channel = (u_char ) btAddr->port;
    }
 #else
    void setBTAddress(BluetoothSockAddr * btAddr, char * address, u_char channel)

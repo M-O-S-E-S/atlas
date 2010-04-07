@@ -28,16 +28,16 @@
 #ifdef __cplusplus
    extern "C"
    {
-      bool   semGet(SemKey key, SemID * id);
-      void   semRemove(SemID id);
-      int    semLock(SemID id);
-      int    semUnlock(SemID id);
+      ATLAS_SYM bool   semGet(SemKey key, SemID * id);
+      ATLAS_SYM void   semRemove(SemID id);
+      ATLAS_SYM int    semLock(SemID id);
+      ATLAS_SYM int    semUnlock(SemID id);
    }
 #else
-   bool   semGet(SemKey key, SemID * id);
-   void   semRemove(SemID id);
-   int    semLock(SemID id);
-   int    semUnlock(SemID id);
+   ATLAS_SYM bool   semGet(SemKey key, SemID * id);
+   ATLAS_SYM void   semRemove(SemID id);
+   ATLAS_SYM int    semLock(SemID id);
+   ATLAS_SYM int    semUnlock(SemID id);
 #endif
 
 

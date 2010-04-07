@@ -6,10 +6,10 @@
 #ifdef __cplusplus
    extern "C"
    {
-      int   getLastError();
+      ATLAS_SYM int   getLastError();
    }
 #else
-   int   getLastError();
+   ATLAS_SYM int   getLastError();
 #endif
 
 
