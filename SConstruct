@@ -16,6 +16,8 @@ else:
    uuidPath = '/irl/tools/libs/uuid-1.5.1'
    # libxml2 (see subpaths below)
    xmlPath = '/usr'
+   # bluetooth (see subpaths below)
+   bluetoothPath = '/usr'
 
 
 # Borrowed from id, this takes a prefix and adds it to each filename and
@@ -173,6 +175,9 @@ else:
 
    # Add libxml2
    addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
+
+   # Add bluetooth
+   addExternal(bluetoothPath, '/include', '/lib', 'bluetooth')
 
 # Finally, add the paths for all the external used libraries
 # to the main paths (and libraries)
