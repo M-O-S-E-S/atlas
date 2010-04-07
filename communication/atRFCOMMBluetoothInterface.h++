@@ -19,9 +19,9 @@ typedef struct
 class ATLAS_SYM atRFCOMMBluetoothInterface : public atBluetoothInterface
 {
    protected:
-      struct sockaddr_rc   read_name;
+      BluetoothSockAddr    read_name;
       socklen_t            read_name_length;
-      struct sockaddr_rc   write_name;
+      BluetoothSockAddr    write_name;
       socklen_t            write_name_length;
 
       Socket       client_sockets[256];
