@@ -8,7 +8,7 @@
       // WSAAddressToString() is not useful, it adds parentheses
       u_char *   b;
 
-      b = btaddr;
+      b = (u_char *) btaddr;
       return sprintf(straddr, "%2.2X:%2.2X:%2.2X:%2.2X:%2.2X:%2.2X",
                      b[7], b[6], b[5], b[4], b[3], b[2]);
    }
