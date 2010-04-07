@@ -13,20 +13,20 @@
 
 // Under Windows, define stuff that we need
 #ifdef _MSC_VER
-    #define WIN32_LEAN_AND_MEAN
-    #include <bthsdpdef.h>
-    #include <bluetoothapis.h>
-    #include <winsock2.h>
-    #include <ws2bth.h>
-    #undef WIN32_LEAN_AND_MEAN
+   #define WIN32_LEAN_AND_MEAN
+   #include <bthsdpdef.h>
+   #include <bluetoothapis.h>
+   #include <winsock2.h>
+   #include <ws2bth.h>
+   #undef WIN32_LEAN_AND_MEAN
 
-    #define AF_BLUETOOTH     AF_BTH
-    #define BTPROTO_RFCOMM   BTHPROTO_RFCOMM
-    #define BTPROTO_L2CAP    BTHPROTO_L2CAP
+   #define AF_BLUETOOTH     AF_BTH
+   #define BTPROTO_RFCOMM   BTHPROTO_RFCOMM
+   #define BTPROTO_L2CAP    BTHPROTO_L2CAP
 
-    #define bdaddr_t         BTH_ADDR
+   #define bdaddr_t         BTH_ADDR
 
-    typedef SOCKADDR_BTH   BluetoothSockAddr;
+   typedef SOCKADDR_BTH   BluetoothSockAddr;
 
    // FUNCTIONS
    #ifdef __cplusplus
@@ -70,14 +70,14 @@
    // These are defined in atNetwork.c++
    extern "C"
    {
-      void   initNetwork();
-      void   cleanupNetwork();
+      ATLAS_SYM void   initNetwork();
+      ATLAS_SYM void   cleanupNetwork();
 
-      Socket   openSocket(int domain, int type, int protocol);
-      void     closeSocket(Socket socket);
+      ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
+      ATLAS_SYM void     closeSocket(Socket socket);
 
-      void   setBlockingFlag(Socket socket, bool block);
-      bool   getBlockingFlag(Socket socket);
+      ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
+      ATLAS_SYM bool   getBlockingFlag(Socket socket);
    }
 #else
 
@@ -98,14 +98,14 @@
    // These are defined in atNetwork.c++
    extern
    {
-      void   initNetwork();
-      void   cleanupNetwork();
+      ATLAS_SYM void   initNetwork();
+      ATLAS_SYM void   cleanupNetwork();
 
-      Socket   openSocket(int domain, int type, int protocol);
-      void     closeSocket(Socket socket);
+      ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
+      ATLAS_SYM void     closeSocket(Socket socket);
 
-      void   setBlockingFlag(Socket socket, bool block);
-      bool   getBlockingFlag(Socket socket);
+      ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
+      ATLAS_SYM bool   getBlockingFlag(Socket socket);
    }
 #endif
 
