@@ -8,6 +8,7 @@
 // so we will reference the networking stuff (from atNetwork.c++) here 
 // and then only define Bluetooth-specific elements here (constants, etc.)
 #include "atNetwork.h++"
+#include "atSymbols.h++"
 
 
 // Under Windows, define stuff that we need

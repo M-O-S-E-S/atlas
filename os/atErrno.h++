@@ -3,6 +3,9 @@
 #define AT_ERRNO_H
 
 
+#include "atSymbols.h++"
+
+
 #ifdef __cplusplus
    extern "C"
    {

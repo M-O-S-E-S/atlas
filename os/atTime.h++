@@ -3,6 +3,9 @@
 #define AT_TIME_H
 
 
+#include "atSymbols.h++"
+
+
 // Under Windows, define the gettimeofday() function with corresponding types
 #ifdef _MSC_VER
    #define WIN32_LEAN_AND_MEAN

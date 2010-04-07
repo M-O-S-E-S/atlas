@@ -3,6 +3,9 @@
 #define AT_NETWORK_H
 
 
+#include "atSymbols.h++"
+
+
 // Under Windows, define stuff that we need
 #ifdef _MSC_VER
     #define WIN32_LEAN_AND_MEAN
