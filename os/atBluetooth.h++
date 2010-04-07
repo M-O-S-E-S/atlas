@@ -43,21 +43,31 @@
     #include <bluetooth/bluetooth.h>
     #include <bluetooth/rfcomm.h>
     #include <bluetooth/l2cap.h>
+    #include <bluetooth/hci.h>
+    #include <bluetooth/hci_lib.h>
+    #include <stdlib.h>
 
     typedef sockaddr_rc   BluetoothSockAddr;
 #endif
+
+
+typedef struct
+{
+   char   address[256];
+   char   name[256];
+} BluetoothDevice;
 
 
 #ifdef __cplusplus
    extern "C"
    {
       #ifdef _MSC_VER
-
          ATLAS_SYM int   ba2str(const bdaddr_t * btaddr, char * straddr);
          ATLAS_SYM int   str2ba(const char * straddr, bdaddr_t * btaddr);
-
       #endif
 
+      ATLAS_SYM void   getBTDevices(BluetoothDevice * devices,
+                                    u_long * maxDevices);
 
       ATLAS_SYM void   setBTAddress(BluetoothSockAddr * btAddr, 
                                     char * address, u_char channel);
@@ -80,20 +90,18 @@
       ATLAS_SYM bool   getBlockingFlag(Socket socket);
    }
 #else
-
    #ifdef _MSC_VER
-
       ATLAS_SYM int   ba2str(const bdaddr_t * btaddr, char * straddr);
       ATLAS_SYM int   str2ba(const char * straddr, bdaddr_t * btaddr);
-
    #endif
 
+   ATLAS_SYM void   getBTDevices(BluetoothDevice * devices,
+                                 u_long * maxDevices);
 
    ATLAS_SYM void   setBTAddress(BluetoothSockAddr * btAddr, 
                                  char * address, u_char channel);
    ATLAS_SYM void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
    ATLAS_SYM void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
-
 
    // These are defined in atNetwork.c++
    extern
