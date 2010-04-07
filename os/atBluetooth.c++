@@ -59,7 +59,7 @@
       WSAStartup(MAKEWORD(2, 0), &wsa);
 
       btDevQuery.LAP = 0;
-      btDevQuery.length = 10;
+      btDevQuery.length = 5;
       btBlob.cbSize = sizeof(BTH_QUERY_DEVICE);
       btBlob.pBlobData = (BYTE *) &btDevQuery;
 
