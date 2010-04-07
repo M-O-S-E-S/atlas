@@ -127,7 +127,7 @@ void atRFCOMMBluetoothInterface::disableBlockingOnClient(int clientID)
 }
 
 
-ClientAddr atRFCOMMBluetoothInterface::getClientInfo(int clientID)
+BTClientAddr atRFCOMMBluetoothInterface::getClientInfo(int clientID)
 {
    // Return the information for this client ID
    return client_addrs[clientID];
