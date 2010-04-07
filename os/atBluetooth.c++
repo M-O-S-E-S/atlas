@@ -46,7 +46,8 @@
       btAddr->addressFamily = AF_BLUETOOTH;
       str2ba(address, &(btAddr->btAddr));
       btAddr->port = channel;
-      btAddr->serviceClassId = NULL_GUID;
+      btAddr->serviceClassId = { 0x00000000, 0x0000, 0x0000, 0x00,
+                                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
    }
 
    void getBTAddress(BluetoothSockAddr * btAddr, char * address)
