@@ -21,10 +21,10 @@ atRFCOMMBluetoothInterface::atRFCOMMBluetoothInterface(char * address,
    }
 
    // Set the read name field
-   setAddress(&read_name, address, channel);
+   setBTAddress(&read_name, address, channel);
 
    // Set the write name field
-   setAddress(&write_name, address, channel);
+   setBTAddress(&write_name, address, channel);
 
    // Initialize remaining instance variables
    num_client_sockets = 0;
@@ -105,9 +105,8 @@ int atRFCOMMBluetoothInterface::acceptConnection()
       // Store the data for this connection (address handling is a bit
       // nasty so that it also works in Windows)
       client_sockets[num_client_sockets] = newSocket;
-      ba2str(&connectingName.rc_bdaddr, 
-             client_addrs[num_client_sockets].address);
-      client_addrs[num_client_sockets].channel = connectingName.rc_channel;
+      getBTAddress(&connectingName, client_addrs[num_client_sockets].address);
+      getBTChannel(&connectingName, &client_addrs[num_client_sockets].channel);
       num_client_sockets++;
       return num_client_sockets - 1;
    }

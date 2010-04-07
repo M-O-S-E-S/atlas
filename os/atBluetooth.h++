@@ -36,8 +36,10 @@
 #ifdef __cplusplus
    extern "C"
    {
-      void   setAddress(BluetoothSockAddr * btAddr, 
-                        char * address, u_char channel);
+      void   setBTAddress(BluetoothSockAddr * btAddr, 
+                          char * address, u_char channel);
+      void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
+      void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
    }
 
    // These are defined in atNetwork.c++
@@ -53,8 +55,11 @@
       bool   getBlockingFlag(Socket socket);
    }
 #else
-   void   setAddress(BluetoothSockAddr * btAddr, 
+   void   setBTAddress(BluetoothSockAddr * btAddr, 
                      char * address, u_char channel);
+   void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
+   void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
+
 
    // These are defined in atNetwork.c++
    extern

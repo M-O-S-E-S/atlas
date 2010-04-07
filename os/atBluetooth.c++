@@ -40,19 +40,39 @@
       }
    }
 
-   void setAddress(BluetoothSockAddr * btAddr, char * address, u_char channel)
+   void setBTAddress(BluetoothSockAddr * btAddr, char * address, u_char channel)
    {
       btAddr->addressFamily = AF_BLUETOOTH;
       str2ba(address, &(btAddr->btAddr));
       btAddr->port = channel;
       btAddr->serviceClassId = NULL_GUID;
    }
+
+   void getBTAddress(BluetoothSockAddr * btAddr, char * address)
+   {
+      ba2str(&(btAddr->btAddr), address);
+   }
+
+   void getBTChannel(BluetoothSockAddr * btAddr, u_char * channel)
+   {
+      *channel = btAddr->port;
+   }
 #else
-   void setAddress(BluetoothSockAddr * btAddr, char * address, u_char channel)
+   void setBTAddress(BluetoothSockAddr * btAddr, char * address, u_char channel)
    {
       btAddr->rc_family = AF_BLUETOOTH;
       str2ba(address, &(btAddr->rc_bdaddr));
       btAddr->rc_channel = channel;
+   }
+
+   void getBTAddress(BluetoothSockAddr * btAddr, char * address)
+   {
+      ba2str(&(btAddr->rc_bdaddr), address);
+   }
+
+   void getBTChannel(BluetoothSockAddr * btAddr, u_char * channel)
+   {
+      *channel = btAddr->rc_channel;
    }
 #endif
 
