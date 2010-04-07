@@ -64,7 +64,7 @@ int atRFCOMMBluetoothInterface::acceptConnection()
    fd_set               readFds;
    struct timeval       timeout;
    Socket               newSocket;
-   struct sockaddr_rc   connectingName;
+   BluetoothSockAddr    connectingName;
    socklen_t            connectingNameLength;
 
    // If we are in non-blocking mode, we use select() to see if
@@ -138,7 +138,7 @@ ClientAddr atRFCOMMBluetoothInterface::getClientInfo(int clientID)
 int atRFCOMMBluetoothInterface::makeConnection()
 {
    int                  keepTrying;
-   struct sockaddr_rc   connectingName;
+   BluetoothSockAddr    connectingName;
    fd_set               readFds;
    fd_set               writeFds;
    struct timeval       timeout;
