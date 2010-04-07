@@ -4,6 +4,7 @@
 
 
 // Include other files to give OS-independent interfaces
+#include "atBluetooth.h++"
 #include "atByteSwap.h++"
 #include "atDynamic.h++"
 #include "atErrno.h++"

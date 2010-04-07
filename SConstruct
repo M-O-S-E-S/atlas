@@ -58,6 +58,8 @@ communicationSrc = 'atIPCInterface.c++ \
                     atSharedMemoryInterface.c++ atSharedQueue.c++ \
                     atThreadInterface.c++ atThreadQueue.c++ \
                     atSerialInterface.c++ \
+                    atBluetoothInterface.c++ \
+                    atRFCOMMBluetoothInterface.c++ \
                     atHLAInterface.c++ \
                     atRTIInterface.c++ atRTIInterfaceAmbassador.c++ \
                     atNameValuePair.c++ atKeyedBufferHandler.c++'
@@ -72,8 +74,8 @@ mathDir = 'math'
 mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
 osDir = 'os'
-osSrc = 'atByteSwap.c++ atDynamic.c++ atErrno.c++ atNetwork.c++ \
-         atSem.c++ atShm.c++ atSpawn.c++ atTime.c++ atUUID.c++'
+osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ \
+         atNetwork.c++ atSem.c++ atShm.c++ atSpawn.c++ atTime.c++ atUUID.c++'
 
 utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atImage.c++ \
