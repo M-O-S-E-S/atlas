@@ -415,9 +415,18 @@ int atTCPNetworkInterface::read(u_char * buffer, u_long len)
 
    // Get a packet
    fromAddressLength = sizeof(fromAddress);
-   packetLength = recvfrom(socket_value, (char *) buffer, len, MSG_WAITALL, 
-                           (struct sockaddr *) &fromAddress, 
-                           &fromAddressLength);
+   if (blocking_mode == true)
+   {
+      packetLength = recvfrom(socket_value, (char *) buffer, len, MSG_WAITALL, 
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
+   else
+   {
+      packetLength = recvfrom(socket_value, (char *) buffer, len, 0, 
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
 
    // Tell user how many bytes we read (-1 means an error)
    return packetLength;
@@ -432,10 +441,20 @@ int atTCPNetworkInterface::read(int clientID, u_char * buffer, u_long len)
 
    // Get a packet
    fromAddressLength = sizeof(fromAddress);
-   packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
-                           MSG_WAITALL,
-                           (struct sockaddr *) &fromAddress, 
-                           &fromAddressLength);
+   if (blocking_mode == true)
+   {
+      packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
+                              MSG_WAITALL,
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
+   else
+   {
+      packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
+                              0,
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
 
    // Tell user how many bytes we read (-1 means an error)
    return packetLength;
