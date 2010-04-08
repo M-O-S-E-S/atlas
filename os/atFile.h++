@@ -12,6 +12,12 @@
    #define F_OK   0x00
    #define W_OK   0x02
    #define R_OK   0x04
+
+   #define DIRECTORY_SEPARATOR   '\\'
+   #define PATH_SEPARATOR        ';'
+#else
+   #define DIRECTORY_SEPARATOR   '/'
+   #define PATH_SEPARATOR        ':'
 #endif
 
 
