@@ -26,6 +26,7 @@ class ATLAS_SYM atRFCOMMBluetoothInterface : public atBluetoothInterface
 
       Socket         client_sockets[256];
       BTClientAddr   client_addrs[256];
+      bool           client_blocking[256];
       u_long         num_client_sockets;
 
    public:

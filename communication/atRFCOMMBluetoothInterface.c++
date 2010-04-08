@@ -107,6 +107,7 @@ int atRFCOMMBluetoothInterface::acceptConnection()
       client_sockets[num_client_sockets] = newSocket;
       getBTAddress(&connectingName, client_addrs[num_client_sockets].address);
       getBTChannel(&connectingName, &client_addrs[num_client_sockets].channel);
+      client_blocking[num_client_sockets] = true;
       num_client_sockets++;
       return num_client_sockets - 1;
    }
@@ -116,6 +117,7 @@ int atRFCOMMBluetoothInterface::acceptConnection()
 void atRFCOMMBluetoothInterface::enableBlockingOnClient(int clientID)
 {
    // Set the client socket to blocking
+   client_blocking[clientID] = true;
    setBlockingFlag(client_sockets[clientID], true);
 }
 
@@ -123,6 +125,7 @@ void atRFCOMMBluetoothInterface::enableBlockingOnClient(int clientID)
 void atRFCOMMBluetoothInterface::disableBlockingOnClient(int clientID)
 {
    // Set the client socket to non-blocking
+   client_blocking[clientID] = false;
    setBlockingFlag(client_sockets[clientID], false);
 }
 
@@ -281,9 +284,18 @@ int atRFCOMMBluetoothInterface::read(u_char * buffer, u_long len)
 
    // Get a packet
    fromAddressLength = sizeof(fromAddress);
-   packetLength = recvfrom(socket_value, (char *) buffer, len, MSG_WAITALL, 
-                           (struct sockaddr *) &fromAddress, 
-                           &fromAddressLength);
+   if (blocking_mode == true)
+   {
+      packetLength = recvfrom(socket_value, (char *) buffer, len, MSG_WAITALL, 
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
+   else
+   {
+      packetLength = recvfrom(socket_value, (char *) buffer, len, 0, 
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
 
    // Tell user how many bytes we read (-1 means an error)
    return packetLength;
@@ -298,10 +310,20 @@ int atRFCOMMBluetoothInterface::read(int clientID, u_char * buffer, u_long len)
 
    // Get a packet
    fromAddressLength = sizeof(fromAddress);
-   packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
-                           MSG_WAITALL,
-                           (struct sockaddr *) &fromAddress, 
-                           &fromAddressLength);
+   if (client_blocking[clientID] == true)
+   {
+      packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
+                              MSG_WAITALL,
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
+   else
+   {
+      packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
+                              0,
+                              (struct sockaddr *) &fromAddress, 
+                              &fromAddressLength);
+   }
 
    // Tell user how many bytes we read (-1 means an error)
    return packetLength;

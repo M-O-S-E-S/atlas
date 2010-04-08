@@ -181,6 +181,7 @@ int atTCPNetworkInterface::acceptConnection()
       sprintf(client_addrs[num_client_sockets].address, "%hhu.%hhu.%hhu.%hhu",
               addr0, addr1, addr2, addr3);
       client_addrs[num_client_sockets].port = connectingName.sin_port;
+      client_blocking[num_client_sockets] = true;
       num_client_sockets++;
       return num_client_sockets - 1;
    }
@@ -190,6 +191,7 @@ int atTCPNetworkInterface::acceptConnection()
 void atTCPNetworkInterface::enableBlockingOnClient(int clientID)
 {
    // Set the client socket to blocking
+   client_blocking[clientID] = true;
    setBlockingFlag(client_sockets[clientID], true);
 }
 
@@ -197,6 +199,7 @@ void atTCPNetworkInterface::enableBlockingOnClient(int clientID)
 void atTCPNetworkInterface::disableBlockingOnClient(int clientID)
 {
    // Set the client socket to non-blocking
+   client_blocking[clientID] = false;
    setBlockingFlag(client_sockets[clientID], false);
 }
 
@@ -441,7 +444,7 @@ int atTCPNetworkInterface::read(int clientID, u_char * buffer, u_long len)
 
    // Get a packet
    fromAddressLength = sizeof(fromAddress);
-   if (blocking_mode == true)
+   if (client_blocking[clientID] == true)
    {
       packetLength = recvfrom(client_sockets[clientID], (char *) buffer, len, 
                               MSG_WAITALL,

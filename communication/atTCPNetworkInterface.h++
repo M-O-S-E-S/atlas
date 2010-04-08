@@ -21,6 +21,7 @@ class ATLAS_SYM atTCPNetworkInterface : public atNetworkInterface
    protected:
       Socket       client_sockets[256];
       ClientAddr   client_addrs[256];
+      bool         client_blocking[256];
       u_long       num_client_sockets;
 
    public:
