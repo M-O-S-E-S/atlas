@@ -1005,8 +1005,10 @@ atVector atQuat::rotatePoint(const atVector &targetPoint) const
 // Returns a quaternion that is an interpolation between this quaternion
 // as the source point and the destination quaternion. The parameter value
 // should range from 0.0 to 1.0, inclusive, and denotes the interpolation
-// value. The path taken by the interpolated quaternion is linear, but
-// the velocity is non-linear (due to the trig functions involved).
+// value.  Slerp is not commutative (so order matters when slerp'ing
+// multiple quaternions together), but it provides constant angular
+// velocity over the interpolation space, and it is torque-minimal, so it
+// provides the smoothest possible transition between the two quaternions.
 // ------------------------------------------------------------------------
 atQuat atQuat::slerp(const atQuat &destination, double parameter) const
 {
@@ -1080,9 +1082,69 @@ atQuat atQuat::slerp(const atQuat &destination, double parameter) const
 }
 
 // ------------------------------------------------------------------------
+// Normalized Linear intERPolation
+// Returns a quaternion that is an interpolation between this quaternion
+// as the source point and the destination quaternion. The parameter value
+// should range from 0.0 to 1.0, inclusive, and denotes the interpolation
+// value. Nlerp does not provide constant velocity over the interpolation
+// space, but it is commutative and, like slerp, it is torque-minimal.
+// Nlerp is also much cheaper to compute than slerp.
+// ------------------------------------------------------------------------
+atQuat atQuat::nlerp(const atQuat &destination, double parameter) const
+{
+    atQuat destQuat, resultQuat;
+    double dotProd;
+    
+    // Bounds checking
+    if ((parameter < 0.0) || (parameter > 1.0))
+    {
+        printf("atQuat::slerp: 'parameter' must be in range 0.0 - 1.0\n");
+        return resultQuat;
+    }
+
+    // If the dot product of the two quaternions is negative, then the
+    // angle between the two rotations is greater than 180 degrees. If we
+    // were to do an interpolation with the two quats, the interpolated
+    // path would be the 'long way' around the sphere. Instead, since the
+    // negative of a rotation quaternion specifies the same rotation, we
+    // can negate the destination quat, which will force the interpolation
+    // to take the shortest path without changing the actual destination. 
+    destQuat = destination;
+    dotProd = getDotProduct(destQuat);
+    if (dotProd < 0.0)
+        destQuat.scale(-1.0);
+
+    // Do a standard linear interpolation on each component
+    resultQuat.set(data[AT_X] + parameter * (destQuat[AT_X] - data[AT_X]),
+                   data[AT_Y] + parameter * (destQuat[AT_Y] - data[AT_Y]),
+                   data[AT_Z] + parameter * (destQuat[AT_Z] - data[AT_Z]),
+                   data[AT_W] + parameter * (destQuat[AT_W] - data[AT_W]));
+
+    // Normalize the result and return it
+    return resultQuat.getNormalized();
+}
+
+// ------------------------------------------------------------------------
 // Retrieves one value from the quaternion as a reference to a double.
 // ------------------------------------------------------------------------
 double &atQuat::operator[](int index)
+{
+    // Bounds checking
+    if ((index < 0) || (index > 3))
+    {
+        printf("atQuat::operator[]: Illegal subscript\n");
+        return data[0];
+    }
+    
+    // Return a reference to the desired data value
+    return data[index];
+}
+
+// ------------------------------------------------------------------------
+// Retrieves one value from the quaternion as a const reference to a
+// double.
+// ------------------------------------------------------------------------
+const double &atQuat::operator[](int index) const
 {
     // Bounds checking
     if ((index < 0) || (index > 3))
