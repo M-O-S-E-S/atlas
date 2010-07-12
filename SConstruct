@@ -128,8 +128,7 @@ if str(Platform()) == 'win32':
    # /OPT:REF        = Optimize away unreferenced code
    # /OPT:ICF        = Optimize away redundant function packages
    # /INCREMENTAL:NO = Do not perform incremental linking
-   # /PDB:NONE       = Do not create a .PDB debug file
-   linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO /PDB:NONE')
+   linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO')
 else:
    # Flags for gcc (generate debug information and optimize)
    compileFlags = Split('-g -O')
