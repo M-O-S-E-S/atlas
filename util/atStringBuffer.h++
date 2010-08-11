@@ -33,6 +33,9 @@ class ATLAS_SYM atStringBuffer : public atItem
       virtual void             append(char * stringToAppend);
       virtual atStringBuffer   concat(char * stringToConcat);
 
+      virtual void             append(char charToAppend);
+      virtual atStringBuffer   concat(char charToConcat);
+
       virtual void             setString(char * stringToCopy);
       virtual void             setString(char * stringToCopy, 
                                          u_long maxLength);
@@ -48,6 +51,7 @@ class ATLAS_SYM atStringBuffer : public atItem
       virtual int              compare(atItem * otherItem);
 
       virtual void             operator=(atString stringToCopy);
+      virtual void             operator=(atStringBuffer stringBufferToCopy);
 };
 
 

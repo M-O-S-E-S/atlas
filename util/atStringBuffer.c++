@@ -132,6 +132,34 @@ atStringBuffer atStringBuffer::concat(char * stringToConcat)
 }
 
 
+void atStringBuffer::append(char charToAppend)
+{
+   char   str[2];
+
+   // Create a string with only the character we want to append
+   str[0] = charToAppend;
+   str[1] = 0;
+
+   // Call the append method for strings
+   append(str);
+}
+
+
+atStringBuffer atStringBuffer::concat(char charToConcat)
+{
+   atStringBuffer   result;
+
+   // Create a new string with the contents of this string
+   result.setString(local_buffer);
+
+   // Append the character to the new string
+   result.append(charToConcat);
+
+   // Return the result
+   return result;
+}
+
+
 void atStringBuffer::setString(char * stringToCopy)
 {
    u_long   need;
@@ -302,5 +330,12 @@ void atStringBuffer::operator=(atString stringToCopy)
 {
    // Copy the string from the given atString
    setString(stringToCopy);
+}
+
+
+void atStringBuffer::operator=(atStringBuffer stringBufferToCopy)
+{
+   // Copy the string from the given atString
+   setString(stringBufferToCopy.getString());
 }
 
