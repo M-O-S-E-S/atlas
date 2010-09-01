@@ -1,5 +1,4 @@
 
-#include <typeinfo>
 #include <string.h>
 #include "atItem.h++"
 
@@ -27,10 +26,7 @@ bool atItem::equals(atItem * otherItem)
 
 int atItem::compare(atItem * otherItem)
 {
-   // Return the string comparison difference between the two item's class
-   // names
-   // JPD:  This seems kind of weak, but it will be a consistent ordering.
-   //       We'll try it for now.
-   return strcmp(typeid(*this).name(), typeid(*otherItem).name());
+   // Return the difference between the items' pointer values
+   return (int) otherItem - (int) this;
 }
 
