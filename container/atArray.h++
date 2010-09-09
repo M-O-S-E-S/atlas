@@ -17,8 +17,8 @@ class ATLAS_SYM atArray : public atNotifier
    protected:
       atItem **       array_items;
       
-      u_long          num_entries;
-      u_long          current_capacity;
+      long            num_entries;
+      long            current_capacity;
 
       virtual bool    ensureCapacity(u_long capacity);
 
@@ -26,7 +26,7 @@ class ATLAS_SYM atArray : public atNotifier
       atArray();
       virtual ~atArray();
 
-      virtual u_long     getNumEntries();
+      virtual long       getNumEntries();
 
       virtual bool       addEntry(atItem * item);
       virtual atItem *   setEntry(long index, atItem * item);
