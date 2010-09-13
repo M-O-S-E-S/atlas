@@ -3,6 +3,9 @@
 #define AT_FILE_HPP
 
 
+#include "atSymbols.h++"
+
+
 // Microsoft has a different name for the access function.
 // The flags for read access, write access, and so on also need to be defined.
 #ifdef _MSC_VER
@@ -18,6 +21,16 @@
 #else
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
+#endif
+
+
+#ifdef __cplusplus
+   extern "C"
+   {
+      ATLAS_SYM int   listFiles(char * path, char ** results, int count);
+   }
+#else
+   ATLAS_SYM int   listFiles(char * path, char ** results, int count);
 #endif
 
 
