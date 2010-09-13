@@ -29,7 +29,7 @@ class ATLAS_SYM atTCPNetworkInterface : public atNetworkInterface
       atTCPNetworkInterface(short port);
       virtual ~atTCPNetworkInterface();
 
-      void         allowConnections(int backlog);
+      bool         allowConnections(int backlog);
       int          acceptConnection();
       void         enableBlockingOnClient(int clientID);
       void         disableBlockingOnClient(int clientID);

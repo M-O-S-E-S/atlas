@@ -97,17 +97,29 @@ atTCPNetworkInterface::~atTCPNetworkInterface()
 }
 
 
-void atTCPNetworkInterface::allowConnections(int backlog)
+bool atTCPNetworkInterface::allowConnections(int backlog)
 {
+   bool   bindSuccess;
+
    // Bind to the port
    if (bind(socket_value, (struct sockaddr *) &read_name, 
-            sizeof(read_name)) < 0)
+            sizeof(read_name)) >= 0)
    {
+      // Indicate success
+      bindSuccess = true;
+   }
+   else
+   {
+      // This is a serious problem
       notify(AT_ERROR, "Unable to bind to the port.\n");
+      bindSuccess = false;
    }
 
    // Notify our willingness to accept connections and give a backlog limit
    listen(socket_value, backlog);
+
+   // Indicate to the user whether the port could be successfully bound
+   return bindSuccess;
 }
 
 
