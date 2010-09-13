@@ -76,7 +76,7 @@ mathDir = 'math'
 mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
 osDir = 'os'
-osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ \
+osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ atFile.c++ \
          atNetwork.c++ atSem.c++ atShm.c++ atSpawn.c++ atTime.c++ atUUID.c++'
 
 utilDir = 'util'
