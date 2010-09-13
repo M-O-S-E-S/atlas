@@ -39,7 +39,7 @@ atArray::~atArray()
 }
 
 
-u_long atArray::getNumEntries()
+long atArray::getNumEntries()
 {
    return num_entries;
 }
