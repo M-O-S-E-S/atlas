@@ -51,14 +51,23 @@ void atPair::removeSecond()
 bool atPair::equals(atItem * otherItem)
 {
    atPair *   pairItem;
+   bool       firsts;
+   bool       seconds;
 
    // Try to convert it to a pair to make sure it is a pair
    pairItem = dynamic_cast<atPair *>(otherItem);
 
    // Return whether the two strings are equal or not
-   if ( (pairItem != NULL) && (equals(first_item) == true) &&
-        (equals(second_item) == true) )
-      return true;
+   if ( (pairItem != NULL) 
+   {
+      // Compare the "first" items and the "second" items and return 
+      // if both sets match
+      firsts = ((first_item == NULL) && (pairItem->first_item == NULL)) ||
+               (first_item->equals(pairItem->first_item) == true);
+      seconds = ((second_item == NULL) && (pairItem->second_item == NULL)) ||
+                (second_item->equals(pairItem->second_item) == true);
+      return (firsts && seconds);
+   }
    else
       return false;
 }
