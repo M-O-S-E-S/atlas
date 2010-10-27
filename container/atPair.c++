@@ -58,7 +58,7 @@ bool atPair::equals(atItem * otherItem)
    pairItem = dynamic_cast<atPair *>(otherItem);
 
    // Return whether the two strings are equal or not
-   if ( (pairItem != NULL) 
+   if (pairItem != NULL) 
    {
       // Compare the "first" items and the "second" items and return 
       // if both sets match
