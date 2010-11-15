@@ -127,8 +127,8 @@
 
    void * dlOpen(const char * filename, int flag)
    {
-      char *   slash;
-      char     tmp[1024];
+      const char *   slash;
+      char           tmp[1024];
 
       // Handle when filename is NULL (meaning we're opening the "local"
       // app
