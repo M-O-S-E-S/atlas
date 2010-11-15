@@ -127,8 +127,8 @@
 
    void * dlOpen(const char * filename, int flag)
    {
-      const char *   slash;
-      char           tmp[1024];
+      char *   slash;
+      char     tmp[1024];
 
       // Handle when filename is NULL (meaning we're opening the "local"
       // app
@@ -140,7 +140,7 @@
       else
       {
          // Add the extension, but handle directory names so look for a slash
-         slash = strrchr(filename, '/');
+         slash = (char *) strrchr(filename, '/');
          if (slash != NULL)
          {
             // We found the last slash so copy everything up to that point and
