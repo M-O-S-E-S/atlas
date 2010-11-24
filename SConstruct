@@ -11,9 +11,9 @@ if str(Platform()) == 'win32':
    msinttypesPath = 'L:/msinttypes-r21'
 else:
    # HLA RTI
-   rtiPath = '/irl/tools/libs/rtis-1.3_D18A'
+   rtiPath = '/irl/tools/libs/rtis-1.3_D22'
    # uuid
-   uuidPath = '/irl/tools/libs/uuid-1.5.1'
+   uuidPath = '/irl/tools/libs/uuid-1.6.2'
    # libxml2 (see subpaths below)
    xmlPath = '/usr'
    # bluetooth (see subpaths below)
@@ -168,7 +168,7 @@ if str(Platform()) == 'win32':
    extLibs.extend(Split('ws2_32 winmm rpcrt4'))
 else:
    # Add the RTI
-   addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.1', 'rti13')
+   addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.4', 'rti13')
 
    # Add the uuid library
    addExternal(uuidPath, '/include', '/lib', 'uuid')
