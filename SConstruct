@@ -80,7 +80,7 @@ osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ atFile.c++ \
          atNetwork.c++ atSem.c++ atShm.c++ atSpawn.c++ atTime.c++ atUUID.c++'
 
 utilDir = 'util'
-utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atImage.c++ \
+utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atPath.c++ atImage.c++ \
            atString.c++ atStringBuffer.c++ atStringTokenizer.c++ \
            atTimer.c++ atJoint.c++'
 
