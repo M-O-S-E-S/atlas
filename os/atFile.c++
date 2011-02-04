@@ -7,6 +7,21 @@
    #include <Windows.h>
    #include <Strsafe.h>
 
+   bool createDirectory(char * path)
+   {
+      // Attempt to create the directory. Passing NULL as the second parameter
+      // means that we will use the security and permission profile of the
+      // calling user.
+      if (CreateDirectory(path, NULL))
+      {
+         // The operation succeeded
+         return true;
+      }
+
+      // Indicate failure
+      return false;
+   }
+
    int listFiles(char * path, char ** results, int count)
    {
       char              searchTarget[MAX_PATH];
@@ -28,7 +43,7 @@
          // errorCode = GetLastError();
          return -1;
       }
-      
+ 
       // Indicate that we haven't yet found any files
       fileCount = 0;
 
@@ -43,7 +58,6 @@
             results[fileCount] = (char *)malloc(lengthBytes * sizeof(char));
 
             // Copy the file name into the string we just allocated
-            //strcpy(results[fileCount], fileData.cFileName);
             StringCchCopy(results[fileCount], lengthBytes, fileData.cFileName);
 
             // Account for the file we just copied
@@ -58,8 +72,20 @@
       // Check whether this is actually an error or whether we've just reached
       // the end of the list.
       errorCode = GetLastError();
-      if (errorCode != ERROR_NO_MORE_FILES)
+      if (errorCode == ERROR_NO_MORE_FILES)
       {
+         // Close the search handle now that we're done with it
+         FindClose(searchHandle);
+
+         // Return the number of filenames we successfully placed in the array
+         return fileCount;
+      }
+      else
+      {
+         // Close the search handle now that we're done with it. This may fail
+         // if the handle is invalid, but there's little we can do about that.
+         FindClose(searchHandle);
+
          // This is a real error. Free the memory we've been allocating
          while (fileCount >= 0)
          {
@@ -70,17 +96,9 @@
             fileCount--;
          }
 
-         //notify(AT_ERROR, "Error: %d\n", errorCode);
-
          // Indicate failure
          return -1;
       }
-
-      // Close the search handle now that we're done with it
-      FindClose(searchHandle);
-
-      // Return the number of filenames we successfully placed in the array
-      return fileCount;
    }
 
 #else
@@ -89,15 +107,34 @@
    #include <stdio.h>
    #include <stdlib.h>
    #include <string.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+
+   bool createDirectory(char * path)
+   {
+      // Attempt to create the directory. 0755 is the octal value for the
+      // desired permissions: -rwxr-xr-x
+      if (mkdir(path, 0755) == 0)
+      {
+         // The operation succeeded
+         return true;
+      }
+
+      // Indicate failure
+      return false;
+   }
 
    int listFiles(char * path, char ** results, int count)
    {
       char     targetPath[512];
       glob_t   fileList;
       int      fileCount;
+      char *   currentToken;
+      char *   nextToken;
+      char     pathDelimiter[16];
 
       // Convert the path into the search pattern
-      // TODO: Make sure the path is properly formated
+      // TODO: Make sure the path is properly formatted
       sprintf(targetPath, "%s/*", path);
 
       // Get a list of all the files in the target location
@@ -106,16 +143,37 @@
       // Initialize our result counter
       fileCount = 0;
 
+      // Print the directory separator to the path delimiter string
+      sprintf(pathDelimiter, "%c", DIRECTORY_SEPARATOR);
+
       // Loop until we run out of files or out of space to store them
       while ((fileCount < count) &&
              (fileCount < (int)fileList.gl_pathc))
       {
-         // Allocate a new string of this length
+         // We want to take only the files themselves, but the vector contains
+         // paths as well. Tokenizing on the delimiter string will allow us to
+         // extract only the filename. Begin by pulling off the first token.
+         currentToken = strtok(fileList.gl_pathv[fileCount], pathDelimiter);
+
+         // Keep attempting to fetch the next token so long as there is one.
+         nextToken = strtok(NULL, pathDelimiter);
+         while (nextToken)
+         {
+            // Move the current token forward
+            currentToken = nextToken;
+
+            // Query the next token
+            nextToken = strtok(NULL, pathDelimiter);
+         }
+
+         // The next token is NULL, which means there are no more delimiters,
+         // which means that our current token contains only the file name.
+         // Allocate a new string of this length.
          results[fileCount] = (char *)
-            malloc((strlen(fileList.gl_pathv[fileCount]) + 1) * sizeof(char));
+            malloc((strlen(currentToken) + 1) * sizeof(char));
 
          // Copy the file name into the string we just allocated
-         strcpy(results[fileCount], fileList.gl_pathv[fileCount]);
+         strcpy(results[fileCount], currentToken);
 
          // Account for the file we just copied
          fileCount++;
