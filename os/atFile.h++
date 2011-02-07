@@ -9,6 +9,8 @@
 // Microsoft has a different name for the access function.
 // The flags for read access, write access, and so on also need to be defined.
 #ifdef _MSC_VER
+   #define WIN32_LEAN_AND_MEAN
+   #include <windows.h>
    #include <io.h>
 
    #define access   _access
