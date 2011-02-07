@@ -7,11 +7,19 @@
    #include <Windows.h>
    #include <Strsafe.h>
 
+
+   int chdir(const char * path)
+   {
+      // Change to the directory
+      ChDir(path);
+   }
+
+
    bool createDirectory(char * path)
    {
-      // Attempt to create the directory. Passing NULL as the second parameter
+      // Attempt to create the directory (passing NULL as the second parameter
       // means that we will use the security and permission profile of the
-      // calling user.
+      // calling user)
       if (CreateDirectory(path, NULL))
       {
          // The operation succeeded
@@ -22,6 +30,7 @@
       return false;
    }
 
+
    int listFiles(char * path, char ** results, int count)
    {
       char              searchTarget[MAX_PATH];
@@ -31,12 +40,12 @@
       int               fileCount;
       int               lengthBytes;
 
-      // Prepare the path string for use with FindFile functions. First, copy
-      // the string to a buffer, then append '\*' to the directory name.
+      // Prepare the path string for use with FindFile functions (first, copy
+      // the string to a buffer, then append '\*' to the directory name)
       StringCchCopy(searchTarget, MAX_PATH, path);
       StringCchCat(searchTarget, MAX_PATH, TEXT("\\*"));
 
-      // Find the first file in the directory.
+      // Find the first file in the directory
       searchHandle = FindFirstFile(searchTarget, &fileData);
       if (searchHandle == INVALID_HANDLE_VALUE)
       {
@@ -68,9 +77,9 @@
       while ((FindNextFile(searchHandle, &fileData) != 0) &&
              (fileCount < count));
 
-      // FindNextFile will always set an error code if it returns non-zero.
-      // Check whether this is actually an error or whether we've just reached
-      // the end of the list.
+      // FindNextFile will always set an error code if it returns non-zero
+      // (check whether this is actually an error or whether we've just reached
+      // the end of the list)
       errorCode = GetLastError();
       if (errorCode == ERROR_NO_MORE_FILES)
       {
@@ -82,11 +91,11 @@
       }
       else
       {
-         // Close the search handle now that we're done with it. This may fail
-         // if the handle is invalid, but there's little we can do about that.
+         // Close the search handle now that we're done with it (this may fail
+         // if the handle is invalid, but there's little we can do about that)
          FindClose(searchHandle);
 
-         // This is a real error. Free the memory we've been allocating
+         // This is a real error (so free the memory we've been allocating)
          while (fileCount >= 0)
          {
             // Free the memory
@@ -110,10 +119,11 @@
    #include <sys/stat.h>
    #include <sys/types.h>
 
+
    bool createDirectory(char * path)
    {
-      // Attempt to create the directory. 0755 is the octal value for the
-      // desired permissions: -rwxr-xr-x
+      // Attempt to create the directory (0755 is the octal value for the
+      // desired permissions: -rwxr-xr-x)
       if (mkdir(path, 0755) == 0)
       {
          // The operation succeeded
@@ -123,6 +133,7 @@
       // Indicate failure
       return false;
    }
+
 
    int listFiles(char * path, char ** results, int count)
    {
@@ -148,14 +159,14 @@
 
       // Loop until we run out of files or out of space to store them
       while ((fileCount < count) &&
-             (fileCount < (int)fileList.gl_pathc))
+             (fileCount < (int ) fileList.gl_pathc))
       {
          // We want to take only the files themselves, but the vector contains
-         // paths as well. Tokenizing on the delimiter string will allow us to
-         // extract only the filename. Begin by pulling off the first token.
+         // paths as well (tokenizing on the delimiter string will allow us to
+         // extract only the filename. Begin by pulling off the first token)
          currentToken = strtok(fileList.gl_pathv[fileCount], pathDelimiter);
 
-         // Keep attempting to fetch the next token so long as there is one.
+         // Keep attempting to fetch the next token so long as there is one
          nextToken = strtok(NULL, pathDelimiter);
          while (nextToken)
          {
@@ -167,8 +178,8 @@
          }
 
          // The next token is NULL, which means there are no more delimiters,
-         // which means that our current token contains only the file name.
-         // Allocate a new string of this length.
+         // which means that our current token contains only the file name so
+         // allocate a new string of this length.
          results[fileCount] = (char *)
             malloc((strlen(currentToken) + 1) * sizeof(char));
 
