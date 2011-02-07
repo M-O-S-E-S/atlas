@@ -11,7 +11,7 @@
    int chdir(const char * path)
    {
       // Change to the directory
-      _chdir(path);
+      return _chdir(path);
    }
 
 
