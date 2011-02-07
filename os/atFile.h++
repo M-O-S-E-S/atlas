@@ -18,6 +18,16 @@
 
    #define DIRECTORY_SEPARATOR   '\\'
    #define PATH_SEPARATOR        ';'
+
+   // FUNCTIONS
+   #ifdef __cplusplus
+      extern "C"
+      {
+         ATLAS_SYM int    chdir(const char * path);
+      }
+   #else
+      ATLAS_SYM int    chdir(const char * path);
+   #endif
 #else
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
@@ -27,12 +37,10 @@
 #ifdef __cplusplus
    extern "C"
    {
-      ATLAS_SYM int    chdir(const char * path);
       ATLAS_SYM bool   createDirectory(char * path);
       ATLAS_SYM int    listFiles(char * path, char ** results, int count);
    }
 #else
-   ATLAS_SYM int    chdir(const char * path);
    ATLAS_SYM bool   createDirectory(char * path);
    ATLAS_SYM int    listFiles(char * path, char ** results, int count);
 #endif
