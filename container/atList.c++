@@ -344,7 +344,7 @@ atItem * atList::getNthEntry(u_long n)
 
 atItem * atList::findEntry(atItem * item)
 {
-   atItem *currentItem;
+   atItem *  currentItem;
 
    // Walk the list until we find an item in the list that matches the given
    // item (according to the item's equals() method)
