@@ -86,7 +86,7 @@ bool atMap::addEntry(atItem * key, atItem * value)
         {
             // Check for collision and print a loud warning if detected
             if (newNode->nodeKey->equals(nodeParent->nodeKey))
-               notify(AT_WARN, "Key collision detected in map!");
+               notify(AT_WARN, "Key collision detected in map!\n");
 
             // Right subtree
             if (nodeParent->rightChild == NULL)
