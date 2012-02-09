@@ -8,13 +8,6 @@
    #include <Strsafe.h>
 
 
-   int chdir(const char * path)
-   {
-      // Change to the directory
-      return _chdir(path);
-   }
-
-
    bool createDirectory(char * path)
    {
       // Attempt to create the directory (passing NULL as the second parameter
