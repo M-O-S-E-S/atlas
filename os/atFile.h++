@@ -21,6 +21,8 @@
    #define DIRECTORY_SEPARATOR   '\\'
    #define PATH_SEPARATOR        ';'
 #else
+   #include <unistd.h>
+
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
 #endif
@@ -29,10 +31,12 @@
 #ifdef __cplusplus
    extern "C"
    {
+      ATLAS_SYM bool   isDirectory(char * path);
       ATLAS_SYM bool   createDirectory(char * path);
       ATLAS_SYM int    listFiles(char * path, char ** results, int count);
    }
 #else
+   ATLAS_SYM bool   isDirectory(char * path);
    ATLAS_SYM bool   createDirectory(char * path);
    ATLAS_SYM int    listFiles(char * path, char ** results, int count);
 #endif
