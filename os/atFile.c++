@@ -6,6 +6,41 @@
 
    #include <Windows.h>
    #include <Strsafe.h>
+   #include <sys/types.h>
+   #include <sys/stat.h>
+
+
+   bool isDirectory(char * path)
+   {
+      struct stat fileStat;
+
+      // Make sure we have a path at all
+      if (path == NULL)
+      {
+         // No path is not a directory
+         return false;
+      }
+
+      // Make sure the target on this path exists
+      if (access(path, F_OK) != 0)
+      {
+         // The target does not exist thus it can't be a directory
+         return false;
+      }
+
+      // Get the file information
+      stat(path, &fileStat);
+
+      // Check if the file is a directory
+      if (fileStat.st_mode & _S_IFDIR)
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
 
 
    bool createDirectory(char * path)
@@ -111,6 +146,39 @@
    #include <string.h>
    #include <sys/stat.h>
    #include <sys/types.h>
+
+
+   bool isDirectory(char * path)
+   {
+      struct stat fileStat;
+
+      // Make sure we have a path at all
+      if (path == NULL)
+      {
+         // No path is not a directory
+         return false;
+      }
+
+      // Make sure the target on this path exists
+      if (access(path, F_OK) != 0)
+      {
+         // The target does not exist thus it can't be a directory
+         return false;
+      }
+
+      // Get the file information
+      stat(path, &fileStat);
+
+      // Check if the file is a directory
+      if (fileStat.st_mode & S_IFDIR)
+      {
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
 
 
    bool createDirectory(char * path)
