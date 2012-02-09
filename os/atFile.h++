@@ -12,6 +12,7 @@
    #include <direct.h>
    #include <io.h>
 
+   #define chdir    _chdir
    #define access   _access
    #define F_OK   0x00
    #define W_OK   0x02
@@ -19,16 +20,6 @@
 
    #define DIRECTORY_SEPARATOR   '\\'
    #define PATH_SEPARATOR        ';'
-
-   // FUNCTIONS
-   #ifdef __cplusplus
-      extern "C"
-      {
-         ATLAS_SYM int    chdir(const char * path);
-      }
-   #else
-      ATLAS_SYM int    chdir(const char * path);
-   #endif
 #else
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
