@@ -12,7 +12,7 @@
 
    bool isDirectory(char * path)
    {
-      struct stat fileStat;
+      struct stat   fileStat;
 
       // Make sure we have a path at all
       if (path == NULL)
@@ -31,15 +31,11 @@
       // Get the file information
       stat(path, &fileStat);
 
-      // Check if the file is a directory
+      // Check if the file is a directory and return accordingly
       if (fileStat.st_mode & _S_IFDIR)
-      {
          return true;
-      }
       else
-      {
          return false;
-      }
    }
 
 
@@ -150,7 +146,7 @@
 
    bool isDirectory(char * path)
    {
-      struct stat fileStat;
+      struct stat   fileStat;
 
       // Make sure we have a path at all
       if (path == NULL)
@@ -169,15 +165,11 @@
       // Get the file information
       stat(path, &fileStat);
 
-      // Check if the file is a directory
+      // Check if the file is a directory and return accordingly
       if (fileStat.st_mode & S_IFDIR)
-      {
          return true;
-      }
       else
-      {
          return false;
-      }
    }
 
 
