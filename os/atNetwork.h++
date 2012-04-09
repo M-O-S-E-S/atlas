@@ -13,8 +13,13 @@
    #include <ws2tcpip.h>
    #undef WIN32_LEAN_AND_MEAN
 
-   #define EWOULDBLOCK   WSAEWOULDBLOCK
-   #define EINPROGRESS   WSAEINPROGRESS
+   #if _MSC_VER >= 1600
+      #include <errno.h>
+   #else
+      // Visual C++ before 2010 doesn't define these values
+      #define EWOULDBLOCK   WSAEWOULDBLOCK
+      #define EINPROGRESS   WSAEINPROGRESS
+   #endif
 
    #define MAXHOSTNAMELEN   64
 
