@@ -14,14 +14,14 @@ atString::atString()
 }
 
 
-atString::atString(char * stringToCopy) 
+atString::atString(char * stringToCopy)
 {
    // Initialize string to not being allocated
    local_string = NULL;
    string_length = 0;
 
    // Copy the string into our string
-   setString(stringToCopy); 
+   setString(stringToCopy);
 }
 
 
