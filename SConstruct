@@ -1,23 +1,41 @@
 
+# Get the build target (e.g., win32, posix, etc.)
+buildTarget = ARGUMENTS.get('platform', str(Platform()))
+
 # Base paths for external libraries (platform dependent)
-if str(Platform()) == 'win32':
-   # HLA RTI
-   rtiPath = 'L:/rtis-1.3_D18A'
+if buildTarget == 'win32':
    # libxml2
    xmlPath = 'L:/libxml2-2.6.27'
+   # HLA RTI
+   rtiPath = ARGUMENTS.get('rtiPath', 'L:/rtis-1.3_D18A')
    # iconv
    iconvPath = 'L:/iconv-1.9.1'
    # inttypes.h for MSVC
    msinttypesPath = 'L:/msinttypes-r21'
-else:
+elif buildTarget == 'posix':
    # HLA RTI
-   rtiPath = '/irl/tools/libs/rtis-1.3_D22'
+   rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis-1.3_D22')
    # uuid
    uuidPath = '/irl/tools/libs/uuid-1.6.2'
    # libxml2 (see subpaths below)
    xmlPath = '/usr'
    # bluetooth (see subpaths below)
    bluetoothPath = '/usr'
+elif buildTarget == 'android':
+   # Android NDK
+   ndkPath = '/irl/tools/libs/android-ndk-r8'
+   # uuid
+   uuidPath = '/irl/tools-android/libs/uuid-1.6.2'
+   # libxml2
+   xmlPath = '/irl/tools-android/libs/libxml2'
+   # HLA RTI (empty means do not include)
+   rtiPath = ''
+   # glob
+   globPath = '/irl/tools-android/libs/glob'
+else:
+   # Unsupported architecture so bail
+   print "Unsupported target type ", buildTarget
+   sys.exit(0)
 
 
 # Borrowed from id, this takes a prefix and adds it to each filename and
@@ -62,12 +80,15 @@ communicationSrc = 'atIPCInterface.c++ \
                     atSerialInterface.c++ \
                     atBluetoothInterface.c++ \
                     atRFCOMMBluetoothInterface.c++ \
-                    atHLAInterface.c++ \
-                    atRTIInterface.c++ atRTIInterfaceAmbassador.c++ \
                     atNameValuePair.c++ atKeyedBufferHandler.c++'
+if rtiPath != '':
+   communicationSrc = communicationSrc + ' atHLAInterface.c++ \
+                                           atRTIInterface.c++ \
+                                           atRTIInterfaceAmbassador.c++'
 
 containerDir = 'container'
-containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ atPriorityQueue.c++'
+containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ \
+                atPriorityQueue.c++'
 
 foundationDir = 'foundation'
 foundationSrc = 'atNotifier.c++ atItem.c++'
@@ -103,7 +124,7 @@ atlasSource.extend(buildList(xmlDir, xmlSrc))
 defines = Split('ATLAS_SYM=EXPORT')
 
 # Then handle platform-specific issues
-if str(Platform()) == 'win32':
+if buildTarget == 'win32':
    # Flags for the VC++ compiler
    # /nologo      = Don't print the compiler banner
    # /MD          = Use multithreaded DLL runtime
@@ -129,12 +150,44 @@ if str(Platform()) == 'win32':
    # /OPT:ICF        = Optimize away redundant function packages
    # /INCREMENTAL:NO = Do not perform incremental linking
    linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO')
-else:
+elif buildTarget == 'posix':
    # Flags for gcc (generate debug information and optimize)
    compileFlags = Split('-g -O')
 
    # No linker flags
    linkFlags = []
+elif buildTarget == 'android':
+   # Set-up cross compiler by platform we're actually on
+   if str(Platform()) == 'posix':
+      # Specify the ARM EABI cross compiler
+      basisEnv.Replace(CC = ndkPath + 
+                            '/toolchains/arm-linux-androideabi-4.4.3' +
+                            '/prebuilt/linux-x86/bin/' +
+                            'arm-linux-androideabi-gcc')
+      basisEnv.Replace(CXX = ndkPath + 
+                             '/toolchains/arm-linux-androideabi-4.4.3' +
+                             '/prebuilt/linux-x86/bin/' +
+                             'arm-linux-androideabi-g++')
+
+      # Flags for the ARM EABI compiler
+      # -mandroid          = Target the android platform
+      # -fexceptions       = Explicitly include exceptions (TODO: remove?)
+      # -Wno-write-strings = Don't throw warnings for string const conversions
+      compileFlags = Split('-mandroid -fexceptions -Wno-write-strings')
+
+      # Set a define so things can know we're cross compiling for Android
+      defines += Split('__ANDROID__')
+
+      # No linker flags
+      linkFlags = Split('--sysroot=' + ndkPath + 
+                        '/platforms/android-14/arch-arm')
+   else:
+      print "Unsupported platform type for cross compile", buildTarget
+      sys.exit(0)
+else:
+   # Unsupported architecture so bail
+   print "Unsupported target type ", buildTarget
+   sys.exit(0)
 
 
 # Set the initial paths and libraries
@@ -151,9 +204,10 @@ extLibs = []
 
 # Depending on platform, add the external libraries that ATLAS requires
 # (Windows requires more to be linked in than Linux does)
-if str(Platform()) == 'win32':
+if buildTarget == 'win32':
    # Add the RTI
-   addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-9.0', 'librti13')
+   if rtiPath != '':
+      addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-9.0', 'librti13')
 
    # Add libxml2
    addExternal(xmlPath, '/include', '/lib', 'libxml2')
@@ -166,9 +220,10 @@ if str(Platform()) == 'win32':
 
    # Add the Windows-specific libraries (already in main path)
    extLibs.extend(Split('ws2_32 winmm rpcrt4'))
-else:
+elif buildTarget == 'posix':
    # Add the RTI
-   addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.4', 'rti13')
+   if rtiPath != '':
+      addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.4', 'rti13')
 
    # Add the uuid library
    addExternal(uuidPath, '/include', '/lib', 'uuid')
@@ -178,6 +233,23 @@ else:
 
    # Add bluetooth
    addExternal(bluetoothPath, '/include', '/lib', 'bluetooth')
+elif buildTarget == 'android':
+   # Point to the NDK
+   extIncPath.extend(Split(ndkPath + 
+                           '/platforms/android-14/arch-arm/usr/include'))
+
+   # Add the uuid library
+   addExternal(uuidPath, '/include', '/lib', 'uuid')
+
+   # Add libxml2
+   addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
+
+   # Add glob
+   addExternal(globPath, '/include', '/libs/armeabi', 'glob')
+else:
+   # Unsupported architecture so bail
+   print "Unsupported target type ", buildTarget
+   sys.exit(0)
 
 # Finally, add the paths for all the external used libraries
 # to the main paths (and libraries)
@@ -200,6 +272,6 @@ atlasLib = basisEnv.SharedLibrary('atlas', source = atlasSource)
 
 
 # Under Windows, embed the manifest into the .dll
-if str(Platform()) == 'win32':
+if buildTarget == 'win32':
    embedManifest(basisEnv, atlasLib, 2)
 
