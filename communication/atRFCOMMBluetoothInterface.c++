@@ -31,6 +31,30 @@ atRFCOMMBluetoothInterface::atRFCOMMBluetoothInterface(char * address,
 }
 
 
+atRFCOMMBluetoothInterface::atRFCOMMBluetoothInterface(u_char channel)
+{
+   char               hostname[MAXHOSTNAMELEN];
+   struct hostent *   host;
+
+   // Open the socket
+   if ( (socket_value =
+      openSocket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0 )
+   {
+      notify(AT_ERROR, "Unable to open socket for communication.\n");
+   }
+
+   // Set the read name field
+   setBTAddress(&read_name, NULL, channel);
+
+   // Set the write name field
+   setBTAddress(&write_name, NULL, channel);
+
+   // Initialize remaining instance variables
+   num_client_sockets = 0;
+}
+
+
+
 atRFCOMMBluetoothInterface::~atRFCOMMBluetoothInterface()
 {
    u_long   i;

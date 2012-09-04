@@ -31,6 +31,7 @@ class ATLAS_SYM atRFCOMMBluetoothInterface : public atBluetoothInterface
 
    public:
       atRFCOMMBluetoothInterface(char * address, u_char channel);
+      atRFCOMMBluetoothInterface(u_char channel);
       virtual ~atRFCOMMBluetoothInterface();
 
       void           allowConnections(int backlog);
