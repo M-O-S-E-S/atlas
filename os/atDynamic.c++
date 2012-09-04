@@ -167,7 +167,7 @@
    char * dlError()
    {
       // Just call dlerror() and return what it does
-      return dlerror();
+      return (char *) dlerror();
    }
 
 

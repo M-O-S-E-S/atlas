@@ -27,6 +27,9 @@
 #ifdef _WIN32
    #define IMPORT __declspec(dllimport)
    #define EXPORT __declspec(dllexport)
+#elif __ANDROID__
+   #define IMPORT __attribute__((visibility("default")))
+   #define EXPORT __attribute__((visibility("default")))
 #else
    #define IMPORT __attribute__((visibility("default")))
    #define EXPORT __attribute__((visibility("default")))

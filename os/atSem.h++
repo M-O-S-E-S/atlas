@@ -17,6 +17,13 @@
    typedef uint64_t   SemKey;
 
    #define INVALID_SEM_ID   INVALID_HANDLE_VALUE
+#elif __ANDROID__
+   #include <semaphore.h>
+
+   typedef sem_t *   SemID;
+   typedef int       SemKey;
+
+   #define INVALID_SEM_ID   0x00000000
 #else
    #include <errno.h>
    #include <sys/sem.h>

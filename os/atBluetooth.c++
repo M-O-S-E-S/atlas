@@ -118,10 +118,13 @@
       WSACleanup();
    }
 
-   void setBTAddress(BluetoothSockAddr * btAddr, char * address, u_char channel)
+   void setBTAddress(BluetoothSockAddr * btAddr, char * address, 
+                     u_char channel)
    {
+      memset(btAddr, 0, sizeof(*btAddr));
       btAddr->addressFamily = AF_BLUETOOTH;
-      str2ba(address, &(btAddr->btAddr));
+      if (address != NULL)
+         str2ba(address, &(btAddr->btAddr));
       btAddr->port = channel;
       btAddr->serviceClassId = RFCOMM_PROTOCOL_UUID;
    }
@@ -135,6 +138,8 @@
    {
       *channel = (u_char ) btAddr->port;
    }
+#elif __ANDROID__
+   // Android has no Bluetooth support 
 #else
    void getBTDevices(BluetoothDevice * devices, u_long * numDevices)
    {
@@ -179,10 +184,14 @@
       close(sock);
    }
 
-   void setBTAddress(BluetoothSockAddr * btAddr, char * address, u_char channel)
+   void setBTAddress(BluetoothSockAddr * btAddr, char * address, 
+                     u_char channel)
    {
       btAddr->rc_family = AF_BLUETOOTH;
-      str2ba(address, &(btAddr->rc_bdaddr));
+      if (address == NULL)
+         btAddr->rc_bdaddr = *BDADDR_ANY;
+      else
+         str2ba(address, &(btAddr->rc_bdaddr));
       btAddr->rc_channel = channel;
    }
 

@@ -20,6 +20,11 @@
 
    #define DIRECTORY_SEPARATOR   '\\'
    #define PATH_SEPARATOR        ';'
+#elif __ANDROID__
+   #include <unistd.h>
+
+   #define DIRECTORY_SEPARATOR   '/'
+   #define PATH_SEPARATOR        ':'
 #else
    #include <unistd.h>
 

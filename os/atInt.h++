@@ -14,6 +14,9 @@
 
    // Include the MSVC-specific inttypes.h here
    #include "inttypes.h"
+#elif __ANDROID__
+   // Just include the C99 standard inttypes.h
+   #include <inttypes.h>
 #else
    // Just include the C99 standard inttypes.h
    #include <inttypes.h>

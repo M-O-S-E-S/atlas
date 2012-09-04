@@ -10,6 +10,8 @@
    #define RTLD_GLOBAL   0
    #define RTLD_LAZY     0
    #define RTLD_NOW      0
+#elif __ANDROID__
+   // Nothing
 #else
    #include <dlfcn.h>
 #endif

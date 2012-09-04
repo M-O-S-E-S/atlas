@@ -39,12 +39,20 @@
       ATLAS_SYM int ba2str(const bdaddr_t * btaddr, char * straddr);
       ATLAS_SYM int str2ba(const char * straddr, bdaddr_t * btaddr);
    #endif
+#elif __ANDROID__
+   // Android has no Bluetooth support so make placeholders
+   #define BTPROTO_RFCOMM   1
+   #define BTPROTO_L2CAP    1
+
+   typedef int   BluetoothSockAddr;
 #else
     #include <bluetooth/bluetooth.h>
     #include <bluetooth/rfcomm.h>
     #include <bluetooth/l2cap.h>
     #include <bluetooth/hci.h>
     #include <bluetooth/hci_lib.h>
+    #include <bluetooth/sdp.h>
+    #include <bluetooth/sdp_lib.h>
     #include <stdlib.h>
 
     typedef sockaddr_rc   BluetoothSockAddr;

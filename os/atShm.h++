@@ -17,6 +17,14 @@
    typedef uint64_t   ShmKey;
 
    #define INVALID_SHM_ID   INVALID_HANDLE_VALUE
+#elif __ANDROID__
+   // Android has no good shared memory support so make placeholders
+   #include <sys/types.h>
+
+   typedef int   ShmID;
+   typedef int   ShmKey;
+
+   #define INVALID_SHM_ID   -1
 #else
    #include <errno.h>
    #include <stdlib.h>

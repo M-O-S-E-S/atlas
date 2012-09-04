@@ -32,6 +32,8 @@
    #else
       ATLAS_SYM int gettimeofday(struct timeval * tv, struct timezone * tz);
    #endif
+#elif __ANDROID__
+   // Nothing
 #else
    #include <sys/time.h>
 #endif

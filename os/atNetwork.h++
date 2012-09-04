@@ -27,6 +27,30 @@
    typedef int      socklen_t;
    typedef char     SocketOptionFlag;
    typedef int      SocketOptionValue;
+#elif __ANDROID__
+   #include <unistd.h>
+   #include <string.h>
+   #include <netdb.h>
+   #include <fcntl.h>
+   #include <errno.h>
+   #include <sys/types.h>
+   #include <sys/socket.h>
+   #include <sys/param.h>
+   #include <sys/select.h>
+   #include <netinet/in.h>
+   #include <netinet/tcp.h>
+
+   #ifndef MAXHOSTNAMELEN
+      #define MAXHOSTNAMELEN   64
+   #endif
+
+   #ifndef FNONBLOCK
+      #define FNONBLOCK   O_NONBLOCK
+   #endif
+
+   typedef int   Socket;
+   typedef int   SocketOptionFlag;
+   typedef int   SocketOptionValue;
 #else
    #include <unistd.h>
    #include <string.h>

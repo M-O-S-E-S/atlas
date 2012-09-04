@@ -59,6 +59,58 @@
       else
          return 1;
    }
+#elif __ANDROID__
+   #include <stdlib.h>
+
+   bool semGet(SemKey key, SemID * id)
+   {
+      // First, make a semaphore object
+      if ( (*id = (SemID ) calloc(1, sizeof(sem_t))) == NULL )
+      {
+         // Failed to allocate so bail out
+         return 0;
+      }
+      else
+      {
+         // Initialize the semaphore object
+         if (sem_init(*id, 0, 1) == 0)
+         {
+            // Failed to initialize so bail out
+            return 0;
+         }
+         else
+         {
+            // All is fine so return
+            return 1;
+         }
+      }
+   }
+
+
+   void semRemove(SemID id)
+   {
+      // First, destroy the semaphore object
+      sem_destroy(id);
+
+      // Clean-up memory
+      if (id != NULL)
+         free(id);
+   }
+
+
+   int semLock(SemID id)
+   {
+      // Call wait; if it goes negative, we will block and wait (meaning
+      // it's already locked and we must wait)
+      sem_wait(id);
+   }
+
+
+   int semUnlock(SemID id)
+   {
+      // Unlock the semaphore by calling post
+      sem_post(id);
+   }
 #else
    // CONSTANTS
    #define AT_SHQ_LOCK_SEMAPHORE_NUM   0

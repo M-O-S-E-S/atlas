@@ -55,6 +55,8 @@
       else
          return 1;
    }
+#elif __ANDROID__
+   // Android does not have any good shared memory support
 #else
    bool shmGet(ShmKey key, u_long memSize, ShmID * id)
    {
