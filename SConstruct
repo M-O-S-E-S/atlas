@@ -1,4 +1,7 @@
 
+# Import sys so we call exit() if we need to
+import sys
+
 # Get the build target (e.g., win32, posix, etc.)
 buildTarget = ARGUMENTS.get('platform', str(Platform()))
 
