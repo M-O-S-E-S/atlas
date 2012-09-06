@@ -57,6 +57,31 @@
    }
 #elif __ANDROID__
    // Android does not have any good shared memory support
+   bool shmGet(ShmKey key, u_long memSize, ShmID * id)
+   {
+      printf("Shared Memory not supported in ATLAS for Android.\n");
+      return false;
+   }
+
+
+   void shmRemove(ShmID id)
+   {
+      printf("Shared Memory not supported in ATLAS for Android.\n");
+   }
+
+
+   u_char * shmAttach(ShmID id)
+   {
+      printf("Shared Memory not supported in ATLAS for Android.\n");
+      return (u_char *) -1;
+   }
+
+
+   int shmDetach(u_char * mem)
+   {
+      printf("Shared Memory not supported in ATLAS for Android.\n");
+      return -1;
+   }
 #else
    bool shmGet(ShmKey key, u_long memSize, ShmID * id)
    {
