@@ -8,13 +8,13 @@ buildTarget = ARGUMENTS.get('platform', str(Platform()))
 # Base paths for external libraries (platform dependent)
 if buildTarget == 'win32':
    # libxml2
-   xmlPath = 'L:/libxml2-2.6.27'
+   xmlPath = 'L:/libxml2-2.7.6'
    # HLA RTI
-   rtiPath = ARGUMENTS.get('rtiPath', 'L:/rtis-1.3_D18A')
+   rtiPath = ARGUMENTS.get('rtiPath', 'L:/rtis-1.3_D22')
    # iconv
    iconvPath = 'L:/iconv-1.9.1'
    # inttypes.h for MSVC
-   msinttypesPath = 'L:/msinttypes-r21'
+   msinttypesPath = 'L:/msinttypes-r26'
 elif buildTarget == 'posix':
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis-1.3_D22')
@@ -210,7 +210,7 @@ extLibs = []
 if buildTarget == 'win32':
    # Add the RTI
    if rtiPath != '':
-      addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-9.0', 'librti13')
+      addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0', 'librti13')
 
    # Add libxml2
    addExternal(xmlPath, '/include', '/lib', 'libxml2')
