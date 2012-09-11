@@ -5,13 +5,16 @@
 
 // INCLUDES
 #include <sys/types.h>
-#include "atNotifier.h++"
+#include "atItem.h++"
 #include "atOSDefs.h++"
 
 
-class ATLAS_SYM atThreadQueue : public atNotifier
+class ATLAS_SYM atThreadQueue : public atItem
 {
    protected:
+      SemKey     sem_key;
+      SemID      sem_id;
+
       u_long     memory_increment_size;
 
       u_char *   queue_buffer;
@@ -28,7 +31,7 @@ class ATLAS_SYM atThreadQueue : public atNotifier
 
 
    public:
-      atThreadQueue(u_long initialSize, u_long incrementSize);
+      atThreadQueue(SemKey key, u_long initialSize, u_long incrementSize);
       virtual ~atThreadQueue();
 
       virtual void   enqueue(u_char * buffer, u_long bufferLen);

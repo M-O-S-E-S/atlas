@@ -79,7 +79,7 @@ communicationSrc = 'atIPCInterface.c++ \
                     atNetworkInterface.c++ \
                     atUDPNetworkInterface.c++ atTCPNetworkInterface.c++ \
                     atSharedMemoryInterface.c++ atSharedQueue.c++ \
-                    atThreadInterface.c++ atThreadQueue.c++ \
+                    atThreadInterface.c++ atThreadQueue.c++ atThreadCount.c++ \
                     atSerialInterface.c++ \
                     atBluetoothInterface.c++ \
                     atRFCOMMBluetoothInterface.c++ \

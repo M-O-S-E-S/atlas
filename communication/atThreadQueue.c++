@@ -5,10 +5,23 @@
 #include "atThreadQueue.h++"
 
 
-atThreadQueue::atThreadQueue(u_long initialSize, u_long incrementSize)
+atThreadQueue::atThreadQueue(SemKey key, u_long initialSize, 
+                             u_long incrementSize)
 {
+   // Keep the keys to use later
+   sem_key = key;
+
    // Keep the increment size for later use
    memory_increment_size = incrementSize;
+
+   // Get a semaphore to control access to this buffer
+   semGet(sem_key, &sem_id);
+   if (sem_id == INVALID_SEM_ID)
+   {
+      // Having serious issues so tell user and bail
+      notify(AT_FATAL_ERROR,
+             "Failed to get lock mechanism for thread queue.\n");
+   }
 
    // Get memory for the queue buffer
    queue_buffer = (u_char *) calloc(initialSize, sizeof(u_char));
@@ -28,20 +41,75 @@ atThreadQueue::atThreadQueue(u_long initialSize, u_long incrementSize)
 atThreadQueue::~atThreadQueue()
 {
    // Free the queue
+   lock();
    if (queue_buffer != NULL)
       free(queue_buffer);
+   unlock();
+
+   // Close up semaphore
+   semRemove(sem_id);
 }
 
 
 bool atThreadQueue::lock()
 {
-   return true;
+   int   result;
+
+   // Try to do the lock and return either success or failure (if we failed
+   // because of a reason besides that we were interrupted (by a signal), then
+   // notify that fact to the user as well)
+   result = semLock(sem_id);
+  
+   // Process the result accordingly
+   if (result == -1)
+   {
+      // This means an interrupt occurred
+      notify(AT_ERROR, "Failed to lock access to thread queue.\n");
+
+      // Return failure
+      return false;
+   }
+   else if (result == 0)
+   {
+      // Return failure
+      return false;
+   }
+   else
+   {
+      // Return success
+      return true;
+   }
 }
 
 
 bool atThreadQueue::unlock()
 {
-   return true;
+   int   result;
+
+   // Try to do the unlock and return either success or failure (if we failed
+   // because of a reason besides that we were interrupted (by a signal), then
+   // notify that fact to the user as well)
+   result = semUnlock(sem_id);
+
+   // Process the result accordingly
+   if (result == -1)
+   {
+      // This means that an interrupt occured
+      notify(AT_ERROR, "Failed to unlock access to thread queue.\n");
+
+      // Return failure
+      return false;
+   }
+   else if (result == 0)
+   {
+      // Return failure
+      return false;
+   }
+   else
+   {
+      // Return success
+      return true;
+   }
 }
 
 
@@ -65,7 +133,7 @@ void atThreadQueue::reallocateQueue(u_long minimumToAdd)
    increment = 0;
    while (increment < minimumToAdd)
       increment += memory_increment_size;
-   notify(AT_INFO, "Reallocating shared queue by %d bytes.\n", increment);
+   notify(AT_INFO, "Reallocating thread queue by %d bytes.\n", increment);
 
    // Allocate some temporary, unshared memory to hold the data
    tmpData = (u_char *) malloc(queue_size);
