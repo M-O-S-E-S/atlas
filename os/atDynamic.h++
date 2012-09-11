@@ -11,7 +11,7 @@
    #define RTLD_LAZY     0
    #define RTLD_NOW      0
 #elif __ANDROID__
-   // Nothing
+   #include <dlfcn.h>
 #else
    #include <dlfcn.h>
 #endif
