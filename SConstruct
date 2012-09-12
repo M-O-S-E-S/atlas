@@ -176,7 +176,7 @@ elif buildTarget == 'android':
       # -mandroid          = Target the android platform
       # -fexceptions       = Explicitly include exceptions (TODO: remove?)
       # -Wno-write-strings = Don't throw warnings for string const conversions
-      compileFlags = Split('-mandroid -fexceptions -Wno-write-strings')
+      compileFlags = Split('-mandroid -fexceptions -Wno-write-strings -frtti')
 
       # Set a define so things can know we're cross compiling for Android
       defines += Split('__ANDROID__')
@@ -240,6 +240,13 @@ elif buildTarget == 'android':
    # Point to the NDK
    extIncPath.extend(Split(ndkPath + 
                            '/platforms/android-14/arch-arm/usr/include'))
+   extLibPath.extend(Split(ndkPath + 
+                           '/platforms/android-14/arch-arm/usr/lib'))
+
+   # Point to library supporting RTTI
+   extLibPath.extend(Split(ndkPath + 
+                           '/sources/cxx-stl/gnu-libstdc++/libs/armeabi'))
+   extLibs.extend(Split('gnustl_shared'))
 
    # Add the uuid library
    addExternal(uuidPath, '/include', '/lib', 'uuid')
