@@ -30,7 +30,7 @@ elif buildTarget == 'android':
    # uuid
    uuidPath = '/irl/tools-android/libs/uuid-1.6.2'
    # libxml2
-   xmlPath = '/irl/tools-android/libs/libxml2'
+   xmlPath = '/irl/tools-android/libs/libxml2-2.7.8'
    # HLA RTI (empty means do not include)
    rtiPath = ''
    # glob

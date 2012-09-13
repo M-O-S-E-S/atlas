@@ -21,6 +21,6 @@ LOCAL_STATIC_LIBRARIES := libxml2-static
 
 include $(PREBUILT_SHARED_LIBRARY)
 
-$(call import-module, libxml2)
+$(call import-module, libxml2-2.7.8)
 $(call import-module, glob)
 
