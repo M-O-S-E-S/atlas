@@ -10,12 +10,15 @@
 // altering the level will affect all those calling notify())
 int atNotifier::notify_level = AT_INFO;
 
+// Define the "notify destination" (we make this a class variable so that
+// altering the destination will affect all those calling notify())
+FILE * atNotifier::output_file_ptr = stdout;
+
 
 atNotifier::atNotifier()
 {
    // Initialize the instance variables (an empty header and output to stdout)
    memset(header_name, 0, sizeof(header_name));
-   output_file_ptr = stdout;
 }
 
 

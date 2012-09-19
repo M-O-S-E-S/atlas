@@ -30,7 +30,7 @@ class ATLAS_SYM atNotifier
 {
    protected:
       char            header_name[80];
-      FILE *          output_file_ptr;
+      static FILE *   output_file_ptr;
 
       static int      notify_level;
 
