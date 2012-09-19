@@ -20,16 +20,19 @@
 
    #define DIRECTORY_SEPARATOR   '\\'
    #define PATH_SEPARATOR        ';'
+   #define TMP_DIR               getenv("TEMP")
 #elif __ANDROID__
    #include <unistd.h>
 
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
+   #define TMP_DIR               "/sdcard"
 #else
    #include <unistd.h>
 
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
+   #define TMP_DIR               "/tmp"
 #endif
 
 
