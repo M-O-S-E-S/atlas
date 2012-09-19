@@ -111,6 +111,7 @@ void atNotifier::notify(int level, char *str, ...)
       va_start(args, str);
       vfprintf(output_file_ptr, str, args);
       va_end(args);
+      fflush(output_file_ptr);
 
       // If the user called this a fatal error, bail out harshly
       if ((level & AT_FATAL_ERROR) > 0)
