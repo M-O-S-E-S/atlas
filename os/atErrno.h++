@@ -5,6 +5,12 @@
 
 #include "atSymbols.h++"
 
+#ifdef _MSC_VER
+   #include <winsock.h>
+#else
+   #include <errno.h>
+#endif
+
 
 #ifdef __cplusplus
    extern "C"

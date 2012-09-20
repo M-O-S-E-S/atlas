@@ -1,5 +1,5 @@
 
-#include <errno.h>
+#include "atErrno.h++"
 #include "atThread.h++"
 
 
@@ -13,7 +13,7 @@
 
 #ifdef  __ANDROID__
    int pthread_barrier_init (pthread_barrier_t *barrier, 
-                             pthread_barrierattr_t *attr, int count)
+                             const pthread_barrierattr_t *attr, int count)
    {
        /* Note attributes not supported! */
        int status;
