@@ -16,6 +16,7 @@
 #include "atSleep.h++"
 #include "atStr.h++"
 #include "atSymbols.h++"
+#include "atThread.h++"
 #include "atTime.h++"
 #include "atUUID.h++"
 

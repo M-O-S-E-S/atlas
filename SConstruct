@@ -83,11 +83,10 @@ communicationSrc = 'atIPCInterface.c++ \
                     atSerialInterface.c++ \
                     atBluetoothInterface.c++ \
                     atRFCOMMBluetoothInterface.c++ \
-                    atNameValuePair.c++ atKeyedBufferHandler.c++'
+                    atNameValuePair.c++ atKeyedBufferHandler.c++ \
+                    atHLAInterface.c++ atRTIInterface.c++'
 if rtiPath != '':
-   communicationSrc = communicationSrc + ' atHLAInterface.c++ \
-                                           atRTIInterface.c++ \
-                                           atRTIInterfaceAmbassador.c++'
+   communicationSrc = communicationSrc + ' atRTIInterfaceAmbassador.c++'
 
 containerDir = 'container'
 containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ \
@@ -101,7 +100,8 @@ mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
 osDir = 'os'
 osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ atFile.c++ \
-         atNetwork.c++ atSem.c++ atShm.c++ atSpawn.c++ atTime.c++ atUUID.c++'
+         atNetwork.c++ atSem.c++ atShm.c++ atSpawn.c++ atThread.c++ \
+         atTime.c++ atUUID.c++'
 
 utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atPath.c++ atImage.c++ \

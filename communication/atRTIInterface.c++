@@ -28,6 +28,7 @@ atRTIInterface::atRTIInterface(char * fedExecName, char * fedFilename)
    strcpy(fed_exec_name, fedExecName);
    buf_list = new atList();
 
+#ifndef __ANDROID__
    // Create federation execution (it will succeed if we're first; otherwise,
    // catch the exception so we know we're not)
    try
@@ -76,11 +77,13 @@ atRTIInterface::atRTIInterface(char * fedExecName, char * fedFilename)
    // Tell user if we joined the federation execution
    if (joined == true)
       notify(AT_INFO, "Joined federation execution.\n");
+#endif
 }
 
 
 atRTIInterface::~atRTIInterface()
 {
+#ifndef __ANDROID__
    // Resign from the federation
    try
    {
@@ -100,6 +103,7 @@ atRTIInterface::~atRTIInterface()
    catch (rti13::Exception& e)
    {
    }
+#endif
 
    // Set singleton to NULL
    rti_interface_instance = NULL;
@@ -109,11 +113,13 @@ atRTIInterface::~atRTIInterface()
 atRTIInterface * atRTIInterface::getInstance(char * fedExecName, 
                                              char * fedFilename)
 {
+#ifndef __ANDROID__
    // Check to see if an instance exists, and create one if not
    if (rti_interface_instance == NULL)
    {
       rti_interface_instance = new atRTIInterface(fedExecName, fedFilename);
    }
+#endif
 
    // Return the singleton instance of this class
    return rti_interface_instance;
@@ -129,11 +135,13 @@ atRTIInterface * atRTIInterface::getInstance()
 
 atClassID atRTIInterface::registerClass(char * classTypeStr)
 {
+#ifndef __ANDROID__
    // Get the object class handle and save it
    notify(AT_INFO, "Registering object class '%s'.\n", classTypeStr);
    class_handles[num_class_handles] = 
       rti_amb.getObjectClassHandle(classTypeStr);
    num_class_handles++;
+#endif
 
    // Return an ID for the user to use
    return (num_class_handles-1);
@@ -143,6 +151,7 @@ atClassID atRTIInterface::registerClass(char * classTypeStr)
 atAttributeID atRTIInterface::registerAttribute(char *attrTypeStr, 
                                                 atClassID classID)
 {
+#ifndef __ANDROID__
    // Get the attribute handle and save it
    notify(AT_INFO, "Registering attribute '%s'.\n", attrTypeStr);
    attribute_handles[classID][num_attribute_handles[classID]] = 
@@ -157,6 +166,7 @@ atAttributeID atRTIInterface::registerAttribute(char *attrTypeStr,
 
    // Increment the number of known attribute handles for this class
    num_attribute_handles[classID]++;
+#endif
 
    // Return an ID for the user to use
    return (num_object_attribute_map_entries-1);
@@ -165,12 +175,14 @@ atAttributeID atRTIInterface::registerAttribute(char *attrTypeStr,
 
 atInteractionID atRTIInterface::registerInteraction(char * interactionTypeStr)
 {
+#ifndef __ANDROID__
    // Get the object class handle and save it
    notify(AT_INFO, "Registering interaction '%s'.\n", interactionTypeStr);
    interaction_class_handles[num_interaction_class_handles] = 
       rti_amb.getInteractionClassHandle(interactionTypeStr);
    strcpy(interaction_names[num_interaction_class_handles], interactionTypeStr);
    num_interaction_class_handles++;
+#endif
 
    // Return an ID for the user to use
    return (num_interaction_class_handles-1);
@@ -180,6 +192,7 @@ atInteractionID atRTIInterface::registerInteraction(char * interactionTypeStr)
 atParameterID atRTIInterface::registerParameter(char * parameterTypeStr,
    atInteractionID interactionTypeID)
 {
+#ifndef __ANDROID__
    // Get the attribute handle and save it
    notify(AT_INFO, "Registering parameter '%s'.\n", parameterTypeStr);
    interaction_parameter_handles[interactionTypeID]
@@ -197,6 +210,7 @@ atParameterID atRTIInterface::registerParameter(char * parameterTypeStr,
 
    // Increment the number of known parameters for this interaction
    num_interaction_parameter_handles[interactionTypeID]++;
+#endif
 
    // Return an ID for the user to use
    return (num_interaction_parameter_map_entries-1);
@@ -207,6 +221,7 @@ void atRTIInterface::subscribeAttributes(atClassID classTypeID,
                                          u_long numAttributes,
                                          atAttributeID attrTypeIDs[])
 {
+#ifndef __ANDROID__
    rti13::AttributeHandleSet *   attributes;
    u_long                        i;
 
@@ -224,6 +239,7 @@ void atRTIInterface::subscribeAttributes(atClassID classTypeID,
    // We're done with the attribute set
    attributes->empty();
    delete attributes;
+#endif
 }
 
 
@@ -231,6 +247,7 @@ void atRTIInterface::publishAttributes(atClassID classTypeID,
                                        u_long numAttributes,
                                        atAttributeID attrTypeIDs[])
 {
+#ifndef __ANDROID__
    rti13::AttributeHandleSet *   attributes;
    u_long                        i;
 
@@ -247,12 +264,14 @@ void atRTIInterface::publishAttributes(atClassID classTypeID,
    // We're done with the attribute set
    attributes->empty();
    delete attributes;
+#endif
 }
 
 
 void atRTIInterface::subscribeInteractions(u_long numInteractions,
                                            atInteractionID interactionTypeIDs[])
 {
+#ifndef __ANDROID__
    u_long   i;
 
    // Go through the interactions and subscribe to each
@@ -261,6 +280,7 @@ void atRTIInterface::subscribeInteractions(u_long numInteractions,
       rti_amb.subscribeInteractionClass(
          interaction_class_handles[interactionTypeIDs[i]]);
    }
+#endif
 }
 
 
@@ -278,10 +298,13 @@ atInstanceID atRTIInterface::createInstance(atClassID classTypeID)
 
 void atRTIInterface::tick()
 {
+#ifndef __ANDROID__
    rti_amb.tick();
+#endif
 }
 
 
+#ifndef __ANDROID__
 void atRTIInterface::processAmbDiscover(rti13::ObjectHandle obj,
    rti13::ObjectClassHandle objClass, const char * name)
 {
@@ -550,6 +573,7 @@ void atRTIInterface::processAmbInteraction(
       }
    }
 }
+#endif
 
 
 atKeyedBufferHandler * atRTIInterface::read()

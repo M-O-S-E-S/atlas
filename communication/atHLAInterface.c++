@@ -1,4 +1,5 @@
 
+#include <time.h>
 #include "atHLAInterface.h++"
 #include "atRTIInterface.h++"
 #include "atNameValuePair.h++"

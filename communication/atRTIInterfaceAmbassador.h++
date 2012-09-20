@@ -6,6 +6,7 @@
 #define RTI_USES_STD_FSTREAM
 
 #include "NullFederateAmbassador13.h"
+
 #include "atOSDefs.h++"
 
 
@@ -60,7 +61,6 @@ class ATLAS_SYM atRTIInterfaceAmbassador : public rti13::NullFederateAmbassador
 
       void   removeObjectInstance(rti13::ObjectHandle obj, const char * tag)
                 throw (rti13::ObjectNotKnown, rti13::FederateInternalError);
-
 };
 
 

@@ -86,3 +86,4 @@ void atRTIInterfaceAmbassador::removeObjectInstance(
 {
     atRTIInterface::getInstance()->processAmbRemove(obj);
 }
+
