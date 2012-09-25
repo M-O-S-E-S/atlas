@@ -137,8 +137,8 @@ if buildTarget == 'win32':
    # /Zc:forScope = Use standard C++ scoping rules in for loops
    # /GR          = Enable C++ run-time type information
    # /Gd          = Use __cdecl calling convention
-   # /Z7          = Generate debug information
-   compileFlags = Split('/nologo /MD /O2 /EHsc /W3 /Zc:forScope /GR /Gd /Z7')
+   # /Zi          = Generate debug information
+   compileFlags = Split('/nologo /MD /O2 /EHsc /W3 /Zc:forScope /GR /Gd /Zi')
 
    # Additional flags to disable useless warnings in Windows
    compileFlags += Split('/wd4091 /wd4275 /wd4290')
@@ -152,7 +152,8 @@ if buildTarget == 'win32':
    # /OPT:REF        = Optimize away unreferenced code
    # /OPT:ICF        = Optimize away redundant function packages
    # /INCREMENTAL:NO = Do not perform incremental linking
-   linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO')
+   # /MANIFEST       = Generate manifest file
+   linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO /MANIFEST')
 elif buildTarget == 'posix':
    # Flags for gcc (generate debug information and optimize)
    compileFlags = Split('-g -O')
