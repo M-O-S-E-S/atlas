@@ -13,13 +13,18 @@
    #include <ws2tcpip.h>
    #undef WIN32_LEAN_AND_MEAN
 
-   #if _MSC_VER >= 1600
+   // Visual Studio 2010 and up define EWOULDBLOCK and EINPROGRESS in
+   // <errno.h>.  Unfortunately, these definitions are not used by
+   // Winsock, so checking the errno.h values for Winsock-related errors
+   // is useless
+   #if (_MSC_VER >= 1600)
       #include <errno.h>
-   #else
-      // Visual C++ before 2010 doesn't define these values
-      #define EWOULDBLOCK   WSAEWOULDBLOCK
-      #define EINPROGRESS   WSAEINPROGRESS
+      #undef EWOULDBLOCK
+      #undef EINPROGRESS
    #endif
+
+   #define EWOULDBLOCK   WSAEWOULDBLOCK
+   #define EINPROGRESS   WSAEINPROGRESS
 
    #define MAXHOSTNAMELEN   64
 
