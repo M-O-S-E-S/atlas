@@ -106,7 +106,7 @@ osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ atFile.c++ \
 utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atPath.c++ atImage.c++ \
            atString.c++ atStringBuffer.c++ atStringTokenizer.c++ \
-           atTimer.c++ atJoint.c++'
+           atTimer.c++ atJoint.c++ atCommandLine.c++'
 
 xmlDir = 'xml'
 xmlSrc = 'atXMLBuffer.c++ atXMLDocument.c++ atXMLReader.c++'
@@ -156,7 +156,7 @@ if buildTarget == 'win32':
    linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO /MANIFEST')
 elif buildTarget == 'posix':
    # Flags for gcc (generate debug information and optimize)
-   compileFlags = Split('-g -O')
+   compileFlags = Split('-g -O -Wno-write-strings')
 
    # No linker flags
    linkFlags = []
@@ -182,7 +182,7 @@ elif buildTarget == 'android':
       # Set a define so things can know we're cross compiling for Android
       defines += Split('__ANDROID__')
 
-      # No linker flags
+      # Specify the system root for the Android NDK's linker
       linkFlags = Split('--sysroot=' + ndkPath + 
                         '/platforms/android-14/arch-arm')
    else:
