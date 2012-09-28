@@ -175,7 +175,7 @@
       }
    }
 
-   bool getProcessStatus(atProcessHandle p, int * exitCode)
+   int getProcessStatus(atProcessHandle p, int * exitCode)
    {
       pid_t   result;
       int     status;
