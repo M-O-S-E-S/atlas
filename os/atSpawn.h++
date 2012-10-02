@@ -32,7 +32,8 @@
       extern "C"
       {
          ATLAS_SYM atProcessHandle   spawnProcess(char * execName,
-                                                  char * cmdParameters);
+                                                  char * cmdParameters,
+                                                  char * workingDir);
          ATLAS_SYM int               getProcessStatus(atProcessHandle p,
                                                       int * exitCode);
          ATLAS_SYM bool              exitProcess(atProcessHandle p);
@@ -40,7 +41,8 @@
       }
    #else
       ATLAS_SYM atProcessHandle   spawnProcess(char * execName,
-                                               char * cmdParameters);
+                                               char * cmdParameters,
+                                               char * workingDir);
       ATLAS_SYM int               getProcessStatus(atProcessHandle p,
                                                    int * exitCode);
       ATLAS_SYM bool              exitProcess(atProcessHandle p);

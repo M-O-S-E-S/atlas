@@ -6,7 +6,8 @@
 
    #include <stdio.h>
 
-   atProcessHandle spawnProcess(char * execName, char * cmdParameters)
+   atProcessHandle spawnProcess(char * execName, char * cmdParameters,
+                                char * workingDir)
    {
       STARTUPINFO           si;
       char                  fullCmdLine[1024];
@@ -21,7 +22,7 @@
 
       // Create the process
       if (CreateProcess(execName, fullCmdLine, NULL, NULL, false, 0,
-                        NULL, NULL, &si, &pi) == 0)
+                        NULL, workingDir, &si, &pi) == 0)
       {
          // We failed to start the process for some reason so notify the
          // user and return 0 for the process handle
@@ -112,7 +113,8 @@
    #include <stdlib.h>
    #include <string.h>
 
-   atProcessHandle spawnProcess(char * execName, char * cmdParameters)
+   atProcessHandle spawnProcess(char * execName, char * cmdParameters,
+                                char * workingDir)
    {
       pid_t                 pid;
       char *                cmdLine;
@@ -142,6 +144,10 @@
             params[numParams] = strtok_r(NULL, " ", &lastToken);
          }
          
+         // Change to the working directory, if specified
+         if ((workingDir != NULL) && (strlen(workingDir) > 0))
+            chdir(workingDir);
+
          // Now call exec to start the new process!
          if (execv(execName, params) == -1)
          {
