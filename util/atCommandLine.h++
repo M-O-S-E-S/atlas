@@ -9,7 +9,7 @@
 #include "atMap.h++"
 
 
-class atCommandLine : public atNotifier
+class ATLAS_SYM atCommandLine : public atNotifier
 {
    protected:
 
