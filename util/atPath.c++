@@ -2,6 +2,8 @@
 #include "atPath.h++"
 
 #include "atFile.h++"
+#include "atStringBuffer.h++"
+#include "atStringTokenizer.h++"
 
 
 bool atPath::createDirectory(atString path)
@@ -42,6 +44,43 @@ atList * atPath::listFiles(atString path)
 }
 
 
+atString atPath::getDirectoryFromPath(atString path)
+{
+   int    delimiterLength;
+   int    pathLength;
+   char   pathBuffer[512];
+   int    pathIndex;
+   int    delIndex;
+
+   // Fetch the length of the delimiter
+   delimiterLength = strlen(DELIMITER_STRING);
+
+   // Fetch the length of the input string so we can search from the end
+   pathLength = strlen(path.getString());
+
+   // Copy the path string to a new buffer. We need to do this because we're
+   // going to alter the path for return.
+   strcpy(pathBuffer, path.getString());
+
+   // Search back from the end of the string, searching for the first delimiter
+   for (pathIndex = pathLength - delimiterLength; pathIndex > 0; pathIndex--)
+   {
+      // Test for each delimiter character
+      if (strchr(DELIMITER_STRING, pathBuffer[pathIndex]) != NULL)
+      {
+         // We've found the last delimiter in the string. Truncate the path
+         // buffer at this point and return it.
+         pathBuffer[pathIndex] = '\0';
+         return atString(pathBuffer);
+      }
+   }
+
+   // If we've reached this point, then we didn't find a single instance of the
+   // delimiter in the input path. Return the input path intact.
+   return path;
+}
+
+
 atString atPath::getFilenameFromPath(atString path)
 {
    char     pathBuffer[512];
@@ -70,6 +109,159 @@ atString atPath::getFilenameFromPath(atString path)
    // The next token is NULL, which means we have no more delimiters. This
    // should mean that our current token contains only the file name.
    return atString(currentToken);
+}
+
+
+atString atPath::normalize(atString path)
+{
+   char                  char1;
+   char                  char2;
+   char                  char3;
+   atStringBuffer        head;
+   char *                workStr;
+   atString              workPath;
+   atStringTokenizer *   pathTokens;
+   atString *            pathElement;
+   int                   skip;
+   atList                pathList;
+   atList                resultList;
+   atStringBuffer        resultBuffer;
+
+   // Deal with invalid paths
+   if (path.getLength() == 0)
+      return path;
+
+   // Get the first three characters of the path (if they exist)
+   char1 = path.getString()[0];
+   if (path.getLength() > 1)
+      char2 = path.getString()[1];
+   else
+      char2 = 0;
+   if (path.getLength() > 2)
+      char3 = path.getString()[2];
+   else
+      char3 = 0;
+
+   // We don't handle Windows UNC paths, since it's impossible to do so
+   // in a cross-platform way
+   if ((char1 == '\\') && (char2 == '\\'))
+      return path;
+
+   // Check for a path delimiter or drive letter at the front
+   if (strchr(DELIMITER_STRING, char1) != NULL)
+   {
+      // Just put the correct path delimiter at the front
+      head.append(DIRECTORY_SEPARATOR);
+
+      // Copy the remaining path to work on
+      workStr = path.getString();
+      workPath = atString(&workStr[1]);
+   }
+   else if ((((char1 >= 'a') && (char1 <= 'z')) ||
+             ((char1 >= 'A') && (char1 <= 'Z'))) &&
+            (char2 == ':'))
+   {
+      // Path starts with a drive letter, so use that as the head
+      head.append(char1);
+      head.append(char2);
+
+      // Check if the path after the drive letter is absolute or relative
+      if (strchr(DELIMITER_STRING, char3) != NULL)
+      {
+         // Append a separator after the drive letter
+         head.append(DIRECTORY_SEPARATOR);
+
+         // Copy the remaining path (after the separator) to work on
+         workStr = path.getString();
+         workPath = atString(&workStr[3]);
+      }
+      else
+      {
+         // Copy the remaining path (after the drive letter and colon)
+         // to work on
+         workStr = path.getString();
+         workPath = atString(&workStr[2]);
+      }
+   }
+   else
+   {
+      // Work on the entire path
+      workPath = path;
+   }
+
+   // Tokenize the path using the delimiter string
+   pathTokens = new atStringTokenizer(workPath);
+
+   // Fetch the tokens into a list
+   while ((pathElement = pathTokens->getToken(DELIMITER_STRING)) != NULL)
+      pathList.addEntry(pathElement);
+
+   // Done with the tokenizer
+   delete pathTokens;
+
+   // Traverse the list from right to left and deal with any "." and ".."
+   // elements
+   skip = 0;
+   pathElement = (atString *) pathList.getLastEntry();
+   while (pathElement != NULL)
+   {
+      if (atString("..").equals(pathElement))
+      {
+         // Skip the next element
+         skip++;
+      }
+      else if (atString(".").equals(pathElement))
+      {
+         // Just ignore this element
+      }
+      else if (skip > 0)
+      {
+         // Decrement the skip counter (we've resolved a ".." at this point)
+         skip--;
+      }
+      else
+      {
+         // Add this element to the result path
+         resultList.addEntry(new atString(*pathElement));
+      }
+
+      // Next element
+      pathElement = (atString *) pathList.getPreviousEntry();
+   }
+
+   // Write out any leading absolute path elements that we found
+   resultBuffer.append(head.getString());
+
+   // If there were any ".." elements that weren't resolved during the
+   // normalization process, write those first
+   while (skip > 0)
+   {
+      resultBuffer.append("..");
+      resultBuffer.append(DIRECTORY_SEPARATOR);
+      skip--;
+   }
+
+   // Now, write out the rest of the resulting path (note that we also need
+   // to read this path back out from right to left, since we constructed
+   // it in reverse order in the first place)
+   pathElement = (atString *) resultList.getLastEntry();
+   while (pathElement != NULL)
+   {
+      // Append the path element
+      resultBuffer.append(*pathElement);
+
+      // Check the next path element now (if we're currently at the end of
+      // the list, we don't want to put another separator at the end of the
+      // path
+      pathElement = (atString *) resultList.getPreviousEntry();
+
+      // Append a directory separator if appropriate
+      if (pathElement != NULL)
+         resultBuffer.append(DIRECTORY_SEPARATOR);
+   }
+
+   // Return the resulting path
+   return resultBuffer.getAsString();
 }
 
 
@@ -103,7 +295,7 @@ atString atPath::getExtension(atString path, atString delimiter)
       {
          // We've found the last instance of the delimiter in the string.
          // Return the substring beginning after the end of this delimiter.
-         return atString(pathString + delimiterLength);
+         return atString(pathString + pathIndex + delimiterLength);
       }
    }
 

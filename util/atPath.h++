@@ -20,7 +20,9 @@ class ATLAS_SYM atPath : public atNotifier
       static bool       createDirectory(atString path);
       static atList *   listFiles(atString path);
 
+      static atString   getDirectoryFromPath(atString path);
       static atString   getFilenameFromPath(atString path);
+      static atString   normalize(atString path);
       static atString   getExtension(atString path, atString delimiter);
       static atString   getFilenameWithoutExtension(atString path,
                                                     atString delimiter);
