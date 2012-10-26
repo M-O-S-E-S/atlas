@@ -36,17 +36,33 @@
 #endif
 
 
+enum atPersonalPathKey
+{
+   AT_PATH_HOME,
+   AT_PATH_DESKTOP,
+   AT_PATH_DOCUMENTS,
+   AT_PATH_DOWNLOADS,
+   AT_PATH_MUSIC,
+   AT_PATH_PICTURES,
+   AT_PATH_PUBLIC,
+   AT_PATH_TEMPLATES,
+   AT_PATH_VIDEOS
+};
+
+
 #ifdef __cplusplus
    extern "C"
    {
-      ATLAS_SYM bool   isDirectory(char * path);
-      ATLAS_SYM bool   createDirectory(char * path);
-      ATLAS_SYM int    listFiles(char * path, char ** results, int count);
+      ATLAS_SYM bool     isDirectory(char * path);
+      ATLAS_SYM bool     createDirectory(char * path);
+      ATLAS_SYM int      listFiles(char * path, char ** results, int count);
+      ATLAS_SYM char *   getPersonalPath(atPersonalPathKey key);
    }
 #else
-   ATLAS_SYM bool   isDirectory(char * path);
-   ATLAS_SYM bool   createDirectory(char * path);
-   ATLAS_SYM int    listFiles(char * path, char ** results, int count);
+   ATLAS_SYM bool     isDirectory(char * path);
+   ATLAS_SYM bool     createDirectory(char * path);
+   ATLAS_SYM int      listFiles(char * path, char ** results, int count);
+   ATLAS_SYM char *   getPersonalPath(atPersonalPathKey key);
 #endif
 
 
