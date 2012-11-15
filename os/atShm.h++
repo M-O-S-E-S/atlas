@@ -25,6 +25,14 @@
    typedef int   ShmKey;
 
    #define INVALID_SHM_ID   -1
+#elif __IOS__
+   // iOS has no good shared memory support so make placeholders
+   #include <sys/types.h>
+
+   typedef int   ShmID;
+   typedef int   ShmKey;
+
+   #define INVALID_SHM_ID   -1
 #else
    #include <errno.h>
    #include <stdlib.h>

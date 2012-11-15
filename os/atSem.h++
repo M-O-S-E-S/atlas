@@ -24,6 +24,15 @@
    typedef int       SemKey;
 
    #define INVALID_SEM_ID   0x00000000
+#elif __IOS__
+   #include <errno.h>
+   #include <sys/sem.h>
+   #include <sys/types.h>
+
+   typedef int     SemID;
+   typedef key_t   SemKey;
+
+   #define INVALID_SEM_ID   -1
 #else
    #include <errno.h>
    #include <sys/sem.h>

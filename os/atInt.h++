@@ -17,6 +17,9 @@
 #elif __ANDROID__
    // Just include the C99 standard inttypes.h
    #include <inttypes.h>
+#elif __IOS__
+   // Just include the C99 standard inttypes.h
+   #include <inttypes.h>
 #else
    // Just include the C99 standard inttypes.h
    #include <inttypes.h>

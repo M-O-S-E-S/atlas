@@ -111,6 +111,123 @@
       // Unlock the semaphore by calling post
       sem_post(id);
    }
+#elif __IOS__
+   // CONSTANTS
+   #define AT_SHQ_LOCK_SEMAPHORE_NUM   0
+
+   #define AT_SHQ_NUM_LOCK_SEQUENCE_OPS     2
+   #define AT_SHQ_NUM_UNLOCK_SEQUENCE_OPS   1
+
+   // GLOBAL VARIABLES 
+   struct sembuf atShqLockSequence[AT_SHQ_NUM_LOCK_SEQUENCE_OPS] =
+   {
+      AT_SHQ_LOCK_SEMAPHORE_NUM, 0, 0,
+      AT_SHQ_LOCK_SEMAPHORE_NUM, 1, 0
+   };
+
+   struct sembuf atShqUnlockSequence[AT_SHQ_NUM_UNLOCK_SEQUENCE_OPS] =
+   {  
+      AT_SHQ_LOCK_SEMAPHORE_NUM, -1, 0
+   };
+
+
+   bool semGet(SemKey key, SemID * id)
+   {
+      int           semID;
+      bool          created;
+      union semun   zero;
+
+      semID = semget(key, 1, 0666 | IPC_CREAT | IPC_EXCL);
+      if (semID == -1)
+      {
+         // See if we failed because it exists already
+         if (errno == EEXIST)
+         {
+            // It does exist so get it "non-exclusively" then
+            semID = semget(key, 1, 0666 | IPC_CREAT);
+
+            // Save the fact that we did not create the control semaphore
+            created = false;
+         }
+      }
+      else
+      {
+         // Save the fact that we actually created the semaphore
+         created = true;
+
+         // Initialize the semaphore value
+         zero.val = 0;
+         semctl(semID, AT_SHQ_LOCK_SEMAPHORE_NUM, SETVAL, zero);
+      }
+
+      // Store the return ID
+      *id = semID;
+
+      // Return whether we created it or just attached
+      return created;
+   }
+
+
+   void semRemove(SemID id)
+   {
+      union semun   zero;
+
+      // Remove semaphore
+      zero.val = 0;
+      semctl(id, 1, IPC_RMID, zero);
+   }
+
+
+   int semLock(SemID id)
+   {
+      // Try to do the lock and return either success or failure.  If we 
+      // failed because of a reason besides that we were interrupted 
+      // (by a signal), then notify that fact to the user as well.
+      if (semop(id, &atShqLockSequence[0], 
+                AT_SHQ_NUM_LOCK_SEQUENCE_OPS) == -1)
+      {
+         // See if an interrupt occured that caused the failure
+         if (errno != EINTR)
+         {
+            // Return that we were interrupted
+            return -1;
+         }
+
+         // Return that we failed
+         return 0;
+      }
+      else
+      {
+         // Return that we succeeded
+         return 1;
+      }
+   }
+
+
+   int semUnlock(SemID id)
+   {
+      // Try to do the unlock and return either success or failure.  If we 
+      // failed because of a reason besides that we were interrupted 
+      // (by a signal), then notify that fact to the user as well.
+      if (semop(id, &atShqUnlockSequence[0], 
+                AT_SHQ_NUM_UNLOCK_SEQUENCE_OPS) == -1)
+      {
+         // See if an interrupt occured that caused the failure
+         if (errno != EINTR)
+         {
+            // Return that we were interrupted
+            return -1;
+         }
+
+         // Return that we failed
+         return 0;
+      }
+      else
+      {  
+         // Return that we succeeded
+         return 1;
+      }
+   }
 #else
    // CONSTANTS
    #define AT_SHQ_LOCK_SEMAPHORE_NUM   0

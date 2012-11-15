@@ -45,6 +45,13 @@
    #define BTPROTO_L2CAP    1
 
    typedef int   BluetoothSockAddr;
+#elif __IOS__
+   // iOS has no Bluetooth support so make placeholders
+   #define AF_BLUETOOTH     31
+   #define BTPROTO_RFCOMM   1
+   #define BTPROTO_L2CAP    1
+
+   typedef int   BluetoothSockAddr;
 #else
     #include <bluetooth/bluetooth.h>
     #include <bluetooth/rfcomm.h>

@@ -24,6 +24,15 @@ elif buildTarget == 'posix':
    xmlPath = '/usr'
    # bluetooth (see subpaths below)
    bluetoothPath = '/usr'
+elif buildTarget == 'ios':
+   # Xcode
+   xcodePath = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer';
+   # uuid
+   uuidPath = '/irl/tools-ios/libs/uuid-1.6.2'
+   # libxml2
+   xmlPath = xcodePath + '/SDKs/iPhoneOS6.0.sdk/usr';
+   # HLA RTI (empty means do not include)
+   rtiPath = ''
 elif buildTarget == 'android':
    # Android NDK
    ndkPath = '/irl/tools/libs/android-ndk-r8'
@@ -160,6 +169,31 @@ elif buildTarget == 'posix':
 
    # No linker flags
    linkFlags = []
+elif buildTarget == 'ios':
+   # Set-up cross compiler by platform we're actually on
+   if str(Platform()) == 'darwin':
+      # Specify the cross compiler
+      basisEnv.Replace(CC = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain' +
+                            '/usr/bin/' +
+                            'clang')
+      basisEnv.Replace(CXX = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain' +
+                             '/usr/bin/' +
+                             'clang')
+
+      # No compile flags
+      compileFlags = Split('-Wno-parentheses -Wno-deprecated-writable-strings' +
+                           ' -arch armv7 -isysroot ' + xcodePath + 
+                           '/SDKs/iPhoneOS6.0.sdk')
+
+      # Set a define so things can know we're cross compiling for iOS
+      defines += Split('__IOS__ _DARWIN_C_SOURCE')
+
+      # No linker flags
+      linkFlags = Split(' -arch armv7 -isysroot ' + xcodePath + 
+                        '/SDKs/iPhoneOS6.0.sdk -lobjc -lstdc++')
+   else:
+      print "Unsupported platform type for cross compile", buildTarget
+      sys.exit(0)
 elif buildTarget == 'android':
    # Set-up cross compiler by platform we're actually on
    if str(Platform()) == 'posix':
@@ -237,6 +271,12 @@ elif buildTarget == 'posix':
 
    # Add bluetooth
    addExternal(bluetoothPath, '/include', '/lib', 'bluetooth')
+elif buildTarget == 'ios':
+   # Add the uuid library
+   addExternal(uuidPath, '/include', '/lib', 'uuid')
+
+   # Add libxml2
+   addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
 elif buildTarget == 'android':
    # Point to the NDK
    extIncPath.extend(Split(ndkPath + 

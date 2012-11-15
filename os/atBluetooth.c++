@@ -138,7 +138,7 @@
    {
       *channel = (u_char ) btAddr->port;
    }
-#elif __ANDROID__
+#elif defined(__ANDROID__) || defined(__IOS__)
    // Android has no Bluetooth support 
    void getBTDevices(BluetoothDevice * devices, u_long * numDevices)
    {
