@@ -319,10 +319,12 @@ basisEnv.Append(LINKFLAGS = linkFlags)
 
 
 # Now, compile the shared library for ATLAS
-atlasLib = basisEnv.SharedLibrary('atlas', source = atlasSource)
+atlasDSO = basisEnv.SharedLibrary('atlas', source = atlasSource)
+atlasLib = basisEnv.StaticLibrary('atlas', source = atlasSource)
 
 
 # Under Windows, embed the manifest into the .dll
 if buildTarget == 'win32':
    embedManifest(basisEnv, atlasLib, 2)
+   embedManifest(basisEnv, atlasDSO, 2)
 
