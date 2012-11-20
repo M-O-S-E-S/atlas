@@ -6,7 +6,7 @@
 #include "atSymbols.h++"
 
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
    #include <pthread.h>
 
    #define BARRIER_VALID   0xdbcafe
@@ -35,7 +35,7 @@
 #endif
 
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
 #ifdef __cplusplus
    extern "C"
    {

@@ -11,7 +11,7 @@
 */
 
 
-#ifdef  __ANDROID__
+#if defined(__ANDROID__) || defined(__IOS__)
    int pthread_barrier_init (pthread_barrier_t *barrier, 
                              const pthread_barrierattr_t *attr, int count)
    {
