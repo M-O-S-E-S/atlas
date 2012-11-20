@@ -104,6 +104,9 @@ containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ \
 foundationDir = 'foundation'
 foundationSrc = 'atNotifier.c++ atItem.c++'
 
+geometryDir = 'geometry'
+geometrySrc = 'atLine.c++ atPolygon.c++'
+
 mathDir = 'math'
 mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
@@ -124,6 +127,7 @@ xmlSrc = 'atXMLBuffer.c++ atXMLDocument.c++ atXMLReader.c++'
 atlasSource = buildList(communicationDir, communicationSrc)
 atlasSource.extend(buildList(containerDir, containerSrc))
 atlasSource.extend(buildList(foundationDir, foundationSrc))
+atlasSource.extend(buildList(geometryDir, geometrySrc))
 atlasSource.extend(buildList(mathDir, mathSrc))
 atlasSource.extend(buildList(osDir, osSrc))
 atlasSource.extend(buildList(utilDir, utilSrc))
@@ -229,7 +233,7 @@ else:
 
 
 # Set the initial paths and libraries
-incPath = Split('container foundation math os util')
+incPath = Split('container foundation geometry math os util')
 libPath = Split('')
 libs = Split('')
 
@@ -318,9 +322,10 @@ basisEnv.Append(LIBS = libs)
 basisEnv.Append(LINKFLAGS = linkFlags)
 
 
-# Now, compile the shared library for ATLAS
-atlasDSO = basisEnv.SharedLibrary('atlas', source = atlasSource)
+# Now, compile the shared and static libraries for ATLAS
 atlasLib = basisEnv.StaticLibrary('atlas', source = atlasSource)
+if buildTarget != 'ios':
+   atlasDSO = basisEnv.SharedLibrary('atlas', source = atlasSource)
 
 
 # Under Windows, embed the manifest into the .dll
