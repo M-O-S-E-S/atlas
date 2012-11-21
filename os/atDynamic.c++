@@ -148,6 +148,7 @@
             // have to insert the "lib" between the directory and the
             // SO filename)
             strncpy(tmp, filename, slash - filename + 1);
+            tmp[slash-filename+1] = '\0';
             strcat(tmp, "lib");
             strcat(tmp, slash + 1);
 #ifdef __IOS__
