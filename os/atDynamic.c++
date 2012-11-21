@@ -150,12 +150,20 @@
             strncpy(tmp, filename, slash - filename + 1);
             strcat(tmp, "lib");
             strcat(tmp, slash + 1);
+#ifdef __IOS__
+            strcat(tmp, ".dylib");
+#else
             strcat(tmp, ".so");
+#endif
          }
          else
          {
             // No slash so just make a standard filename
+#ifdef __IOS__
+            sprintf(tmp, "lib%s.dylib", filename);
+#else
             sprintf(tmp, "lib%s.so", filename);
+#endif
          }
 
          // Just call dlopen() and return what it does
