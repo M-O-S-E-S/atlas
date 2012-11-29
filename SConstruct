@@ -104,9 +104,6 @@ containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ \
 foundationDir = 'foundation'
 foundationSrc = 'atNotifier.c++ atItem.c++'
 
-geometryDir = 'geometry'
-geometrySrc = 'atLine.c++ atPolygon.c++'
-
 mathDir = 'math'
 mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
