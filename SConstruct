@@ -124,7 +124,6 @@ xmlSrc = 'atXMLBuffer.c++ atXMLDocument.c++ atXMLReader.c++'
 atlasSource = buildList(communicationDir, communicationSrc)
 atlasSource.extend(buildList(containerDir, containerSrc))
 atlasSource.extend(buildList(foundationDir, foundationSrc))
-atlasSource.extend(buildList(geometryDir, geometrySrc))
 atlasSource.extend(buildList(mathDir, mathSrc))
 atlasSource.extend(buildList(osDir, osSrc))
 atlasSource.extend(buildList(utilDir, utilSrc))
