@@ -257,7 +257,7 @@ if buildTarget == 'win32':
    extIncPath.extend(Split(msinttypesPath + '/include'))
 
    # Add the Windows-specific libraries (already in main path)
-   extLibs.extend(Split('ws2_32 winmm rpcrt4'))
+   extLibs.extend(Split('ws2_32 winmm rpcrt4 shell32 ole32'))
 elif buildTarget == 'posix':
    # Add the RTI
    if rtiPath != '':
