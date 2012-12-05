@@ -229,7 +229,7 @@ else:
 
 
 # Set the initial paths and libraries
-incPath = Split('container foundation geometry math os util')
+incPath = Split('container foundation math os util')
 libPath = Split('')
 libs = Split('')
 
