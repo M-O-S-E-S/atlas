@@ -50,13 +50,12 @@ atString atPath::getDirectoryFromPath(atString path)
    int    pathLength;
    char   pathBuffer[512];
    int    pathIndex;
-   int    delIndex;
 
    // Fetch the length of the delimiter
    delimiterLength = strlen(DELIMITER_STRING);
 
    // Fetch the length of the input string so we can search from the end
-   pathLength = strlen(path.getString());
+   pathLength = path.getLength();
 
    // Copy the path string to a new buffer. We need to do this because we're
    // going to alter the path for return.
@@ -83,32 +82,40 @@ atString atPath::getDirectoryFromPath(atString path)
 
 atString atPath::getFilenameFromPath(atString path)
 {
-   char     pathBuffer[512];
-   char     delimiters[128];
-   char *   currentToken;
-   char *   nextToken;
+   atStringTokenizer *   pathTokens;
+   atString *            currentToken;
+   atString *            nextToken;
+   atString              result;
 
-   // Copy the string to a new buffer. We need to do this because we're about
-   // to use strtok which is destructive to its input string
-   strcpy(pathBuffer, path.getString());
+   // If the path is empty, just return it
+   if (path.getLength() == 0)
+      return path;
 
-   // Pull the first token, split by the delimiter
-   currentToken = strtok(pathBuffer, DELIMITER_STRING);
-
-   // Keep processing until we reach the last token
-   nextToken = strtok(NULL, DELIMITER_STRING);
+   // Tokenize the path, and get the first two tokens from it (basically,
+   // we look ahead one token in order to find the last one)
+   pathTokens = new atStringTokenizer(path);
+   currentToken = pathTokens->getToken(DELIMITER_STRING);
+   nextToken = pathTokens->getToken(DELIMITER_STRING);
    while (nextToken)
    {
-      // Move the current token forward
+      // Move the current token forward and ditch the old one
+      delete currentToken;
       currentToken = nextToken;
 
       // Query the next token
-      nextToken = strtok(NULL, DELIMITER_STRING);
+      nextToken = pathTokens->getToken(DELIMITER_STRING);
    }
 
    // The next token is NULL, which means we have no more delimiters. This
    // should mean that our current token contains only the file name.
-   return atString(currentToken);
+   result.setString(*currentToken);
+
+   // Clean up
+   delete currentToken;
+   delete pathTokens;
+
+   // Return the result
+   return result;
 }
 
 
@@ -129,6 +136,10 @@ atString atPath::normalize(atString path)
 
    // Deal with invalid paths
    if (path.getLength() == 0)
+      return path;
+
+   // If the path indicates the current directory, just return it as-is
+   if ((path.getLength() == 1) && (atString(".").equals(&path)))
       return path;
 
    // Get the first three characters of the path (if they exist)
@@ -299,8 +310,7 @@ atString atPath::getExtension(atString path, atString delimiter)
       }
    }
 
-   // If we've reached this point, then we didn't find a single instance of the
-   // delimiter in the input path. Return an empty string
+   // Couldn't find an extension
    return atString();
 }
 
