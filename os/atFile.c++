@@ -352,6 +352,7 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
       char *   currentToken;
       char *   nextToken;
       char     pathDelimiter[16];
+      char *   ptr;
 
       // Convert the path into the search pattern
       // TODO: Make sure the path is properly formatted
@@ -373,17 +374,18 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
          // We want to take only the files themselves, but the vector contains
          // paths as well (tokenizing on the delimiter string will allow us to
          // extract only the filename. Begin by pulling off the first token)
-         currentToken = strtok(fileList.gl_pathv[fileCount], pathDelimiter);
+         currentToken = strtok_r(fileList.gl_pathv[fileCount],
+                                 pathDelimiter, &ptr);
 
          // Keep attempting to fetch the next token so long as there is one
-         nextToken = strtok(NULL, pathDelimiter);
+         nextToken = strtok_r(NULL, pathDelimiter, &ptr);
          while (nextToken)
          {
             // Move the current token forward
             currentToken = nextToken;
 
             // Query the next token
-            nextToken = strtok(NULL, pathDelimiter);
+            nextToken = strtok_r(NULL, pathDelimiter, &ptr);
          }
 
          // The next token is NULL, which means there are no more delimiters,
@@ -450,147 +452,154 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
       fp = fopen(buffer, "r");
 
       // Parse the file and get the directories
-      while (fgets(line, sizeof(line), fp))
+      if (fp != NULL)
       {
-         // Skip comments
-         if ((line[0] != '#') && (strlen(line) > 0))
+         while (fgets(line, sizeof(line), fp))
          {
-            // Initialize
-            key = NULL;
-            path = NULL;
-
-            // Trim newline
-            ptr1 = strchr(line, '\n');
-            if (ptr1 != NULL)
-               *ptr1 = 0;
-
-            // Get the directory key
-            ptr1 = &line[0];
-            ptr2 = strchr(line, '=');
-
-            // No '=' means an invalid line
-            if (ptr2 != NULL)
+            // Skip comments
+            if ((line[0] != '#') && (strlen(line) > 0))
             {
-               // Back up from the '=' one space
-               ptr2--;
+               // Initialize
+               key = NULL;
+               path = NULL;
 
-               // Trim whitespace
-               while ((*ptr1 == ' ') || (*ptr1 == '\t'))
-                  ptr1++;
-               while ((*ptr2 == ' ') || (*ptr2 == '\t'))
+               // Trim newline
+               ptr1 = strchr(line, '\n');
+               if (ptr1 != NULL)
+                  *ptr1 = 0;
+
+               // Get the directory key
+               ptr1 = &line[0];
+               ptr2 = strchr(line, '=');
+
+               // No '=' means an invalid line
+               if (ptr2 != NULL)
+               {
+                  // Back up from the '=' one space
                   ptr2--;
 
-               // NULL-terminate the key (we'll keep the key and path in
-               // place, like strtok does with its tokens)
-               ptr2++;
-               *ptr2 = 0;
-               key = ptr1;
+                  // Trim whitespace
+                  while ((*ptr1 == ' ') || (*ptr1 == '\t'))
+                     ptr1++;
+                  while ((*ptr2 == ' ') || (*ptr2 == '\t'))
+                     ptr2--;
 
-               // Now, parse the path.  Look for the first '"' (required
-               // by XDG standard)
-               ptr1 = ptr2+1;
-               ptr1 = strchr(ptr1, '"');
-               if (ptr1 != NULL)
-               {
-                  // Path starts one character past the '"'
-                  path = ptr1+1;
+                  // NULL-terminate the key (we'll keep the key and path in
+                  // place, like strtok does with its tokens)
+                  ptr2++;
+                  *ptr2 = 0;
+                  key = ptr1;
 
-                  // Look for the end
-                  ptr2 = strchr(path, '"');
-                  if (ptr2 != NULL)
+                  // Now, parse the path.  Look for the first '"' (required
+                  // by XDG standard)
+                  ptr1 = ptr2+1;
+                  ptr1 = strchr(ptr1, '"');
+                  if (ptr1 != NULL)
                   {
-                     // NULL-terminate the path here
-                     *ptr2 = 0;
-                  }
-                  else
-                  {
-                     // Invalid format, so no path
-                     path = NULL;
-                  }
-               }
-            }
+                     // Path starts one character past the '"'
+                     path = ptr1+1;
 
-            // See if we parsed out the key and path OK
-            if ((key != NULL) && (path != NULL))
-            {
-               // Translate the key to one of our enumerated keys
-               if (strcmp(key, "XDG_DESKTOP_DIR") == 0)
-               {
-                  enumKey = AT_PATH_DESKTOP;
-               }
-               else if (strcmp(key, "XDG_DOWNLOAD_DIR") == 0)
-               {
-                  enumKey = AT_PATH_DOWNLOADS;
-               }
-               else if (strcmp(key, "XDG_TEMPLATES_DIR") == 0)
-               {
-                  enumKey = AT_PATH_TEMPLATES;
-               }
-               else if (strcmp(key, "XDG_PUBLICSHARE_DIR") == 0)
-               {
-                  enumKey = AT_PATH_PUBLIC;
-               }
-               else if (strcmp(key, "XDG_DOCUMENTS_DIR") == 0)
-               {
-                  enumKey = AT_PATH_DOCUMENTS;
-               }
-               else if (strcmp(key, "XDG_MUSIC_DIR") == 0)
-               {
-                  enumKey = AT_PATH_MUSIC;
-               }
-               else if (strcmp(key, "XDG_PICTURES_DIR") == 0)
-               {
-                  enumKey = AT_PATH_PICTURES;
-               }
-               else if (strcmp(key, "XDG_VIDEOS_DIR") == 0)
-               {
-                  enumKey = AT_PATH_VIDEOS;
-               }
-               else
-               {
-                  enumKey = -1;
-               }
-
-               // See if we got a valid key
-               if (enumKey >= 0)
-               {
-                  // See if this is a relative path
-                  if (path[0] == '$')
-                  {
-                     // The path is relative.  By standard, it must be
-                     // relative to the user's home directory.  First,
-                     // strip the $HOME token away
-                     ptr1 = strchr(path, '/');
-                     if (ptr1 == NULL)
+                     // Look for the end
+                     ptr2 = strchr(path, '"');
+                     if (ptr2 != NULL)
                      {
-                        // Just use the home directory
-                        sprintf(buffer, "%s", atPersonalPaths[AT_PATH_HOME]);
+                        // NULL-terminate the path here
+                        *ptr2 = 0;
                      }
                      else
                      {
-                        // Combine the home directory with the rest of the
-                        // path
-                        path = ptr1+1;
-                        sprintf(buffer, "%s%c%s",
-                                atPersonalPaths[AT_PATH_HOME],
-                                DIRECTORY_SEPARATOR, path);
+                        // Invalid format, so no path
+                        path = NULL;
                      }
-                             
-                     // Allocate and store the path
-                     atPersonalPaths[enumKey] = (char *)
-                        malloc(strlen(buffer) + 1);
-                     strcpy(atPersonalPaths[enumKey], buffer);
+                  }
+               }
+
+               // See if we parsed out the key and path OK
+               if ((key != NULL) && (path != NULL))
+               {
+                  // Translate the key to one of our enumerated keys
+                  if (strcmp(key, "XDG_DESKTOP_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_DESKTOP;
+                  }
+                  else if (strcmp(key, "XDG_DOWNLOAD_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_DOWNLOADS;
+                  }
+                  else if (strcmp(key, "XDG_TEMPLATES_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_TEMPLATES;
+                  }
+                  else if (strcmp(key, "XDG_PUBLICSHARE_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_PUBLIC;
+                  }
+                  else if (strcmp(key, "XDG_DOCUMENTS_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_DOCUMENTS;
+                  }
+                  else if (strcmp(key, "XDG_MUSIC_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_MUSIC;
+                  }
+                  else if (strcmp(key, "XDG_PICTURES_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_PICTURES;
+                  }
+                  else if (strcmp(key, "XDG_VIDEOS_DIR") == 0)
+                  {
+                     enumKey = AT_PATH_VIDEOS;
                   }
                   else
                   {
-                     // The path is absolute, so just copy it as is
-                     atPersonalPaths[enumKey] = (char *)
-                        malloc(strlen(path) + 1);
-                     strcpy(atPersonalPaths[enumKey], path);
+                     enumKey = -1;
+                  }
+
+                  // See if we got a valid key
+                  if (enumKey >= 0)
+                  {
+                     // See if this is a relative path
+                     if (path[0] == '$')
+                     {
+                        // The path is relative.  By standard, it must be
+                        // relative to the user's home directory.  First,
+                        // strip the $HOME token away
+                        ptr1 = strchr(path, '/');
+                        if (ptr1 == NULL)
+                        {
+                           // Just use the home directory itself
+                           sprintf(buffer, "%s",
+                                   atPersonalPaths[AT_PATH_HOME]);
+                        }
+                        else
+                        {
+                           // Combine the home directory with the rest of the
+                           // path
+                           path = ptr1+1;
+                           sprintf(buffer, "%s%c%s",
+                                   atPersonalPaths[AT_PATH_HOME],
+                                   DIRECTORY_SEPARATOR, path);
+                        }
+
+                        // Allocate and store the path
+                        atPersonalPaths[enumKey] = (char *)
+                           malloc(strlen(buffer) + 1);
+                        strcpy(atPersonalPaths[enumKey], buffer);
+                     }
+                     else
+                     {
+                        // The path is absolute, so just copy it as is
+                        atPersonalPaths[enumKey] = (char *)
+                           malloc(strlen(path) + 1);
+                        strcpy(atPersonalPaths[enumKey], path);
+                     }
                   }
                }
             }
          }
+
+         // Close the file
+         fclose(fp);
       }
    }
 
@@ -600,7 +609,8 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
       if (atPersonalPaths[AT_PATH_HOME] == NULL)
          initPersonalPaths();
 
-      // Return the requested path
+      // Return the requested path (may be NULL if it wasn't defined in the
+      // XDG configuration file)
       return atPersonalPaths[key];
    }
 
