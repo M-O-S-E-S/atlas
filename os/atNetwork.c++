@@ -75,7 +75,7 @@
 
    void setBlockingFlag(Socket socket, bool block)
    {
-      int statusFlags;
+      long statusFlags;
 
       // First, get the current status of the socket
       if ( !((statusFlags = fcntl(socket, F_GETFL)) < 0) )
