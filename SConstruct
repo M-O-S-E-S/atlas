@@ -97,6 +97,7 @@ communicationSrc = 'atIPCInterface.c++ \
 if rtiPath != '':
    communicationSrc = communicationSrc + ' atRTIInterfaceAmbassador.c++'
 
+
 containerDir = 'container'
 containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ \
                 atPriorityQueue.c++'
@@ -155,6 +156,8 @@ if buildTarget == 'win32':
    # Disable deprecation warnings for "insecure" and "nonstandard" functions
    # in Windows
    defines += Split('_CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE')
+   if rtiPath != '':
+      defines += Split('__RTI__')
 
    # Flags for the VC++ linker
    # /DEBUG          = Generate debugging information
@@ -166,6 +169,10 @@ if buildTarget == 'win32':
 elif buildTarget == 'posix':
    # Flags for gcc (generate debug information and optimize)
    compileFlags = Split('-g -O -Wno-write-strings')
+
+   # Add a constant define to mark that we included the RTI
+   if rtiPath != '':
+      defines += Split('__RTI__')
 
    # No linker flags
    linkFlags = []

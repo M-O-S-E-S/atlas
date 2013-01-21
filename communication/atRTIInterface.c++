@@ -28,7 +28,7 @@ atRTIInterface::atRTIInterface(char * fedExecName, char * fedFilename)
    strcpy(fed_exec_name, fedExecName);
    buf_list = new atList();
 
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // Create federation execution (it will succeed if we're first; otherwise,
    // catch the exception so we know we're not)
    try
@@ -83,7 +83,7 @@ atRTIInterface::atRTIInterface(char * fedExecName, char * fedFilename)
 
 atRTIInterface::~atRTIInterface()
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // Resign from the federation
    try
    {
@@ -113,7 +113,7 @@ atRTIInterface::~atRTIInterface()
 atRTIInterface * atRTIInterface::getInstance(char * fedExecName, 
                                              char * fedFilename)
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // Check to see if an instance exists, and create one if not
    if (rti_interface_instance == NULL)
    {
@@ -135,7 +135,7 @@ atRTIInterface * atRTIInterface::getInstance()
 
 atClassID atRTIInterface::registerClass(char * classTypeStr)
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // Get the object class handle and save it
    notify(AT_INFO, "Registering object class '%s'.\n", classTypeStr);
    class_handles[num_class_handles] = 
@@ -151,7 +151,7 @@ atClassID atRTIInterface::registerClass(char * classTypeStr)
 atAttributeID atRTIInterface::registerAttribute(char *attrTypeStr, 
                                                 atClassID classID)
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // Get the attribute handle and save it
    notify(AT_INFO, "Registering attribute '%s'.\n", attrTypeStr);
    attribute_handles[classID][num_attribute_handles[classID]] = 
@@ -175,7 +175,7 @@ atAttributeID atRTIInterface::registerAttribute(char *attrTypeStr,
 
 atInteractionID atRTIInterface::registerInteraction(char * interactionTypeStr)
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // Get the object class handle and save it
    notify(AT_INFO, "Registering interaction '%s'.\n", interactionTypeStr);
    interaction_class_handles[num_interaction_class_handles] = 
@@ -192,7 +192,7 @@ atInteractionID atRTIInterface::registerInteraction(char * interactionTypeStr)
 atParameterID atRTIInterface::registerParameter(char * parameterTypeStr,
    atInteractionID interactionTypeID)
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // Get the attribute handle and save it
    notify(AT_INFO, "Registering parameter '%s'.\n", parameterTypeStr);
    interaction_parameter_handles[interactionTypeID]
@@ -221,7 +221,7 @@ void atRTIInterface::subscribeAttributes(atClassID classTypeID,
                                          u_long numAttributes,
                                          atAttributeID attrTypeIDs[])
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    rti13::AttributeHandleSet *   attributes;
    u_long                        i;
 
@@ -247,7 +247,7 @@ void atRTIInterface::publishAttributes(atClassID classTypeID,
                                        u_long numAttributes,
                                        atAttributeID attrTypeIDs[])
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    rti13::AttributeHandleSet *   attributes;
    u_long                        i;
 
@@ -271,7 +271,7 @@ void atRTIInterface::publishAttributes(atClassID classTypeID,
 void atRTIInterface::subscribeInteractions(u_long numInteractions,
                                            atInteractionID interactionTypeIDs[])
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    u_long   i;
 
    // Go through the interactions and subscribe to each
@@ -298,13 +298,13 @@ atInstanceID atRTIInterface::createInstance(atClassID classTypeID)
 
 void atRTIInterface::tick()
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    rti_amb.tick();
 #endif
 }
 
 
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
 void atRTIInterface::processAmbDiscover(rti13::ObjectHandle obj,
    rti13::ObjectClassHandle objClass, const char * name)
 {

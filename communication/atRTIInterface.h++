@@ -8,7 +8,7 @@
 #include "atKeyedBufferHandler.h++"
 #include "atOSDefs.h++"
 
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
 #define RTI_USES_STD_FSTREAM
 #include "NullFederateAmbassador13.h"
 
@@ -36,7 +36,7 @@ typedef long   atInstanceID;
 
 typedef struct atInteractionParameterMapEntry
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    rti13::InteractionClassHandle  interaction;
    rti13::ParameterHandle         parameter;
 #endif
@@ -44,7 +44,7 @@ typedef struct atInteractionParameterMapEntry
 
 typedef struct atObjectAttributeMapEntry
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    rti13::ObjectClassHandle  objClass;
    rti13::AttributeHandle    attribute;
 #endif
@@ -52,7 +52,7 @@ typedef struct atObjectAttributeMapEntry
 
 typedef struct atObjectInstance
 {
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    rti13::ObjectHandle        obj;
    rti13::ObjectClassHandle   objClass;
    char                       name[256];
@@ -65,23 +65,23 @@ class ATLAS_SYM atRTIInterface : public atNotifier
    protected:
       static atRTIInterface *          rti_interface_instance;
 
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
       rti13::RTIambassador             rti_amb;
       atRTIInterfaceAmbassador         fed_amb;
 #endif
 
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
       rti13::FederateHandle            federate_id;
 #endif
       char                             fed_exec_name[256];
 
       u_long                           num_class_handles;
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
       rti13::ObjectClassHandle         class_handles[AT_RTI_MAX_CLASS_HANDLES];
 #endif
 
       u_long                           num_attribute_handles[AT_RTI_MAX_CLASS_HANDLES];
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
       rti13::AttributeHandle           attribute_handles[AT_RTI_MAX_CLASS_HANDLES][AT_RTI_MAX_ATTRIBUTE_HANDLES];
 #endif
 
@@ -92,13 +92,13 @@ class ATLAS_SYM atRTIInterface : public atNotifier
       u_long                           num_object_attribute_map_entries;
 
       u_long                           num_interaction_class_handles;
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
       rti13::InteractionClassHandle    interaction_class_handles[AT_RTI_MAX_CLASS_HANDLES];
 #endif
       char                             interaction_names[AT_RTI_MAX_CLASS_HANDLES][256];
 
       u_long                           num_interaction_parameter_handles[AT_RTI_MAX_CLASS_HANDLES];
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
       rti13::ParameterHandle           interaction_parameter_handles[AT_RTI_MAX_CLASS_HANDLES][AT_RTI_MAX_PARAMETER_HANDLES];
 #endif
 
@@ -107,7 +107,7 @@ class ATLAS_SYM atRTIInterface : public atNotifier
 
       atList *                         buf_list;
 
-#if ! defined(__ANDROID__) && ! defined(__IOS__)
+#if defined(__RTI__)
    // HLA with its separate ambassador is evil (where is the object-oriented
    // design?)
    public:
