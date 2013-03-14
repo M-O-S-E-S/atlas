@@ -30,7 +30,7 @@ elif buildTarget == 'ios':
    # uuid
    uuidPath = '/irl/tools-ios/libs/uuid-1.6.2'
    # libxml2
-   xmlPath = xcodePath + '/SDKs/iPhoneOS6.0.sdk/usr';
+   xmlPath = xcodePath + '/SDKs/iPhoneOS6.1.sdk/usr';
    # HLA RTI (empty means do not include)
    rtiPath = ''
 elif buildTarget == 'android':
@@ -190,14 +190,14 @@ elif buildTarget == 'ios':
       # No compile flags
       compileFlags = Split('-Wno-parentheses -Wno-deprecated-writable-strings' +
                            ' -arch armv7 -isysroot ' + xcodePath + 
-                           '/SDKs/iPhoneOS6.0.sdk')
+                           '/SDKs/iPhoneOS6.1.sdk')
 
       # Set a define so things can know we're cross compiling for iOS
       defines += Split('__IOS__ _DARWIN_C_SOURCE')
 
       # No linker flags
       linkFlags = Split(' -arch armv7 -isysroot ' + xcodePath + 
-                        '/SDKs/iPhoneOS6.0.sdk -lobjc -lstdc++')
+                        '/SDKs/iPhoneOS6.1.sdk -lobjc -lstdc++')
    else:
       print "Unsupported platform type for cross compile", buildTarget
       sys.exit(0)
