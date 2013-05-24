@@ -5,9 +5,6 @@
 #include "atConfigFile.h++"
 
 
-//*************************** CONSTRUCTOR/DESTRUCTOR *************************//
-
-
 atConfigFile::atConfigFile(char * filename)
 {
    FILE *          infile;
@@ -134,9 +131,6 @@ atConfigFile::~atConfigFile()
       free(oldKey);
    }
 }
-
-
-//************************ PROTECTED MEMBER FUNCTIONS ************************//
 
 
 atString * atConfigFile::getToken()
@@ -307,9 +301,6 @@ atTupleArgument * atConfigFile::addArgument(atTupleHead * head, char * arg)
    // Return the argument record
    return argument;
 }
-
-
-//*************************** PUBLIC MEMBER FUNCTIONS ************************//
 
 
 bool atConfigFile::getNextTuple(char * key, int * argc, char * argv[])
