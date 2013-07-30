@@ -257,14 +257,7 @@ void atStringBuffer::setString(const atString & stringToCopy)
 }
 
 
-const char * atStringBuffer::getString() const
-{
-   // Return the string stored
-   return local_buffer;
-}
-
-
-char * atStringBuffer::getString()
+char * atStringBuffer::getString() const
 {
    // Return the string stored
    return local_buffer;
@@ -346,7 +339,7 @@ atStringBuffer & atStringBuffer::operator=(const atString & stringToCopy)
 atStringBuffer & atStringBuffer::operator=(
    const atStringBuffer & stringBufferToCopy)
 {
-   // Make sure to avoid self-assignment
+   // Avoid setting the string in the case of a self-assignment
    if (this != &stringBufferToCopy)
    {
       // Copy the string from the given atString

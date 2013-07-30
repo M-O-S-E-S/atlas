@@ -222,17 +222,10 @@ void atString::setString(const atString & stringToCopy)
 }
 
 
-char * atString::getString()
+char * atString::getString() const
 {
    // Return the string stored
    return local_string;
-}
-
-
-const char * atString::getString() const
-{
-   // Return the string stored
-   return (const char *)local_string;
 }
 
 
@@ -292,7 +285,7 @@ int atString::compare(atItem * otherItem)
 
 atString & atString::operator=(const atString & stringToCopy)
 {
-   // Make sure to avoid self-assignment
+   // Avoid setting the string in the case of a self-assignment
    if (this != &stringToCopy)
    {
       // Copy the string from the given atString

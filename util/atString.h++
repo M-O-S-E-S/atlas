@@ -34,8 +34,7 @@ class ATLAS_SYM atString : public atItem
                                        u_long maxLength);
       virtual void           setString(const atString & stringToCopy);
 
-      virtual const char *   getString() const;
-      virtual char *         getString();
+      virtual char *         getString() const;
 
       virtual char           getCharAt(u_long index) const;
       virtual u_long         getLength() const;
