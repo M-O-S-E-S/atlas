@@ -14,7 +14,7 @@ atString::atString()
 }
 
 
-atString::atString(char * stringToCopy)
+atString::atString(const char * stringToCopy)
 {
    // Initialize string to not being allocated
    local_string = NULL;
@@ -25,7 +25,7 @@ atString::atString(char * stringToCopy)
 }
 
 
-atString::atString(char * stringToCopy, u_long maxLength) 
+atString::atString(const char * stringToCopy, u_long maxLength) 
 {
    // Initialize string to not being allocated
    local_string = NULL;
@@ -58,7 +58,7 @@ atString::~atString()
 }
 
 
-atString atString::clone()
+atString atString::clone() const
 {
    return atString(local_string);
 }
@@ -222,21 +222,14 @@ void atString::setString(const atString & stringToCopy)
 }
 
 
-char * atString::getString()
+char * atString::getString() const
 {
    // Return the string stored
    return local_string;
 }
 
 
-const char * atString::getString() const
-{
-   // Return the string stored
-   return (const char *)local_string;
-}
-
-
-char atString::getCharAt(u_long index)
+char atString::getCharAt(u_long index) const
 {
    // Return the NULL char if the index is out of bounds or if the 
    // string itself is null; otherwise, return the requested character
@@ -247,7 +240,7 @@ char atString::getCharAt(u_long index)
 }
 
 
-u_long atString::getLength()
+u_long atString::getLength() const
 {
    // Return the length of the string
    return string_length;
@@ -290,9 +283,16 @@ int atString::compare(atItem * otherItem)
 }
 
 
-void atString::operator=(atString stringToCopy)
+atString & atString::operator=(const atString & stringToCopy)
 {
-   // Copy the string from the given atString
-   setString(stringToCopy);
+   // Avoid setting the string in the case of a self-assignment
+   if (this != &stringToCopy)
+   {
+      // Copy the string from the given atString
+      setString(stringToCopy);
+   }
+
+   // Return this object to allow for chaining assignment
+   return *this;
 }
 

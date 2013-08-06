@@ -15,7 +15,7 @@ atStringBuffer::atStringBuffer()
 }
 
 
-atStringBuffer::atStringBuffer(char * stringToCopy) 
+atStringBuffer::atStringBuffer(const char * stringToCopy) 
 {
    // Initialize string to not being allocated
    buffer_size = 256;
@@ -27,7 +27,7 @@ atStringBuffer::atStringBuffer(char * stringToCopy)
 }
 
 
-atStringBuffer::atStringBuffer(char * stringToCopy, u_long maxLength) 
+atStringBuffer::atStringBuffer(const char * stringToCopy, u_long maxLength) 
 {
    // Initialize string to not being allocated
    buffer_size = 256;
@@ -54,7 +54,7 @@ atStringBuffer::~atStringBuffer()
 }
 
 
-atStringBuffer atStringBuffer::clone()
+atStringBuffer atStringBuffer::clone() const
 {
    return atStringBuffer(local_buffer);
 }
@@ -63,18 +63,18 @@ atStringBuffer atStringBuffer::clone()
 void atStringBuffer::append(const atString & stringToAppend)
 {
    // Call the other form
-   append((char *) stringToAppend.getString());
+   append(stringToAppend.getString());
 }
 
 
-atStringBuffer atStringBuffer::concat(const atString & stringToConcat)
+atStringBuffer atStringBuffer::concat(const atString & stringToConcat) const
 {
    // Call the other form
-   return concat((char *) stringToConcat.getString());
+   return concat(stringToConcat.getString());
 }
 
 
-void atStringBuffer::append(char * stringToAppend)
+void atStringBuffer::append(const char * stringToAppend)
 {
    u_long   bufferLength;
    u_long   appendLength;
@@ -117,7 +117,7 @@ void atStringBuffer::append(char * stringToAppend)
 }
 
 
-atStringBuffer atStringBuffer::concat(char * stringToConcat)
+atStringBuffer atStringBuffer::concat(const char * stringToConcat) const
 {
    atStringBuffer   result;
 
@@ -145,7 +145,7 @@ void atStringBuffer::append(char charToAppend)
 }
 
 
-atStringBuffer atStringBuffer::concat(char charToConcat)
+atStringBuffer atStringBuffer::concat(char charToConcat) const
 {
    atStringBuffer   result;
 
@@ -160,7 +160,7 @@ atStringBuffer atStringBuffer::concat(char charToConcat)
 }
 
 
-void atStringBuffer::setString(char * stringToCopy)
+void atStringBuffer::setString(const char * stringToCopy)
 {
    u_long   need;
    u_long   newBufferSize;
@@ -202,7 +202,7 @@ void atStringBuffer::setString(char * stringToCopy)
 }
 
 
-void atStringBuffer::setString(char * stringToCopy, u_long maxLength)
+void atStringBuffer::setString(const char * stringToCopy, u_long maxLength)
 {
    u_long   need;
    u_long   newBufferSize;
@@ -250,28 +250,28 @@ void atStringBuffer::setString(char * stringToCopy, u_long maxLength)
 }
 
 
-void atStringBuffer::setString(atString & stringToCopy)
+void atStringBuffer::setString(const atString & stringToCopy)
 {
    // Call setString() with the contents of the string to copy
    setString(stringToCopy.getString());
 }
 
 
-char * atStringBuffer::getString()
+char * atStringBuffer::getString() const
 {
    // Return the string stored
    return local_buffer;
 }
 
 
-atString atStringBuffer::getAsString()
+atString atStringBuffer::getAsString() const
 {
    // Return an atString with buffer
    return atString(local_buffer);
 }
 
 
-char atStringBuffer::getCharAt(u_long index)
+char atStringBuffer::getCharAt(u_long index) const
 {
    // Return the NULL char if the index is out of bounds or if the 
    // string itself is null; otherwise, return the requested character
@@ -283,7 +283,7 @@ char atStringBuffer::getCharAt(u_long index)
 }
 
 
-u_long atStringBuffer::getLength()
+u_long atStringBuffer::getLength() const
 {
    // Return the length of the string
    return (u_long ) (buffer_tail - local_buffer);
@@ -326,16 +326,27 @@ int atStringBuffer::compare(atItem * otherItem)
 }
 
 
-void atStringBuffer::operator=(atString stringToCopy)
+atStringBuffer & atStringBuffer::operator=(const atString & stringToCopy)
 {
    // Copy the string from the given atString
    setString(stringToCopy);
+
+   // Return this object to allow for chaining assignment
+   return *this;
 }
 
 
-void atStringBuffer::operator=(atStringBuffer stringBufferToCopy)
+atStringBuffer & atStringBuffer::operator=(
+   const atStringBuffer & stringBufferToCopy)
 {
-   // Copy the string from the given atString
-   setString(stringBufferToCopy.getString());
+   // Avoid setting the string in the case of a self-assignment
+   if (this != &stringBufferToCopy)
+   {
+      // Copy the string from the given atString
+      setString(stringBufferToCopy.getString());
+   }
+
+   // Return this object to allow for chaining assignment
+   return *this;
 }
 

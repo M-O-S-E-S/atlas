@@ -19,12 +19,12 @@ class ATLAS_SYM atString : public atItem
 
    public:
       atString();
-      atString(char * stringToCopy);
-      atString(char * stringToCopy, u_long maxLength);
+      atString(const char * stringToCopy);
+      atString(const char * stringToCopy, u_long maxLength);
       atString(const atString & stringToCopy);
       virtual ~atString();
 
-      virtual atString       clone();
+      virtual atString       clone() const;
 
       virtual void           append(const atString & stringToAppend);
       virtual atString       concat(const atString & stringToConcat) const;
@@ -34,16 +34,15 @@ class ATLAS_SYM atString : public atItem
                                        u_long maxLength);
       virtual void           setString(const atString & stringToCopy);
 
-      virtual const char *   getString() const;
-      virtual char *         getString();
+      virtual char *         getString() const;
 
-      virtual char           getCharAt(u_long index);
-      virtual u_long         getLength();
+      virtual char           getCharAt(u_long index) const;
+      virtual u_long         getLength() const;
 
       virtual bool           equals(atItem * otherItem);
       virtual int            compare(atItem * otherItem);
 
-      virtual void           operator=(atString stringToCopy);
+      virtual atString &     operator=(const atString & stringToCopy);
 };
 
 
