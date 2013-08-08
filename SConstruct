@@ -2,11 +2,26 @@
 # Import sys so we call exit() if we need to
 import sys
 
+
+# Figure out whether we're on a 32-bit or 64-bit system
+import struct
+arch = str(struct.calcsize("P") * 8) + 'bit'
+
 # Get the build target (e.g., win32, posix, etc.)
 buildTarget = ARGUMENTS.get('platform', str(Platform()))
 
+# If the buildTarget isn't for mobile (not "ios" or "android") then add
+# bit info (to support 32-bit or 64-bit builds)
+if buildTarget != 'ios' and buildTarget != 'android':
+   buildTarget = buildTarget + '.' + arch
+
+# Echo for user
+print 'Building for ' + buildTarget + '...'
+
+
+
 # Base paths for external libraries (platform dependent)
-if buildTarget == 'win32':
+if buildTarget == 'win32.32bit':
    # libxml2
    xmlPath = 'L:/libxml2-2.7.6'
    # HLA RTI
@@ -15,7 +30,16 @@ if buildTarget == 'win32':
    iconvPath = 'L:/iconv-1.9.1'
    # inttypes.h for MSVC
    msinttypesPath = 'L:/msinttypes-r26'
-elif buildTarget == 'posix':
+elif buildTarget == 'posix.64bit':
+   # HLA RTI
+   rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis_D30G')
+   # uuid
+   uuidPath = '/usr'
+   # libxml2 (see subpaths below)
+   xmlPath = '/usr'
+   # bluetooth (see subpaths below)
+   bluetoothPath = '/usr'
+elif buildTarget == 'posix.32bit':
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis-1.3_D22')
    # uuid
@@ -137,7 +161,7 @@ atlasSource.extend(buildList(xmlDir, xmlSrc))
 defines = Split('ATLAS_SYM=EXPORT')
 
 # Then handle platform-specific issues
-if buildTarget == 'win32':
+if buildTarget == 'win32.32bit':
    # Flags for the VC++ compiler
    # /nologo      = Don't print the compiler banner
    # /MD          = Use multithreaded DLL runtime
@@ -156,6 +180,8 @@ if buildTarget == 'win32':
    # Disable deprecation warnings for "insecure" and "nonstandard" functions
    # in Windows
    defines += Split('_CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE')
+
+   # Add a constant define to mark that we included the RTI
    if rtiPath != '':
       defines += Split('__RTI__')
 
@@ -166,7 +192,17 @@ if buildTarget == 'win32':
    # /INCREMENTAL:NO = Do not perform incremental linking
    # /MANIFEST       = Generate manifest file
    linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO /MANIFEST')
-elif buildTarget == 'posix':
+elif buildTarget == 'posix.64bit':
+   # Flags for gcc (generate debug information and optimize)
+   compileFlags = Split('-g -O -Wno-write-strings -fpermissive')
+
+   # Add a constant define to mark that we included the RTI
+   if rtiPath != '':
+      defines += Split('__RTI__ RTI_64_BIT_LONG')
+
+   # No linker flags
+   linkFlags = []
+elif buildTarget == 'posix.32bit':
    # Flags for gcc (generate debug information and optimize)
    compileFlags = Split('-g -O -Wno-write-strings')
 
@@ -249,7 +285,7 @@ extLibs = []
 
 # Depending on platform, add the external libraries that ATLAS requires
 # (Windows requires more to be linked in than Linux does)
-if buildTarget == 'win32':
+if buildTarget == 'win32.32bit':
    # Add the RTI
    if rtiPath != '':
       addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0', 'librti13')
@@ -265,8 +301,21 @@ if buildTarget == 'win32':
 
    # Add the Windows-specific libraries (already in main path)
    extLibs.extend(Split('ws2_32 winmm rpcrt4 shell32 ole32'))
-elif buildTarget == 'posix':
+elif buildTarget == 'posix.64bit':
    # Add the RTI
+   if rtiPath != '':
+      addExternal(rtiPath, '/include/1.3', '/lib/x86_64_g++-4.4', 'rti13')
+
+   # Add the uuid library
+   addExternal(uuidPath, '/include', '/lib64', 'ossp-uuid')
+
+   # Add libxml2
+   addExternal(xmlPath, '/include/libxml2', '/lib64', 'xml2')
+
+   # Add bluetooth
+   addExternal(bluetoothPath, '/include', '/lib64', 'bluetooth')
+elif buildTarget == 'posix.32bit':
+  # Add the RTI
    if rtiPath != '':
       addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.4', 'rti13')
 
@@ -332,7 +381,7 @@ if buildTarget != 'ios':
 
 
 # Under Windows, embed the manifest into the .dll
-if buildTarget == 'win32':
+if buildTarget == 'win32.32bit':
    embedManifest(basisEnv, atlasLib, 2)
    embedManifest(basisEnv, atlasDSO, 2)
 
