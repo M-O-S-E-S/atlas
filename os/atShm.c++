@@ -12,7 +12,7 @@
       ShmID   shmID;
 
       // Get a name for the semaphore
-      sprintf(shmName, "%llu", key);
+      sprintf(shmName, "%llu-%lu", key, memSize);
 
       // Get shared memory (with a FileMapping)
       shmID = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE,
