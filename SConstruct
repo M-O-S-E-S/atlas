@@ -288,7 +288,8 @@ extLibs = []
 if buildTarget == 'win32.32bit':
    # Add the RTI
    if rtiPath != '':
-      addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0', 'librti13')
+      addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0',
+                  'librti13 libfedtime13 librtis mcast snpr parser')
 
    # Add libxml2
    addExternal(xmlPath, '/include', '/lib', 'libxml2')
@@ -304,7 +305,8 @@ if buildTarget == 'win32.32bit':
 elif buildTarget == 'posix.64bit':
    # Add the RTI
    if rtiPath != '':
-      addExternal(rtiPath, '/include/1.3', '/lib/x86_64_g++-4.4', 'rti13')
+      addExternal(rtiPath, '/include/1.3', '/lib/x86_64_g++-4.4',
+                  'rti13 fedtime13 rtis msgflow mcast snpr parser')
 
    # Add the uuid library
    addExternal(uuidPath, '/include', '/lib64', 'ossp-uuid')
@@ -317,7 +319,8 @@ elif buildTarget == 'posix.64bit':
 elif buildTarget == 'posix.32bit':
   # Add the RTI
    if rtiPath != '':
-      addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.4', 'rti13')
+      addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.4',
+                  'rti13 fedtime13 rtis msgflow mcast snpr parser')
 
    # Add the uuid library
    addExternal(uuidPath, '/include', '/lib', 'uuid')
