@@ -21,18 +21,27 @@
    #define DIRECTORY_SEPARATOR   '\\'
    #define PATH_SEPARATOR        ';'
    #define TMP_DIR               getenv("TEMP")
+
+   #define EXEC_EXTENSION        ".exe"
+   #define ICON_EXTENSION        ".ico"
 #elif __ANDROID__
    #include <unistd.h>
 
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
    #define TMP_DIR               "/sdcard"
+
+   #define EXEC_EXTENSION        ""
+   #define ICON_EXTENSION        ".png"
 #else
    #include <unistd.h>
 
    #define DIRECTORY_SEPARATOR   '/'
    #define PATH_SEPARATOR        ':'
    #define TMP_DIR               "/tmp"
+
+   #define EXEC_EXTENSION        ""
+   #define ICON_EXTENSION        ".png"
 #endif
 
 
