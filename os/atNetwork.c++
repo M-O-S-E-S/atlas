@@ -48,6 +48,20 @@
 
       ioctlsocket(socket, FIONBIO, &nonblockMode);
    }
+
+
+   const char * addrToStr(int family, void * src, char * dst, int dstLen)
+   {
+      // Call the Windows version of InetNtop()
+      return InetNtop(family, src, dst, dstLen);
+   }
+
+
+   int strToAddr(int family, char * src, void * dst)
+   {
+      // Call the Windows version of InetPton()
+      return InetPton(family, src, dst);
+   }
 #else
    void initNetwork()
    {
@@ -92,6 +106,20 @@
             fcntl(socket, F_SETFL, statusFlags | FNONBLOCK);
          }
       }
+   }
+
+
+   const char * addrToStr(int family, void * src, char * dst, int dstLen)
+   {
+      // Call the standard version of inet_ntop()
+      return inet_ntop(family, src, dst, dstLen);
+   }
+
+
+   int strToAddr(int family, char * src, void * dst)
+   {
+      // Call the standard version of inet_pton()
+      return inet_pton(family, src, dst);
    }
 #endif
 
