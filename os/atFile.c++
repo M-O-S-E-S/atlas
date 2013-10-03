@@ -141,6 +141,7 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
       }
    }
 
+
    void initPersonalPaths()
    {
       HRESULT     result;
@@ -408,6 +409,7 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
       return fileCount;
    }
 
+
    void initPersonalPaths()
    {
       struct passwd *   pw;
@@ -603,6 +605,7 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
       }
    }
 
+
    char * getPersonalPath(atPersonalPathKey key)
    {
       // Initialize the personal path array, if necessary
@@ -613,6 +616,7 @@ static char *   atPersonalPaths[AT_FILE_NUM_PERSONAL_PATHS] = { 0 };
       // XDG configuration file)
       return atPersonalPaths[key];
    }
+
 
 #endif
 
