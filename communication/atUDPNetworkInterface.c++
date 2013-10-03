@@ -1,7 +1,8 @@
 
 // INCLUDES
-#include <arpa/inet.h>
 #include "atUDPNetworkInterface.h++"
+#include "atOSDefs.h++"
+#include "atNetwork.h++"
 
 
 atUDPNetworkInterface::atUDPNetworkInterface(char * readAddress, 
@@ -273,8 +274,8 @@ int atUDPNetworkInterface::read(u_char * buffer, u_long len, atString * senderAd
    // Save the IP address of the sender so the user knows who sent the data
    if ( (packetLength > 0) && (senderAddr != NULL) )
    {
-      inet_ntop(AF_INET, &fromAddress.sin_addr, 
-                senderAddrBuffer, INET_ADDRSTRLEN);
+      netAddrToStr(AF_INET, &fromAddress.sin_addr, 
+                   senderAddrBuffer, INET_ADDRSTRLEN);
       senderAddr->setString(senderAddrBuffer);
    }
 
