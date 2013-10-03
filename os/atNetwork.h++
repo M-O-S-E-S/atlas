@@ -44,6 +44,7 @@
    #include <sys/select.h>
    #include <netinet/in.h>
    #include <netinet/tcp.h>
+   #include <arpa/inet.h>
 
    #ifndef MAXHOSTNAMELEN
       #define MAXHOSTNAMELEN   64
