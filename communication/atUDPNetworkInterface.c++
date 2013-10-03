@@ -1,5 +1,6 @@
 
 // INCLUDES
+#include <arpa/inet.h>
 #include "atUDPNetworkInterface.h++"
 
 
@@ -210,12 +211,21 @@ atUDPNetworkInterface::~atUDPNetworkInterface()
 
 int atUDPNetworkInterface::read(u_char * buffer, u_long len)
 {
+   // Pass null to the other read to reuse code and flag that the
+   // sender of the network data does not need to be known
+   return read(buffer, len, NULL);
+}
+
+
+int atUDPNetworkInterface::read(u_char * buffer, u_long len, atString * senderAddr)
+{
    bool                 loop;
    struct sockaddr_in   fromAddress;
    socklen_t            fromAddressLength;
    int                  packetLength;
    char                 hostname[MAXHOSTNAMELEN];
    struct hostent *     host;
+   char                 senderAddrBuffer[INET_ADDRSTRLEN];
 
    // Keep looping if necessary
    loop = true;
@@ -258,6 +268,14 @@ int atUDPNetworkInterface::read(u_char * buffer, u_long len)
          // We don't ignore out own so accept it (stop looping)
          loop = false;
       }
+   }
+
+   // Save the IP address of the sender so the user knows who sent the data
+   if ( (packetLength > 0) && (senderAddr != NULL) )
+   {
+      inet_ntop(AF_INET, &fromAddress.sin_addr, 
+                senderAddrBuffer, INET_ADDRSTRLEN);
+      senderAddr->setString(senderAddrBuffer);
    }
 
    // Tell user how many bytes we read (-1 if error)

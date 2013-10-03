@@ -4,6 +4,7 @@
 
 
 // INCLUDES
+#include "atString.h++"
 #include "atNetworkInterface.h++"
 #include "atOSDefs.h++"
 
@@ -21,7 +22,9 @@ class ATLAS_SYM atUDPNetworkInterface : public atNetworkInterface
       atUDPNetworkInterface(char * address, short srcPort, short dstPort);
       virtual ~atUDPNetworkInterface();
 
+
       int   read(u_char * buffer, u_long len);
+      int   read(u_char * buffer, u_long len, atString * senderAddr);
       int   write(u_char * buffer, u_long len);
 };
 
