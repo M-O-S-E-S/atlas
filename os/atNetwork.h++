@@ -92,6 +92,10 @@
 
       ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
       ATLAS_SYM bool   getBlockingFlag(Socket socket);
+
+      ATLAS_SYM const char *   addrToStr(int family, void * src, 
+                                         char * dst, int dstLen);
+      ATLAS_SYM int            strToAddr(int family, char * src, void * dst);
    }
 #else
    ATLAS_SYM void   initNetwork();
@@ -102,6 +106,10 @@
 
    ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
    ATLAS_SYM bool   getBlockingFlag(Socket socket);
+
+   ATLAS_SYM const char *   addrToStr(int family, void * src, 
+                                      char * dst, int dstLen);
+   ATLAS_SYM int            strToAddr(int family, char * src, void * dst);
 #endif
 
 
