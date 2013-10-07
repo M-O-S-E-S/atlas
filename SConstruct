@@ -289,7 +289,7 @@ if buildTarget == 'win32.32bit':
    # Add the RTI
    if rtiPath != '':
       addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0',
-                  'librti13 libfedtime13 librtis mcast snpr parser')
+                  'librti13 libfedtime13 rtis mcast snpr parser')
 
    # Add libxml2
    addExternal(xmlPath, '/include', '/lib', 'libxml2')
