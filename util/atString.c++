@@ -322,7 +322,7 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
       buffer->append(replacementString);
 
       // Move the copied string to the end of the replaced string
-      cpy = cpy->subString(index + strlen(stringToReplace));
+      copyString = copyString->subString(index + strlen(stringToReplace));
 
       // Find another occurence of the string to be replaced
       subString = strstr(copyString->getString(), stringToReplace);
