@@ -363,12 +363,9 @@ atString * atString::subString(int start, int end)
    // Allocate memory for the substring
    newString = (char *) calloc(newLength, sizeof(char));
 
-   // Run through the strings starting at start and copy each character 
-   // into the substring
-   for (i = start; i <= end; i++)
-   {
-      newString[i - start] = local_string[i];
-   }
+   // Get the string starting at the start index and going until the 
+   // end index
+   memcpy(newString, &local_string[start], newLength);
 
    // Add in the null character
    newString[end+1] = '\0';
