@@ -324,11 +324,11 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
       // Move the copied string to the end of the replaced string
       copyString = copyString->subString(index + strlen(stringToReplace));
 
-      // Find another occurence of the string to be replaced
-      subString = strstr(copyString->getString(), stringToReplace);
-
       // Free the memory we declared for the temporary string
       free(stringToAppend);
+
+      // Find another occurence of the string to be replaced
+      subString = strstr(copyString->getString(), stringToReplace);
    }
 
    // Append the end of the string to the buffer
@@ -346,15 +346,16 @@ atString * atString::subString(int start)
 {
    // Return the substring starting at location start that includes the 
    // remainder of the string
-   return subString(start, strlen(local_string));
+   return subString(start, strlen(local_string) - 1);
 }
 
 
 atString * atString::subString(int start, int end)
 {
-   int      newLength;
-   char *   newString;
-   int      i;
+   int          newLength;
+   char *       newString;
+   int          i;
+   atString *   returnString;
 
    // Find the length of the substring
    newLength = end + 1 - start;
@@ -369,8 +370,17 @@ atString * atString::subString(int start, int end)
       newString[i - start] = local_string[i];
    }
 
+   // Add in the null character
+   newString[end+1] = '\0';
+
+   // Create the final return value 
+   returnString = new atString(newString);
+
+   // Clean up the memory of newString
+   free(newString);
+
    // Return the substring
-   return new atString(newString);
+   return returnString;
 }
 
 
