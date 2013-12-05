@@ -309,7 +309,7 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
       // by subtracting the memory address of the copied string from the
       // current location inside of the copied string, then dividing by 
       // the size of a character byte
-      index = (subString - cpy->getString()) / sizeof(char);
+      index = (subString - copyString->getString()) / sizeof(char);
 
       // Create memory for a temporary string that will hold all the 
       // characters before the string being replaced was found
@@ -317,7 +317,7 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
 
       // Copy the starting characters into the temporary string, append the
       // string to the buffer, and append the replacement string
-      strncpy(stringToAppend, cpy->getString(), index);
+      strncpy(stringToAppend, copyString->getString(), index);
       buffer->append(stringToAppend);
       buffer->append(replacementString);
 
@@ -325,17 +325,20 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
       cpy = cpy->subString(index + strlen(stringToReplace));
 
       // Find another occurence of the string to be replaced
-      subString = strstr(cpy->getString(), stringToReplace);
+      subString = strstr(copyString->getString(), stringToReplace);
 
       // Free the memory we declared for the temporary string
       free(stringToAppend);
    }
 
    // Append the end of the string to the buffer
-   buffer->append(cpy->getString());
+   buffer->append(copyString->getString());
 
    // Change the local string to the string that has the string replaced
    setString(buffer->getString());
+
+   // Clean up the buffer
+   delete buffer;
 }
 
 
