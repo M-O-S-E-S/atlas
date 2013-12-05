@@ -2,6 +2,7 @@
 #include <string.h>
 #include "atString.h++"
 
+#include "atStringBuffer.h++"
 
 atString::atString()
 {
@@ -280,6 +281,93 @@ int atString::compare(atItem * otherItem)
       // Return the default atItem comparison
       return atItem::compare(otherItem);
    }
+}
+
+
+void atString::replaceAll(char * stringToReplace, char * replacementString)
+{
+   char *             subString;
+   atStringBuffer *   buffer;
+   int                index;
+   char *             stringToAppend;
+   atString *         copyString; 
+
+   // Create a copy of the local string
+   copyString = new atString(local_string);
+
+   // Start a buffer that will hold the final string
+   buffer = new atStringBuffer("");
+
+   // Get the first occurence of the string to replace from the copy of 
+   // our local string
+   subString = strstr(copyString->getString(), stringToReplace);
+
+   // Check that we still have an occurence of the string being replaced
+   while (subString != NULL)
+   {
+      // Find the index where the string to be replaced starts, we do this
+      // by subtracting the memory address of the copied string from the
+      // current location inside of the copied string, then dividing by 
+      // the size of a character byte
+      index = (subString - cpy->getString()) / sizeof(char);
+
+      // Create memory for a temporary string that will hold all the 
+      // characters before the string being replaced was found
+      stringToAppend = (char *) calloc((index + 1), sizeof(char));
+
+      // Copy the starting characters into the temporary string, append the
+      // string to the buffer, and append the replacement string
+      strncpy(stringToAppend, cpy->getString(), index);
+      buffer->append(stringToAppend);
+      buffer->append(replacementString);
+
+      // Move the copied string to the end of the replaced string
+      cpy = cpy->subString(index + strlen(stringToReplace));
+
+      // Find another occurence of the string to be replaced
+      subString = strstr(cpy->getString(), stringToReplace);
+
+      // Free the memory we declared for the temporary string
+      free(stringToAppend);
+   }
+
+   // Append the end of the string to the buffer
+   buffer->append(cpy->getString());
+
+   // Change the local string to the string that has the string replaced
+   setString(buffer->getString());
+}
+
+
+atString * atString::subString(int start)
+{
+   // Return the substring starting at location start that includes the 
+   // remainder of the string
+   return subString(start, strlen(local_string));
+}
+
+
+atString * atString::subString(int start, int end)
+{
+   int      newLength;
+   char *   newString;
+   int      i;
+
+   // Find the length of the substring
+   newLength = end + 1 - start;
+
+   // Allocate memory for the substring
+   newString = (char *) calloc(newLength, sizeof(char));
+
+   // Run through the strings starting at start and copy each character 
+   // into the substring
+   for (i = start; i <= end; i++)
+   {
+      newString[i - start] = local_string[i];
+   }
+
+   // Return the substring
+   return new atString(newString);
 }
 
 
