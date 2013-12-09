@@ -4,6 +4,7 @@
 
 #include "atStringBuffer.h++"
 
+
 atString::atString()
 {
    // Initialize string to not being allocated
@@ -290,17 +291,17 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
    atStringBuffer *   buffer;
    int                index;
    char *             stringToAppend;
-   atString *         copyString; 
+   atString           copyString; 
 
    // Create a copy of the local string
-   copyString = new atString(local_string);
+   copyString.setString(local_string);
 
    // Start a buffer that will hold the final string
    buffer = new atStringBuffer("");
 
    // Get the first occurence of the string to replace from the copy of 
    // our local string
-   subString = strstr(copyString->getString(), stringToReplace);
+   subString = strstr(copyString.getString(), stringToReplace);
 
    // Check that we still have an occurence of the string being replaced
    while (subString != NULL)
@@ -309,7 +310,7 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
       // by subtracting the memory address of the copied string from the
       // current location inside of the copied string, then dividing by 
       // the size of a character byte
-      index = (subString - copyString->getString()) / sizeof(char);
+      index = (subString - copyString.getString()) / sizeof(char);
 
       // Create memory for a temporary string that will hold all the 
       // characters before the string being replaced was found
@@ -317,32 +318,32 @@ void atString::replaceAll(char * stringToReplace, char * replacementString)
 
       // Copy the starting characters into the temporary string, append the
       // string to the buffer, and append the replacement string
-      strncpy(stringToAppend, copyString->getString(), index);
+      strncpy(stringToAppend, copyString.getString(), index);
       buffer->append(stringToAppend);
       buffer->append(replacementString);
 
       // Move the copied string to the end of the replaced string
-      copyString = copyString->subString(index + strlen(stringToReplace));
+      copyString = copyString.subString(index + strlen(stringToReplace));
 
       // Free the memory we declared for the temporary string
       free(stringToAppend);
 
       // Find another occurence of the string to be replaced
-      subString = strstr(copyString->getString(), stringToReplace);
+      subString = strstr(copyString.getString(), stringToReplace);
    }
 
    // Append the end of the string to the buffer
-   buffer->append(copyString->getString());
+   buffer->append(copyString.getString());
 
    // Change the local string to the string that has the string replaced
    setString(buffer->getString());
 
-   // Clean up the buffer
+   // Clean up memory
    delete buffer;
 }
 
 
-atString * atString::subString(int start)
+atString atString::subString(int start)
 {
    // Return the substring starting at location start that includes the 
    // remainder of the string
@@ -350,12 +351,12 @@ atString * atString::subString(int start)
 }
 
 
-atString * atString::subString(int start, int end)
+atString atString::subString(int start, int end)
 {
    int          newLength;
    char *       newString;
    int          i;
-   atString *   returnString;
+   atString     returnString;
 
    // Find the length of the substring
    newLength = end + 1 - start;
@@ -371,7 +372,7 @@ atString * atString::subString(int start, int end)
    newString[end+1] = '\0';
 
    // Create the final return value 
-   returnString = new atString(newString);
+   returnString.setString(newString);
 
    // Clean up the memory of newString
    free(newString);
