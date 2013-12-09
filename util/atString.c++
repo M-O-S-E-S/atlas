@@ -249,42 +249,6 @@ u_long atString::getLength() const
 }
 
 
-bool atString::equals(atItem * otherItem)
-{
-   atString *   strItem;
-
-   // Try to convert it to a string to make sure it is a string
-   strItem = dynamic_cast<atString *>(otherItem);
-
-   // Return whether the two strings are equal or not
-   if ( (strItem != NULL) && (strcmp(strItem->getString(), local_string) == 0) )
-      return true;
-   else
-      return false;
-}
-
-
-int atString::compare(atItem * otherItem)
-{
-   atString *   strItem;
-
-   // Try to cast to an atString
-   strItem = dynamic_cast<atString *>(otherItem);
-
-   // See if the other item is valid
-   if (strItem != NULL)
-   {
-      // Return the string comparison of the two native strings
-      return strcmp(local_string, strItem->getString());
-   }
-   else
-   {
-      // Return the default atItem comparison
-      return atItem::compare(otherItem);
-   }
-}
-
-
 void atString::replaceAll(char * stringToReplace, char * replacementString)
 {
    char *             subString;
@@ -379,6 +343,42 @@ atString atString::subString(int start, int end)
 
    // Return the substring
    return returnString;
+}
+
+
+bool atString::equals(atItem * otherItem)
+{
+   atString *   strItem;
+
+   // Try to convert it to a string to make sure it is a string
+   strItem = dynamic_cast<atString *>(otherItem);
+
+   // Return whether the two strings are equal or not
+   if ( (strItem != NULL) && (strcmp(strItem->getString(), local_string) == 0) )
+      return true;
+   else
+      return false;
+}
+
+
+int atString::compare(atItem * otherItem)
+{
+   atString *   strItem;
+
+   // Try to cast to an atString
+   strItem = dynamic_cast<atString *>(otherItem);
+
+   // See if the other item is valid
+   if (strItem != NULL)
+   {
+      // Return the string comparison of the two native strings
+      return strcmp(local_string, strItem->getString());
+   }
+   else
+   {
+      // Return the default atItem comparison
+      return atItem::compare(otherItem);
+   }
 }
 
 
