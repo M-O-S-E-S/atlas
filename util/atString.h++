@@ -39,15 +39,15 @@ class ATLAS_SYM atString : public atItem
       virtual char           getCharAt(u_long index) const;
       virtual u_long         getLength() const;
 
-      virtual bool           equals(atItem * otherItem);
-      virtual int            compare(atItem * otherItem);
-
       virtual void           replaceAll(char * stringToReplace, 
                                         char * replacementString);
 
       virtual atString       subString(int start);
       virtual atString       subString(int start, int end);
 
+      virtual bool           equals(atItem * otherItem);
+      virtual int            compare(atItem * otherItem);
+      
       virtual atString &     operator=(const atString & stringToCopy);
 };
 
