@@ -369,7 +369,7 @@ atString atString::subString(int start, int end)
    memcpy(newString, &local_string[start], newLength);
 
    // Add in the null character
-   newString[newLength+1] = '\0';
+   newString[newLength] = '\0';
 
    // Create the final return value 
    returnString.setString(newString);
