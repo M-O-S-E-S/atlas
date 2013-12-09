@@ -362,14 +362,14 @@ atString atString::subString(int start, int end)
    newLength = end + 1 - start;
 
    // Allocate memory for the substring
-   newString = (char *) calloc(newLength, sizeof(char));
+   newString = (char *) calloc(newLength+1, sizeof(char));
 
    // Get the string starting at the start index and going until the 
    // end index
    memcpy(newString, &local_string[start], newLength);
 
    // Add in the null character
-   newString[end+1] = '\0';
+   newString[newLength+1] = '\0';
 
    // Create the final return value 
    returnString.setString(newString);
