@@ -94,8 +94,6 @@ void atXMLBuffer::processXMLDocument()
    // Check to make sure the XML library understood the buffer
    if (doc == NULL)
    {
-      printf("bad xml_buffer = %s.\n", xml_buffer);
-
       // We didn't recognize the XML at all so warn the user and bail out
       notify(AT_WARN, "XML document not parsed successfully.\n");
       return;
