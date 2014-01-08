@@ -11,6 +11,7 @@
 atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 {
    SocketOptionValue   max;
+   SocketOptionValue   on;
    char                hostname[MAXHOSTNAMELEN];
    struct hostent *    host;
 
@@ -27,6 +28,13 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
    if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
                   (char *) &max, sizeof(max)) < 0)
       perror("setsockopt sndbuf");
+
+   // Set option to send KEEPALIVE (this prevents TCP connections from 
+   // being closed on inactivity)
+   on = 1;
+   if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(on)) < 0)
+      perror("setsockopt keepalive");
+
 
    // Get information about this host and initialize the read name field
    gethostname(hostname, sizeof(hostname));
@@ -49,6 +57,7 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 atTCPNetworkInterface::atTCPNetworkInterface(short port)
 {
    SocketOptionValue   max;
+   SocketOptionValue   on;
    char                hostname[MAXHOSTNAMELEN];
    struct hostent *    host;
 
@@ -65,6 +74,13 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
    if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
                   (char *) &max, sizeof(max)) < 0)
       perror("setsockopt sndbuf");
+
+   // Set option to send KEEPALIVE (this prevents TCP connections from 
+   // being closed on inactivity)
+   on = 1;
+   if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(on)) < 0)
+      perror("setsockopt keepalive");
+
 
    // Get information about this host and initialize the read name field
    gethostname(hostname, sizeof(hostname));
@@ -131,6 +147,7 @@ int atTCPNetworkInterface::acceptConnection()
    struct sockaddr_in   connectingName;
    socklen_t            connectingNameLength;
    SocketOptionValue    max;
+   SocketOptionValue    on;
    u_char *             address;
    u_short              addr0;
    u_short              addr1;
@@ -181,6 +198,15 @@ int atTCPNetworkInterface::acceptConnection()
       if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
                      (char *) &max, sizeof(max)) < 0)
          perror("setsockopt sndbuf");
+
+      // Set option to send KEEPALIVE (this prevents TCP connections from 
+      // being closed on inactivity)
+      on = 1;
+      if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, 
+                     &on, sizeof(on)) < 0)
+      {
+         perror("setsockopt keepalive");
+      }
 
       // Store the data for this connection (address handling is a bit
       // nasty so that it also works in Windows)
@@ -289,6 +315,7 @@ int atTCPNetworkInterface::makeConnection()
    int                  errorCode;
    socklen_t            errorLength;
    SocketOptionValue    max;
+   SocketOptionValue    on;
 
    // Loop until we stop it
    keepTrying = 1;
@@ -397,6 +424,15 @@ int atTCPNetworkInterface::makeConnection()
             if (setsockopt(socket_value, SOL_SOCKET, SO_RCVBUF, 
                            (char *) &max, sizeof(max)) < 0)
                perror("setsockopt sndbuf");
+
+            // Set option to send KEEPALIVE (this prevents TCP connections from 
+            // being closed on inactivity)
+            on = 1;
+            if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, 
+                           &on, sizeof(on)) < 0)
+            {
+               perror("setsockopt keepalive");
+            }
          }
       }
    }
