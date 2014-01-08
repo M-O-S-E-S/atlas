@@ -32,9 +32,11 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
    // Set option to send KEEPALIVE (this prevents TCP connections from 
    // being closed on inactivity)
    on = 1;
-   if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(on)) < 0)
+   if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, 
+                  (char *) &on, sizeof(on)) < 0)
+   {
       perror("setsockopt keepalive");
-
+   }
 
    // Get information about this host and initialize the read name field
    gethostname(hostname, sizeof(hostname));
@@ -78,8 +80,11 @@ atTCPNetworkInterface::atTCPNetworkInterface(short port)
    // Set option to send KEEPALIVE (this prevents TCP connections from 
    // being closed on inactivity)
    on = 1;
-   if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, &on, sizeof(on)) < 0)
+   if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, 
+                  (char *) &on, sizeof(on)) < 0)
+   {
       perror("setsockopt keepalive");
+   }
 
 
    // Get information about this host and initialize the read name field
@@ -203,7 +208,7 @@ int atTCPNetworkInterface::acceptConnection()
       // being closed on inactivity)
       on = 1;
       if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, 
-                     &on, sizeof(on)) < 0)
+                     (char *) &on, sizeof(on)) < 0)
       {
          perror("setsockopt keepalive");
       }
@@ -429,7 +434,7 @@ int atTCPNetworkInterface::makeConnection()
             // being closed on inactivity)
             on = 1;
             if (setsockopt(socket_value, SOL_SOCKET, SO_KEEPALIVE, 
-                           &on, sizeof(on)) < 0)
+                           (char *) &on, sizeof(on)) < 0)
             {
                perror("setsockopt keepalive");
             }
