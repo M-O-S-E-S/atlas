@@ -108,12 +108,40 @@ char * atXMLDocument::getNodeAttribute(atXMLDocumentNodePtr node,
 }
 
 
+// This method should be considered deprecated and any commit should use 
+// the method that also takes in a value. When all projects are up to date
+// this should be removed
 char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
 {
    char *   str;
 
    // Get the string from the XML node
    str = (char *) xmlNodeListGetString(xml_doc, node, 0);
+
+   // Copy the string value (if there is one) into our internal string
+   if (str != NULL)
+      string_value->setString(str);
+   else
+      string_value->setString("");
+
+   // Free up the XML structure
+   if (str != NULL)
+      xmlFree((xmlChar *) str);
+
+   // Return the string
+   return string_value->getString();
+}
+
+
+char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, int val)
+{
+   char *   str;
+
+   // Get the string from the xml node use 1 or 0 for val
+   // Note: If val is a 1 this will also convert entity references for 
+   // example &amp; would become & (Using 1 will also keep CDATA text from
+   // changing)
+   str = (char *) xmlNodeListGetString(xml_doc, node, val);
 
    // Copy the string value (if there is one) into our internal string
    if (str != NULL)
