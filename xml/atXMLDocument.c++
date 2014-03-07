@@ -133,7 +133,7 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
 }
 
 
-char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, int val)
+char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, bool val)
 {
    char *   str;
 

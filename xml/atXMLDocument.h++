@@ -43,7 +43,7 @@ class ATLAS_SYM atXMLDocument : public atItem
       char *                 getNodeAttribute(atXMLDocumentNodePtr node,
                                               char *attrName);
       char *                 getNodeText(atXMLDocumentNodePtr node);
-      char *                 getNodeText(atXMLDocumentNodePtr node, int val);
+      char *                 getNodeText(atXMLDocumentNodePtr node, bool val);
 
       void                   retrieveXML(u_char ** buffer, u_long * bufferLen);
 
