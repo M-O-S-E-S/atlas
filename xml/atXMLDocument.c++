@@ -113,7 +113,7 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
    // This function is to support the older (deprecated) method so we just 
    // call the replacement function with a "0" (meaning don't translate the
    // data within the XML itself)
-   getNodeText(node, 0);
+   return getNodeText(node, 0);
 }
 
 
