@@ -121,11 +121,11 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, bool val)
 {
    char *   str;
 
-   // Get the string from the xml node use 1 or 0 for val
-   // Note: If val is a 1 this will also convert entity references for 
-   // example &amp; would become & (Using 1 will also keep CDATA text from
-   // changing)
-   if(val)
+   // Get the string from the XML node use 1 or 0 for val
+   // Note: Using 1 causes the parser to concatenate the string without
+   // encoding (This is the proper value for CDATA). Using 0 causes the
+   // parser to encode all special characters
+   if (val)
    {
       str = (char *) xmlNodeListGetString(xml_doc, node, 1);
    }
