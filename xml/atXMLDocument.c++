@@ -113,7 +113,7 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
    char *   str;
 
    // Get the string from the XML node
-   str = (char *) xmlNodeListGetString(xml_doc, node, 0);
+   str = (char *) xmlNodeListGetString(xml_doc, node, 1);
 
    // Copy the string value (if there is one) into our internal string
    if (str != NULL)
