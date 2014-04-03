@@ -113,7 +113,7 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node)
    // This function is to support the older (deprecated) method so we just 
    // call the replacement function with a "0" (meaning don't translate the
    // data within the XML itself)
-   return getNodeText(node, 0);
+   return getNodeText(node, 1);
 }
 
 
@@ -121,15 +121,14 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, bool val)
 {
    char *   str;
 
-   // Get the string from the XML node use 1 or 0 for val
-   // Note: Using 1 causes the parser to decode any special characters
-   // (ex: &amp; would be &), while using a 0 causes the parser to encode
-   // any special characters (ex: & would be &amp;)
-   // Note: CDATA should be used with a 1 because the internal text will be
-   // encoded with the use of 0 
-   // Note: When using CDATA with a 1 none of the text will be changed
-   // Note: Any characters that are encoded without CDATA will remain the
-   // same by using 0
+   // Get the string from the XML node (using true for val causes the 
+   // parser to decode any special characters (ex: &amp; would be &) while 
+   // using true causes the parser to encode any special characters 
+   // (ex: & would be &amp;))
+   // Note: CDATA seems to be unaffected with val as true so this can be 
+   // used to prevent CDATA from being changed (however, this seems odd 
+   // from the libxml2 documentation so it is possible this behavior may
+   // change)
    if (val)
    {
       str = (char *) xmlNodeListGetString(xml_doc, node, 1);
