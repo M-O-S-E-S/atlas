@@ -128,7 +128,8 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, bool val)
    // Note: CDATA seems to be unaffected with val as true so this can be 
    // used to prevent CDATA from being changed (however, this seems odd 
    // from the libxml2 documentation so it is possible this behavior may
-   // change)
+   // change; it may be that xmlNodeListGetRawString or xmlNodeGetContent
+   // should be used for CDATA but this will require more research)
    if (val)
    {
       str = (char *) xmlNodeListGetString(xml_doc, node, 1);
