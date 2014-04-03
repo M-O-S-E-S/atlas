@@ -126,7 +126,8 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, bool val)
    // (ex: &amp; would be &), while using a 0 causes the parser to encode
    // any special characters (ex: & would be &amp;)
    // Note: CDATA should be used with a 1 because the internal text will be
-   // encoded with the use of 0
+   // encoded with the use of 0 
+   // Note: When using CDATA with a 1 none of the text will be changed
    // Note: Any characters that are encoded without CDATA will remain the
    // same by using 0
    if (val)
