@@ -124,12 +124,12 @@ char * atXMLDocument::getNodeText(atXMLDocumentNodePtr node, bool val)
    // Get the string from the XML node use 1 or 0 for val
    // Note: Using 1 causes the parser to decode any special characters
    // (ex: &amp; would be &), while using a 0 causes the parser to encode
-   // any special characters(ex: & would be &amp;)
+   // any special characters (ex: & would be &amp;)
    // Note: CDATA should be used with a 1 because the internal text will be
    // encoded with the use of 0
    // Note: Any characters that are encoded without CDATA will remain the
    // same by using 0
-  if (val)
+   if (val)
    {
       str = (char *) xmlNodeListGetString(xml_doc, node, 1);
    }
