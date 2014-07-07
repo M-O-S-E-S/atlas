@@ -834,6 +834,19 @@ bool atVector::operator==(const atVector &operand) const
     return true;
 }
 
+
+// ------------------------------------------------------------------------
+// Checks for element-wise non-equality between two vectors. The two 
+// vectors must be the same size. Two elements are considered not-equal if
+// they exceed a tolerance of difference in value to each other.
+// ------------------------------------------------------------------------
+bool atVector::operator!=(const atVector &operand) const
+{
+   // Use the equals operator and change the sign to be not equal
+   return !(*this == operand);
+}
+
+
 // ------------------------------------------------------------------------
 // Prints a text representation of this vector to stdout
 // ------------------------------------------------------------------------

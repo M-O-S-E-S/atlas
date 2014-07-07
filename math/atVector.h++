@@ -71,6 +71,7 @@ public:
     void            operator-=(const atVector &subtrahend);
     void            operator*=(double multiplier);
     bool            operator==(const atVector &operand) const;
+    bool            operator!=(const atVector &operand) const;
 
     void            print() const;
     void            print(FILE *fp) const;
