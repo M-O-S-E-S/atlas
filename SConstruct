@@ -57,6 +57,8 @@ elif buildTarget == 'ios':
    xmlPath = xcodePath + '/SDKs/iPhoneOS8.2.sdk/usr';
    # HLA RTI (empty means do not include)
    rtiPath = ''
+   # bluetooth (empty means do not include)
+   bluetoothPath = ''
 elif buildTarget == 'android':
    # Android NDK
    ndkPath = '/irl/tools/libs/android-ndk-r8'
@@ -66,6 +68,8 @@ elif buildTarget == 'android':
    xmlPath = '/irl/tools-android/libs/libxml2-2.7.8'
    # HLA RTI (empty means do not include)
    rtiPath = ''
+   # bluetooth (empty means do not include)
+   bluetoothPath = ''
    # glob
    globPath = '/irl/tools-android/libs/glob'
 else:
@@ -117,7 +121,7 @@ communicationSrc = 'atIPCInterface.c++ \
                     atNameValuePair.c++ atKeyedBufferHandler.c++ \
                     atHLAInterface.c++ atRTIInterface.c++'
 if bluetoothPath != '':
-   communicationSrc = communicationSrc + 
+   communicationSrc = communicationSrc + \
                       ' atBluetoothInterface.c++ atRFCOMMBluetoothInterface.c++'
 if rtiPath != '':
    communicationSrc = communicationSrc + ' atRTIInterfaceAmbassador.c++'
