@@ -32,6 +32,8 @@ atPriorityQueue::atPriorityQueue(u_long initialCapacity)
 
 atPriorityQueue::~atPriorityQueue()
 {
+   // Free the memory that was allocated for the heap
+   free(heap_array);
 }
 
 
