@@ -38,7 +38,7 @@ elif buildTarget == 'posix.64bit':
    # libxml2 (see subpaths below)
    xmlPath = '/usr'
    # bluetooth (see subpaths below)
-   bluetoothPath = '/usr'
+   bluetoothPath = ARGUMENTS.get('bluetoothPath', '/usr')
 elif buildTarget == 'posix.32bit':
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis-1.3_D22')
@@ -47,14 +47,14 @@ elif buildTarget == 'posix.32bit':
    # libxml2 (see subpaths below)
    xmlPath = '/usr'
    # bluetooth (see subpaths below)
-   bluetoothPath = '/usr'
+   bluetoothPath = ARGUMENTS.get('bluetoothPath', '/usr')
 elif buildTarget == 'ios':
    # Xcode
    xcodePath = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer';
    # uuid
    uuidPath = '/irl/tools-ios/libs/uuid-1.6.2'
    # libxml2
-   xmlPath = xcodePath + '/SDKs/iPhoneOS6.1.sdk/usr';
+   xmlPath = xcodePath + '/SDKs/iPhoneOS8.2.sdk/usr';
    # HLA RTI (empty means do not include)
    rtiPath = ''
 elif buildTarget == 'android':
@@ -114,10 +114,11 @@ communicationSrc = 'atIPCInterface.c++ \
                     atSharedMemoryInterface.c++ atSharedQueue.c++ \
                     atThreadInterface.c++ atThreadQueue.c++ atThreadCount.c++ \
                     atSerialInterface.c++ \
-                    atBluetoothInterface.c++ \
-                    atRFCOMMBluetoothInterface.c++ \
                     atNameValuePair.c++ atKeyedBufferHandler.c++ \
                     atHLAInterface.c++ atRTIInterface.c++'
+if bluetoothPath != '':
+   communicationSrc = communicationSrc + 
+                      ' atBluetoothInterface.c++ atRFCOMMBluetoothInterface.c++'
 if rtiPath != '':
    communicationSrc = communicationSrc + ' atRTIInterfaceAmbassador.c++'
 
@@ -226,14 +227,14 @@ elif buildTarget == 'ios':
       # No compile flags
       compileFlags = Split('-Wno-parentheses -Wno-deprecated-writable-strings' +
                            ' -arch armv7 -isysroot ' + xcodePath + 
-                           '/SDKs/iPhoneOS6.1.sdk')
+                           '/SDKs/iPhoneOS8.2.sdk')
 
       # Set a define so things can know we're cross compiling for iOS
       defines += Split('__IOS__ _DARWIN_C_SOURCE')
 
       # No linker flags
       linkFlags = Split(' -arch armv7 -isysroot ' + xcodePath + 
-                        '/SDKs/iPhoneOS6.1.sdk -lobjc -lstdc++')
+                        '/SDKs/iPhoneOS8.2.sdk -lobjc -lstdc++')
    else:
       print "Unsupported platform type for cross compile", buildTarget
       sys.exit(0)
@@ -315,7 +316,8 @@ elif buildTarget == 'posix.64bit':
    addExternal(xmlPath, '/include/libxml2', '/lib64', 'xml2')
 
    # Add bluetooth
-   addExternal(bluetoothPath, '/include', '/lib64', 'bluetooth')
+   if bluetoothPath != '':
+      addExternal(bluetoothPath, '/include', '/lib64', 'bluetooth')
 elif buildTarget == 'posix.32bit':
   # Add the RTI
    if rtiPath != '':
@@ -329,7 +331,8 @@ elif buildTarget == 'posix.32bit':
    addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
 
    # Add bluetooth
-   addExternal(bluetoothPath, '/include', '/lib', 'bluetooth')
+   if bluetoothPath != '':
+      addExternal(bluetoothPath, '/include', '/lib', 'bluetooth')
 elif buildTarget == 'ios':
    # Add the uuid library
    addExternal(uuidPath, '/include', '/lib', 'uuid')
