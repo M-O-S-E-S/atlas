@@ -145,7 +145,8 @@ osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ atFile.c++ \
 utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atPath.c++ atImage.c++ \
            atString.c++ atStringBuffer.c++ atStringTokenizer.c++ \
-           atTimer.c++ atJoint.c++ atCommandLine.c++'
+           atTimer.c++ atJoint.c++ atCommandLine.c++ \
+           atChar.c++ atInt.c++ atLong.c++ atFloat.c++ atDouble.c++'
 
 xmlDir = 'xml'
 xmlSrc = 'atXMLBuffer.c++ atXMLDocument.c++ atXMLReader.c++'
