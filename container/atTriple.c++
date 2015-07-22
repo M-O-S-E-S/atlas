@@ -43,6 +43,34 @@ atItem * atTriple::getThird()
    return third_item;
 }
 
+
+void atTriple::setFirst(atItem * first)
+{
+   // Delete existing first and then set new one
+   if (first_item != NULL)
+      delete first_item;
+   first_item = first;
+}
+
+
+void atTriple::setSecond(atItem * second)
+{
+   // Delete existing second and then set new one
+   if (second_item != NULL)
+      delete second_item;
+   second_item = second;
+}
+
+
+void atTriple::setThird(atItem * third)
+{
+   // Delete existing third and then set new one
+   if (third_item != NULL)
+      delete third_item;
+   third_item = third;
+}
+
+
 void atTriple::removeFirst()
 {
    // Clear the first item
@@ -62,6 +90,7 @@ void atTriple::removeThird()
    // Clear the third item
    third_item = NULL;
 }
+
 
 bool atTriple::equals(atItem * otherItem)
 {

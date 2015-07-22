@@ -21,6 +21,10 @@ class ATLAS_SYM atTriple : public atItem
       atItem *   getSecond();
       atItem *   getThird();
 
+      void       setFirst(atItem * first);
+      void       setSecond(atItem * second);
+      void       setThird(atItem * third);
+
       void       removeFirst();
       void       removeSecond();
       void       removeThird();
