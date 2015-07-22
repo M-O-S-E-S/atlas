@@ -128,7 +128,7 @@ if rtiPath != '':
 
 
 containerDir = 'container'
-containerSrc = 'atPair.c++ atArray.c++ atList.c++ atMap.c++ \
+containerSrc = 'atPair.c++ atTriple.c++ atArray.c++ atList.c++ atMap.c++ \
                 atPriorityQueue.c++'
 
 foundationDir = 'foundation'
