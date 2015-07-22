@@ -94,25 +94,25 @@ void atTriple::removeThird()
 
 bool atTriple::equals(atItem * otherItem)
 {
-   atTriple *   pairItem;
+   atTriple *   tripleItem;
    bool         firsts;
    bool         seconds;
    bool         thirds;
 
-   // Try to convert it to a pair to make sure it is a pair
-   pairItem = dynamic_cast<atTriple *>(otherItem);
+   // Try to convert it to a triple to make sure it is a triple
+   tripleItem = dynamic_cast<atTriple *>(otherItem);
 
-   // Return whether the two strings are equal or not
-   if (pairItem != NULL) 
+   // Return whether the three items are equal or not
+   if (tripleItem != NULL) 
    {
-      // Compare the "first" items and the "second" items and return 
-      // if both sets match
-      firsts = ((first_item == NULL) && (pairItem->first_item == NULL)) ||
-               (first_item->equals(pairItem->first_item) == true);
-      seconds = ((second_item == NULL) && (pairItem->second_item == NULL)) ||
-                (second_item->equals(pairItem->second_item) == true);
-      thirds = ((third_item == NULL) && (pairItem->third_item == NULL)) ||
-                (third_item->equals(pairItem->third_item) == true);
+      // Compare the "first" items, the "second" items and the "third" items, 
+      // and return if both sets match
+      firsts = ((first_item == NULL) && (tripleItem->first_item == NULL)) ||
+               (first_item->equals(tripleItem->first_item) == true);
+      seconds = ((second_item == NULL) && (tripleItem->second_item == NULL)) ||
+                (second_item->equals(tripleItem->second_item) == true);
+      thirds = ((third_item == NULL) && (tripleItem->third_item == NULL)) ||
+                (third_item->equals(tripleItem->third_item) == true);
       return (firsts && seconds && thirds);
    }
    else
@@ -122,25 +122,25 @@ bool atTriple::equals(atItem * otherItem)
 
 int atTriple::compare(atItem * otherItem)
 {
-   atTriple *   pairItem;
-   int        com;
+   atTriple *   tripleItem;
+   int          com;
 
    // Try to cast to an atTriple
-   pairItem = dynamic_cast<atTriple *>(otherItem);
+   tripleItem = dynamic_cast<atTriple *>(otherItem);
 
    // See if the other item is valid
-   if (pairItem != NULL)
+   if (tripleItem != NULL)
    {
       // Check to see how the first items compare
-      com = first_item->compare(pairItem->getFirst());
+      com = first_item->compare(tripleItem->getFirst());
       if (com == 0)
       {
          // The first items are equal so let's check the second ones now
-         com = second_item->compare(pairItem->getSecond());
+         com = second_item->compare(tripleItem->getSecond());
          if (com == 0)
          {
             // The second items are equal so let's check the third ones now
-            com = third_item->compare(pairItem->getThird());
+            com = third_item->compare(tripleItem->getThird());
          }
       }
 
