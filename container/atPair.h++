@@ -21,6 +21,9 @@ class ATLAS_SYM atPair : public atItem
       atItem *   getFirst();
       atItem *   getSecond();
 
+      void       setFirst(atItem * first);
+      void       setSecond(atItem * second);
+
       void       removeFirst();
       void       removeSecond();
 
