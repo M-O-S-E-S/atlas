@@ -9,7 +9,7 @@
 #include "atDynamic.h++"
 #include "atErrno.h++"
 #include "atFile.h++"
-#include "atInt.h++"
+#include "atIntTypes.h++"
 #include "atLang.h++"
 #include "atNetwork.h++"
 #include "atSem.h++"
