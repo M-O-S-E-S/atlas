@@ -1,6 +1,6 @@
 
 #include "atFloat.h++"
-
+#include "atGlobals.h++"
 
 atFloat::atFloat(float val)
 {
@@ -30,7 +30,7 @@ float atFloat::getValue()
 
 bool atFloat::equals(atItem * otherItem)
 {
-   atItem *   floatItem;
+   atFloat *   floatItem;
    
    // Try to cast the other item to an atFloat
    floatItem = dynamic_cast<atFloat *>(otherItem);
@@ -50,9 +50,9 @@ bool atFloat::equals(atItem * otherItem)
 }
 
 
-float atFloat::compare(atItem * otherItem)
+int atFloat::compare(atItem * otherItem)
 {
-   atItem *   floatItem;
+   atFloat *   floatItem;
 
    // Try to cast the other item to an atFloat
    floatItem = dynamic_cast<atFloat *>(otherItem);
@@ -61,7 +61,7 @@ float atFloat::compare(atItem * otherItem)
    if (floatItem != NULL)
    {
       // Return the difference between the float values
-      return float_value - floatItem->getValue();
+      return (int) (float_value - floatItem->getValue());
    }
    else
    {

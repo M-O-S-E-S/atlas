@@ -30,7 +30,7 @@ long atLong::getValue()
 
 bool atLong::equals(atItem * otherItem)
 {
-   atItem *   longItem;
+   atLong *   longItem;
    
    // Try to cast the other item to an atLong
    longItem = dynamic_cast<atLong *>(otherItem);
@@ -50,9 +50,9 @@ bool atLong::equals(atItem * otherItem)
 }
 
 
-long atLong::compare(atItem * otherItem)
+int atLong::compare(atItem * otherItem)
 {
-   atItem *   longItem;
+   atLong *   longItem;
 
    // Try to cast the other item to an atLong
    longItem = dynamic_cast<atLong *>(otherItem);
@@ -61,7 +61,7 @@ long atLong::compare(atItem * otherItem)
    if (longItem != NULL)
    {
       // Return the difference between the long values
-      return long_value - longItem->getValue();
+      return (int) (long_value - longItem->getValue());
    }
    else
    {

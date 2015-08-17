@@ -30,7 +30,7 @@ int atInt::getValue()
 
 bool atInt::equals(atItem * otherItem)
 {
-   atItem *   intItem;
+   atInt *   intItem;
    
    // Try to cast the other item to an atInt
    intItem = dynamic_cast<atInt *>(otherItem);
@@ -52,7 +52,7 @@ bool atInt::equals(atItem * otherItem)
 
 int atInt::compare(atItem * otherItem)
 {
-   atItem *   intItem;
+   atInt *   intItem;
 
    // Try to cast the other item to an atInt
    intItem = dynamic_cast<atInt *>(otherItem);

@@ -1,6 +1,6 @@
 
 #include "atDouble.h++"
-
+#include "atGlobals.h++"
 
 atDouble::atDouble(double val)
 {
@@ -30,7 +30,7 @@ double atDouble::getValue()
 
 bool atDouble::equals(atItem * otherItem)
 {
-   atItem *   doubleItem;
+   atDouble *   doubleItem;
    
    // Try to cast the other item to an atDouble
    doubleItem = dynamic_cast<atDouble *>(otherItem);
@@ -50,9 +50,9 @@ bool atDouble::equals(atItem * otherItem)
 }
 
 
-double atDouble::compare(atItem * otherItem)
+int atDouble::compare(atItem * otherItem)
 {
-   atItem *   doubleItem;
+   atDouble *   doubleItem;
 
    // Try to cast the other item to an atDouble
    doubleItem = dynamic_cast<atDouble *>(otherItem);
@@ -61,7 +61,7 @@ double atDouble::compare(atItem * otherItem)
    if (doubleItem != NULL)
    {
       // Return the difference between the double values
-      return double_value - doubleItem->getValue();
+      return (int) (double_value - doubleItem->getValue());
    }
    else
    {

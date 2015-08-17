@@ -30,7 +30,7 @@ char atChar::getValue()
 
 bool atChar::equals(atItem * otherItem)
 {
-   atItem *   charItem;
+   atChar *   charItem;
    
    // Try to cast the other item to an atChar
    charItem = dynamic_cast<atChar *>(otherItem);
@@ -50,9 +50,9 @@ bool atChar::equals(atItem * otherItem)
 }
 
 
-char atChar::compare(atItem * otherItem)
+int atChar::compare(atItem * otherItem)
 {
-   atItem *   charItem;
+   atChar *   charItem;
 
    // Try to cast the other item to an atChar
    charItem = dynamic_cast<atChar *>(otherItem);
