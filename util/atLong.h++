@@ -17,6 +17,9 @@ class ATLAS_SYM atLong : public atItem
 
       virtual void   setValue(long val);
       virtual long   getValue();
+
+      virtual bool   equals(atItem * otherItem);
+      virtual int    compare(atItem * otherItem);
 };
 
 

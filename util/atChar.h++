@@ -17,6 +17,9 @@ class ATLAS_SYM atChar : public atItem
 
       virtual void   setValue(char val);
       virtual char   getValue();
+
+      virtual bool   equals(atItem * otherItem);
+      virtual int    compare(atItem * otherItem);
 };
 
 

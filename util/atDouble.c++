@@ -27,3 +27,46 @@ double atDouble::getValue()
    return double_value;
 }
 
+
+bool atDouble::equals(atItem * otherItem)
+{
+   atItem *   doubleItem;
+   
+   // Try to cast the other item to an atDouble
+   doubleItem = dynamic_cast<atDouble *>(otherItem);
+
+   // See if the other item is valid
+   if (doubleItem != NULL)
+   {
+      // Return the double comparison of the values
+      return (AT_EQUAL(double_value, doubleItem->getValue()));
+   }
+   else
+   {
+      // The types of items didn't match so it has to be different double
+      // values
+      return false;
+   }
+}
+
+
+double atDouble::compare(atItem * otherItem)
+{
+   atItem *   doubleItem;
+
+   // Try to cast the other item to an atDouble
+   doubleItem = dynamic_cast<atDouble *>(otherItem);
+
+   // See if the other item is valid
+   if (doubleItem != NULL)
+   {
+      // Return the difference between the double values
+      return double_value - doubleItem->getValue();
+   }
+   else
+   {
+      // Return the default atItem comparison
+      return atItem::compare(otherItem);
+   }
+}
+

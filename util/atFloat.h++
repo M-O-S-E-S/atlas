@@ -17,6 +17,9 @@ class ATLAS_SYM atFloat : public atItem
 
       virtual void    setValue(float val);
       virtual float   getValue();
+
+      virtual bool   equals(atItem * otherItem);
+      virtual int    compare(atItem * otherItem);
 };
 
 

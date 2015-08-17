@@ -27,3 +27,46 @@ char atChar::getValue()
    return char_value;
 }
 
+
+bool atChar::equals(atItem * otherItem)
+{
+   atItem *   charItem;
+   
+   // Try to cast the other item to an atChar
+   charItem = dynamic_cast<atChar *>(otherItem);
+
+   // See if the other item is valid
+   if (charItem != NULL)
+   {
+      // Return the char comparison of the values
+      return char_value == charItem->getValue();
+   }
+   else
+   {
+      // The types of items didn't match so it has to be different char
+      // values
+      return false;
+   }
+}
+
+
+char atChar::compare(atItem * otherItem)
+{
+   atItem *   charItem;
+
+   // Try to cast the other item to an atChar
+   charItem = dynamic_cast<atChar *>(otherItem);
+
+   // See if the other item is valid
+   if (charItem != NULL)
+   {
+      // Return the difference between the char values
+      return char_value - charItem->getValue();
+   }
+   else
+   {
+      // Return the default atItem comparison
+      return atItem::compare(otherItem);
+   }
+}
+
