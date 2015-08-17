@@ -61,8 +61,26 @@ int atFloat::compare(atItem * otherItem)
    // See if the other item is valid
    if (floatItem != NULL)
    {
-      // Return the difference between the float values
-      return (int) (float_value - floatItem->getValue());
+      // Due to the inaccurate nature of floating point numbers use a series 
+      // of checks to determine the compare return value
+      if (AT_EQUAL(float_value, floatItem->getValue()))
+      {
+         // The two floating numbers are equal within a tolerance located 
+         // inside of atGlobals so return 0
+         return 0;
+      }
+      else if (float_value - floatItem->getValue() < 0.0f)
+      {
+         // The current value is less than the other value so return -1 to 
+         // indicate this
+         return -1;
+      }
+      else
+      {
+         // The current value is greater than the other value so return 1 
+         // to indicate this
+         return 1;
+      }
    }
    else
    {
