@@ -2,6 +2,7 @@
 #include "atDouble.h++"
 #include "atGlobals.h++"
 
+
 atDouble::atDouble(double val)
 {
    // Set the value

@@ -2,6 +2,7 @@
 #include "atFloat.h++"
 #include "atGlobals.h++"
 
+
 atFloat::atFloat(float val)
 {
    // Set the value
