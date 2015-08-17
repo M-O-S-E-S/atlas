@@ -34,6 +34,24 @@ atItem * atPair::getSecond()
 }
 
 
+void atPair::setFirst(atItem * first)
+{
+   // Delete existing first and then set new one
+   if (first_item != NULL)
+      delete first_item;
+   first_item = first;
+}
+
+
+void atPair::setSecond(atItem * second)
+{
+   // Delete existing second and then set new one
+   if (second_item != NULL)
+      delete second_item;
+   second_item = second;
+}
+
+
 void atPair::removeFirst()
 {
    // Clear the first item

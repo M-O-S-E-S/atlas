@@ -40,18 +40,9 @@
       ATLAS_SYM int str2ba(const char * straddr, bdaddr_t * btaddr);
    #endif
 #elif __ANDROID__
-   // Android has no Bluetooth support so make placeholders
-   #define BTPROTO_RFCOMM   1
-   #define BTPROTO_L2CAP    1
-
-   typedef int   BluetoothSockAddr;
+   // Android has no Bluetooth support
 #elif __IOS__
-   // iOS has no Bluetooth support so make placeholders
-   #define AF_BLUETOOTH     31
-   #define BTPROTO_RFCOMM   1
-   #define BTPROTO_L2CAP    1
-
-   typedef int   BluetoothSockAddr;
+   // iOS has no Bluetooth support
 #else
     #include <bluetooth/bluetooth.h>
     #include <bluetooth/rfcomm.h>
@@ -66,70 +57,73 @@
 #endif
 
 
-typedef struct
-{
-   char   address[256];
-   char   name[256];
-} BluetoothDevice;
-
-
-#ifdef __cplusplus
-   extern "C"
+// Android and iOS have no Bluetooth support
+#if !defined(__ANDROID__) && !defined(__IOS__)
+   typedef struct
    {
+      char   address[256];
+      char   name[256];
+   } BluetoothDevice;
+   
+   
+   #ifdef __cplusplus
+      extern "C"
+      {
+         #ifdef _MSC_VER
+            ATLAS_SYM int   ba2str(const bdaddr_t * btaddr, char * straddr);
+            ATLAS_SYM int   str2ba(const char * straddr, bdaddr_t * btaddr);
+         #endif
+   
+         ATLAS_SYM void   getBTDevices(BluetoothDevice * devices,
+                                       u_long * maxDevices);
+   
+         ATLAS_SYM void   setBTAddress(BluetoothSockAddr * btAddr, 
+                                       char * address, u_char channel);
+         ATLAS_SYM void   getBTAddress(BluetoothSockAddr * btAddr, 
+                                       char * address);
+         ATLAS_SYM void   getBTChannel(BluetoothSockAddr * btAddr, 
+                                       u_char * channel);
+      }
+   
+      // These are defined in atNetwork.c++
+      extern "C"
+      {
+         ATLAS_SYM void   initNetwork();
+         ATLAS_SYM void   cleanupNetwork();
+   
+         ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
+         ATLAS_SYM void     closeSocket(Socket socket);
+   
+         ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
+         ATLAS_SYM bool   getBlockingFlag(Socket socket);
+      }
+   #else
       #ifdef _MSC_VER
          ATLAS_SYM int   ba2str(const bdaddr_t * btaddr, char * straddr);
          ATLAS_SYM int   str2ba(const char * straddr, bdaddr_t * btaddr);
       #endif
-
+   
       ATLAS_SYM void   getBTDevices(BluetoothDevice * devices,
                                     u_long * maxDevices);
-
+   
       ATLAS_SYM void   setBTAddress(BluetoothSockAddr * btAddr, 
                                     char * address, u_char channel);
-      ATLAS_SYM void   getBTAddress(BluetoothSockAddr * btAddr, 
-                                    char * address);
-      ATLAS_SYM void   getBTChannel(BluetoothSockAddr * btAddr, 
-                                    u_char * channel);
-   }
-
-   // These are defined in atNetwork.c++
-   extern "C"
-   {
-      ATLAS_SYM void   initNetwork();
-      ATLAS_SYM void   cleanupNetwork();
-
-      ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
-      ATLAS_SYM void     closeSocket(Socket socket);
-
-      ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
-      ATLAS_SYM bool   getBlockingFlag(Socket socket);
-   }
-#else
-   #ifdef _MSC_VER
-      ATLAS_SYM int   ba2str(const bdaddr_t * btaddr, char * straddr);
-      ATLAS_SYM int   str2ba(const char * straddr, bdaddr_t * btaddr);
+      ATLAS_SYM void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
+      ATLAS_SYM void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
+   
+      // These are defined in atNetwork.c++
+      extern
+      {
+         ATLAS_SYM void   initNetwork();
+         ATLAS_SYM void   cleanupNetwork();
+   
+         ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
+         ATLAS_SYM void     closeSocket(Socket socket);
+   
+         ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
+         ATLAS_SYM bool   getBlockingFlag(Socket socket);
+      }
    #endif
-
-   ATLAS_SYM void   getBTDevices(BluetoothDevice * devices,
-                                 u_long * maxDevices);
-
-   ATLAS_SYM void   setBTAddress(BluetoothSockAddr * btAddr, 
-                                 char * address, u_char channel);
-   ATLAS_SYM void   getBTAddress(BluetoothSockAddr * btAddr, char * address);
-   ATLAS_SYM void   getBTChannel(BluetoothSockAddr * btAddr, u_char * channel);
-
-   // These are defined in atNetwork.c++
-   extern
-   {
-      ATLAS_SYM void   initNetwork();
-      ATLAS_SYM void   cleanupNetwork();
-
-      ATLAS_SYM Socket   openSocket(int domain, int type, int protocol);
-      ATLAS_SYM void     closeSocket(Socket socket);
-
-      ATLAS_SYM void   setBlockingFlag(Socket socket, bool block);
-      ATLAS_SYM bool   getBlockingFlag(Socket socket);
-   }
 #endif
 
 

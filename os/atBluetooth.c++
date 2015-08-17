@@ -139,27 +139,7 @@
       *channel = (u_char ) btAddr->port;
    }
 #elif defined(__ANDROID__) || defined(__IOS__)
-   // Android has no Bluetooth support 
-   void getBTDevices(BluetoothDevice * devices, u_long * numDevices)
-   {
-      printf("Bluetooth not supported in ATLAS for Android.\n");
-   }
-
-   void setBTAddress(BluetoothSockAddr * btAddr, char * address, 
-                     u_char channel)
-   {
-      printf("Bluetooth not supported in ATLAS for Android.\n");
-   }
-
-   void getBTAddress(BluetoothSockAddr * btAddr, char * address)
-   {
-      printf("Bluetooth not supported in ATLAS for Android.\n");
-   }
-
-   void getBTChannel(BluetoothSockAddr * btAddr, u_char * channel)
-   {
-      printf("Bluetooth not supported in ATLAS for Android.\n");
-   }
+   // Android and iOS have no Bluetooth support 
 #else
    void getBTDevices(BluetoothDevice * devices, u_long * numDevices)
    {
