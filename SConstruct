@@ -21,15 +21,17 @@ print 'Building for ' + buildTarget + '...'
 
 
 # Base paths for external libraries (platform dependent)
-if buildTarget == 'win32.32bit':
+if buildTarget == 'win32.64bit':
    # libxml2
-   xmlPath = 'L:/libxml2-2.7.6'
+   xmlPath = 'L:/libxml2-2.9.2'
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', 'L:/rtis-1.3_D22')
    # iconv
-   iconvPath = 'L:/iconv-1.9.1'
+   iconvPath = 'L:/libiconv-1.14'
    # inttypes.h for MSVC
    msinttypesPath = 'L:/msinttypes-r26'
+   # Bluetooth (disabled for Windows)
+   bluetoothPath = ''
 elif buildTarget == 'posix.64bit':
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis_D30G')
@@ -167,7 +169,7 @@ atlasSource.extend(buildList(xmlDir, xmlSrc))
 defines = Split('ATLAS_SYM=EXPORT')
 
 # Then handle platform-specific issues
-if buildTarget == 'win32.32bit':
+if buildTarget == 'win32.64bit':
    # Flags for the VC++ compiler
    # /nologo      = Don't print the compiler banner
    # /MD          = Use multithreaded DLL runtime
@@ -291,17 +293,17 @@ extLibs = []
 
 # Depending on platform, add the external libraries that ATLAS requires
 # (Windows requires more to be linked in than Linux does)
-if buildTarget == 'win32.32bit':
+if buildTarget == 'win32.64bit':
    # Add the RTI
    if rtiPath != '':
       addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0',
                   'librti13 libfedtime13 rtis mcast snpr parser')
 
    # Add libxml2
-   addExternal(xmlPath, '/include', '/lib', 'libxml2')
+   addExternal(xmlPath, '/include/libxml2', '/lib', 'libxml2')
 
    # Add iconv
-   addExternal(iconvPath, '/include', '/lib', 'iconv')
+   addExternal(iconvPath, '/include', '/lib', 'libiconv')
 
    # Add msinttypes headers
    extIncPath.extend(Split(msinttypesPath + '/include'))
@@ -392,7 +394,7 @@ if buildTarget != 'ios':
 
 
 # Under Windows, embed the manifest into the .dll
-if buildTarget == 'win32.32bit':
+if buildTarget == 'win32.64bit':
    embedManifest(basisEnv, atlasLib, 2)
    embedManifest(basisEnv, atlasDSO, 2)
 

@@ -6,7 +6,7 @@
 #include "atSymbols.h++"
 
 #ifdef _MSC_VER
-   #include <winsock.h>
+   #include <winsock2.h>
 #else
    #include <errno.h>
 #endif

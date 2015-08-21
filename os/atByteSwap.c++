@@ -2,16 +2,17 @@
 #include "atByteSwap.h++"
 
 
-// Need to have winsock in the windows version for htons
+// Need to have winsock in the windows version
 #ifdef _MSC_VER
    #define WIN32_LEAN_AND_MEAN
-   #include <winsock.h>
+   #include <winsock2.h>
    #undef WIN32_LEAN_AND_MEAN
 #else
    #include <netinet/in.h>
 #endif
 
 
+#ifndef _MSC_VER
 float htonf(float x)
 {
    char   *tmp;
@@ -72,5 +73,5 @@ double ntohd(double x)
 {
    return htond(x);
 }
-
+#endif
 
