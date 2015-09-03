@@ -7,6 +7,9 @@
 
 #ifdef _MSC_VER
    #include <winsock2.h>
+
+   // Windows doesn't have a strerror_r but does have strerror_s!
+   #define strerror_r(errno, buf, len)   strerror_s(buf, len, errno)
 #else
    #include <errno.h>
 #endif
