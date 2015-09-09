@@ -3,7 +3,7 @@
 #define AT_OS_DEFS_H
 
 
-// We don't want to use Microsoft's ntonf, etc. functions for floats/doubles
+// We don't want to use Microsoft's ntohf, etc. functions for floats/doubles
 #ifdef _MSC_VER
 #define NO_EXTRA_HTON_FUNCTIONS
 #endif
