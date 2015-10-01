@@ -21,7 +21,7 @@ print 'Building for ' + buildTarget + '...'
 
 # Settings for optional components to include
 enableBluetooth = ARGUMENTS.get('enableBluetooth', 'yes').lower();
-enableRTI = ARGUMENTS.get('enableBluetooth', 'no').lower();
+enableRTI = ARGUMENTS.get('enableRTI', 'no').lower();
 enableUUID = ARGUMENTS.get('enableUUID', 'yes').lower();
 enableXML = ARGUMENTS.get('enableXML', 'yes').lower();
 
