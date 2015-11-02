@@ -27,6 +27,6 @@ bool atItem::equals(atItem * otherItem)
 int atItem::compare(atItem * otherItem)
 {
    // Return the difference between the items' pointer values
-   return (int) otherItem - (int) this;
+   return (long) otherItem - (long) this;
 }
 
