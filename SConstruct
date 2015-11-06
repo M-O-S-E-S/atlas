@@ -19,61 +19,67 @@ if buildTarget != 'ios' and buildTarget != 'android':
 print 'Building for ' + buildTarget + '...'
 
 
+# Settings for optional components to include
+enableBluetooth = ARGUMENTS.get('enableBluetooth', 'yes').lower();
+enableRTI = ARGUMENTS.get('enableRTI', 'no').lower();
+enableUUID = ARGUMENTS.get('enableUUID', 'yes').lower();
+enableXML = ARGUMENTS.get('enableXML', 'yes').lower();
+
 
 # Base paths for external libraries (platform dependent)
 if buildTarget == 'win32.64bit':
    # libxml2
-   xmlPath = 'L:/libxml2-2.9.2'
+   xmlPath = ARGUMENTS.get('xmlPath', 'L:/libxml2-2.9.2')
+   # iconv
+   iconvPath = ARGUMENTS.get('iconvPath', 'L:/libiconv-1.14')
+   # inttypes.h for MSVC
+   msinttypesPath = ARGUMENTS.get('msinttypesPath', 'L:/msinttypes-r26')
+   # Bluetooth (disabled for Windows)
+   bluetoothPath = ARGUMENTS.get('bluetoothPath', '')
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', 'L:/rtis-1.3_D22')
-   # iconv
-   iconvPath = 'L:/libiconv-1.14'
-   # inttypes.h for MSVC
-   msinttypesPath = 'L:/msinttypes-r26'
-   # Bluetooth (disabled for Windows)
-   bluetoothPath = ''
 elif buildTarget == 'posix.64bit':
+   # uuid
+   uuidPath = ARGUMENTS.get('uuidPath', '/usr')
+   # libxml2 (see subpaths below)
+   xmlPath = ARGUMENTS.get('xmlPath', '/usr')
+   # bluetooth (see subpaths below)
+   bluetoothPath = ARGUMENTS.get('bluetoothPath', '/usr')
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis_D30G')
+elif buildTarget == 'posix.32bit':
    # uuid
-   uuidPath = '/usr'
+   uuidPath = ARGUMENTS.get('uuidPath', '/irl/tools/libs/uuid-1.6.2')
    # libxml2 (see subpaths below)
-   xmlPath = '/usr'
+   xmlPath = ARGUMENTS.get('xmlPath', '/usr')
    # bluetooth (see subpaths below)
    bluetoothPath = ARGUMENTS.get('bluetoothPath', '/usr')
-elif buildTarget == 'posix.32bit':
    # HLA RTI
    rtiPath = ARGUMENTS.get('rtiPath', '/irl/tools/libs/rtis-1.3_D22')
-   # uuid
-   uuidPath = '/irl/tools/libs/uuid-1.6.2'
-   # libxml2 (see subpaths below)
-   xmlPath = '/usr'
-   # bluetooth (see subpaths below)
-   bluetoothPath = ARGUMENTS.get('bluetoothPath', '/usr')
 elif buildTarget == 'ios':
    # Xcode
-   xcodePath = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer';
+   xcodePath = ARGUMENTS.get('xcodePath', '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer');
    # uuid
-   uuidPath = '/irl/tools-ios/libs/uuid-1.6.2'
+   uuidPath = ARGUMENTS.get('uuidPath', '/irl/tools-ios/libs/uuid-1.6.2')
    # libxml2
-   xmlPath = xcodePath + '/SDKs/iPhoneOS8.2.sdk/usr';
-   # HLA RTI (empty means do not include)
-   rtiPath = ''
+   xmlPath = ARGUMENTS.get('xmlPath', xcodePath + '/SDKs/iPhoneOS8.2.sdk/usr');
    # bluetooth (empty means do not include)
-   bluetoothPath = ''
+   bluetoothPath = ARGUMENTS.get('bluetoothPath', '')
+   # HLA RTI
+   rtiPath = ARGUMENTS.get('rtiPath', '')
 elif buildTarget == 'android':
    # Android NDK
-   ndkPath = '/irl/tools/libs/android-ndk-r8'
+   ndkPath = ARGUMENTS.get('ndkPath', '/irl/tools/libs/android-ndk-r8')
    # uuid
-   uuidPath = '/irl/tools-android/libs/uuid-1.6.2'
+   uuidPath = ARGUMENTS.get('uuidPath', '/irl/tools-android/libs/uuid-1.6.2')
    # libxml2
-   xmlPath = '/irl/tools-android/libs/libxml2-2.7.8'
-   # HLA RTI (empty means do not include)
-   rtiPath = ''
+   xmlPath = ARGUMENTS.get('xmlPath', '/irl/tools-android/libs/libxml2-2.7.8')
    # bluetooth (empty means do not include)
-   bluetoothPath = ''
+   bluetoothPath = ARGUMENTS.get('bluetoothPath', '')
+   # HLA RTI
+   rtiPath = ARGUMENTS.get('rtiPath', '')
    # glob
-   globPath = '/irl/tools-android/libs/glob'
+   globPath = ARGUMENTS.get('globPath', '/irl/tools-android/libs/glob')
 else:
    # Unsupported architecture so bail
    print "Unsupported target type ", buildTarget
@@ -122,10 +128,10 @@ communicationSrc = 'atIPCInterface.c++ \
                     atSerialInterface.c++ \
                     atNameValuePair.c++ atKeyedBufferHandler.c++ \
                     atHLAInterface.c++ atRTIInterface.c++'
-if bluetoothPath != '':
+if enableBluetooth == 'yes':
    communicationSrc = communicationSrc + \
                       ' atBluetoothInterface.c++ atRFCOMMBluetoothInterface.c++'
-if rtiPath != '':
+if enableRTI == 'yes':
    communicationSrc = communicationSrc + ' atRTIInterfaceAmbassador.c++'
 
 
@@ -140,9 +146,13 @@ mathDir = 'math'
 mathSrc = 'atVector.c++ atMatrix.c++ atQuat.c++'
 
 osDir = 'os'
-osSrc = 'atBluetooth.c++ atByteSwap.c++ atDynamic.c++ atErrno.c++ atFile.c++ \
+osSrc = 'atByteSwap.c++ atDynamic.c++ atErrno.c++ atFile.c++ \
          atNetwork.c++ atSem.c++ atShm.c++ atSpawn.c++ atThread.c++ \
-         atTime.c++ atUUID.c++'
+         atTime.c++'
+if enableBluetooth == 'yes':
+   osSrc = osSrc + ' atBluetooth.c++'
+if enableUUID == 'yes':
+   osSrc = osSrc + ' atUUID.c++'
 
 utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atPath.c++ atImage.c++ \
@@ -161,13 +171,25 @@ atlasSource.extend(buildList(foundationDir, foundationSrc))
 atlasSource.extend(buildList(mathDir, mathSrc))
 atlasSource.extend(buildList(osDir, osSrc))
 atlasSource.extend(buildList(utilDir, utilSrc))
-atlasSource.extend(buildList(xmlDir, xmlSrc))
+if enableXML == 'yes':
+   atlasSource.extend(buildList(xmlDir, xmlSrc))
 
 
 # Set the initial defines and flags
 
 # Set-up ATLAS symbols for exporting
 defines = Split('ATLAS_SYM=EXPORT')
+
+# Set-up common settings (between all platforms)
+# Add a constant define to mark that we included the RTI
+if enableBluetooth == 'yes':
+   defines += Split('__AT_BLUETOOTH_ENABLED__')
+if enableRTI == 'yes':
+   defines += Split('__AT_RTI_ENABLED__')
+if enableUUID == 'yes':
+   defines += Split('__AT_UUID_ENABLED__')
+if enableXML == 'yes':
+   defines += Split('__AT_XML_ENABLED__')
 
 # Then handle platform-specific issues
 if buildTarget == 'win32.64bit':
@@ -190,10 +212,6 @@ if buildTarget == 'win32.64bit':
    # in Windows
    defines += Split('_CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE')
 
-   # Add a constant define to mark that we included the RTI
-   if rtiPath != '':
-      defines += Split('__RTI__')
-
    # Flags for the VC++ linker
    # /DEBUG          = Generate debugging information
    # /OPT:REF        = Optimize away unreferenced code
@@ -205,19 +223,11 @@ elif buildTarget == 'posix.64bit':
    # Flags for gcc (generate debug information and optimize)
    compileFlags = Split('-g -O -Wno-write-strings -fpermissive')
 
-   # Add a constant define to mark that we included the RTI
-   if rtiPath != '':
-      defines += Split('__RTI__ RTI_64_BIT_LONG')
-
    # No linker flags
    linkFlags = []
 elif buildTarget == 'posix.32bit':
    # Flags for gcc (generate debug information and optimize)
    compileFlags = Split('-g -O -Wno-write-strings')
-
-   # Add a constant define to mark that we included the RTI
-   if rtiPath != '':
-      defines += Split('__RTI__')
 
    # No linker flags
    linkFlags = []
@@ -296,15 +306,14 @@ extLibs = []
 # (Windows requires more to be linked in than Linux does)
 if buildTarget == 'win32.64bit':
    # Add the RTI
-   if rtiPath != '':
+   if enableRTI == 'yes':
       addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0',
                   'librti13 libfedtime13 rtis mcast snpr parser')
 
-   # Add libxml2
-   addExternal(xmlPath, '/include/libxml2', '/lib', 'libxml2')
-
-   # Add iconv
-   addExternal(iconvPath, '/include', '/lib', 'libiconv')
+   # Add libxml2 (and its dependency, iconv)
+   if enableXML == 'yes':
+      addExternal(xmlPath, '/include/libxml2', '/lib', 'libxml2')
+      addExternal(iconvPath, '/include', '/lib', 'libiconv')
 
    # Add msinttypes headers
    extIncPath.extend(Split(msinttypesPath + '/include'))
@@ -313,40 +322,46 @@ if buildTarget == 'win32.64bit':
    extLibs.extend(Split('ws2_32 winmm rpcrt4 shell32 ole32'))
 elif buildTarget == 'posix.64bit':
    # Add the RTI
-   if rtiPath != '':
+   if enableRTI == 'yes':
       addExternal(rtiPath, '/include/1.3', '/lib/x86_64_g++-4.4',
                   'rti13 fedtime13 rtis msgflow mcast snpr parser')
 
    # Add the uuid library
-   addExternal(uuidPath, '/include', '/lib64', 'ossp-uuid')
+   if enableUUID == 'yes':
+      addExternal(uuidPath, '/include', '/lib64', 'ossp-uuid')
 
    # Add libxml2
-   addExternal(xmlPath, '/include/libxml2', '/lib64', 'xml2')
+   if enableXML == 'yes':
+      addExternal(xmlPath, '/include/libxml2', '/lib64', 'xml2')
 
    # Add bluetooth
-   if bluetoothPath != '':
+   if enableBluetooth == 'yes':
       addExternal(bluetoothPath, '/include', '/lib64', 'bluetooth')
 elif buildTarget == 'posix.32bit':
   # Add the RTI
-   if rtiPath != '':
+   if enableRTI == 'yes':
       addExternal(rtiPath, '/include/1.3', '/lib/linux_g++-4.4',
                   'rti13 fedtime13 rtis msgflow mcast snpr parser')
 
    # Add the uuid library
-   addExternal(uuidPath, '/include', '/lib', 'uuid')
+   if enableUUID == 'yes':
+      addExternal(uuidPath, '/include', '/lib', 'uuid')
 
    # Add libxml2
-   addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
+   if enableXML == 'yes':
+      addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
 
    # Add bluetooth
-   if bluetoothPath != '':
+   if enableBluetooth == 'yes':
       addExternal(bluetoothPath, '/include', '/lib', 'bluetooth')
 elif buildTarget == 'ios':
    # Add the uuid library
-   addExternal(uuidPath, '/include', '/lib', 'uuid')
+   if enableUUID == 'yes':
+      addExternal(uuidPath, '/include', '/lib', 'uuid')
 
    # Add libxml2
-   addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
+   if enableXML == 'yes':
+      addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
 elif buildTarget == 'android':
    # Point to the NDK
    extIncPath.extend(Split(ndkPath + 
@@ -360,10 +375,12 @@ elif buildTarget == 'android':
    extLibs.extend(Split('gnustl_shared'))
 
    # Add the uuid library
-   addExternal(uuidPath, '/include', '/lib', 'uuid')
+   if enableUUID == 'yes':
+      addExternal(uuidPath, '/include', '/lib', 'uuid')
 
    # Add libxml2
-   addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
+   if enableXML == 'yes':
+      addExternal(xmlPath, '/include/libxml2', '/lib', 'xml2')
 
    # Add glob
    addExternal(globPath, '/include', '/libs/armeabi', 'glob')

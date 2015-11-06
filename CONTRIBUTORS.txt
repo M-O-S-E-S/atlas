@@ -1,0 +1,18 @@
+
+ATLAS (Adaptable Tool Library for Advanced Simulation) was created within the Interactive Realities Laboratory at the University of Central Florida's Institute for Simulation and Training.  Original contributors include (in alphabetical order):
+
+Jason Daly
+Jaime Flores
+Matt Fontaine
+Bryan Kline
+Glenn Martin
+Travis Meade
+Shehan Sirigampola
+Casey Thurston
+Steven Zielinski
+
+
+Additional contributors include:
+
+<none>
+

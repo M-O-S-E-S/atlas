@@ -12,7 +12,6 @@
 #endif
 
 
-#ifndef _MSC_VER
 float htonf(float x)
 {
    char   *tmp;
@@ -73,5 +72,4 @@ double ntohd(double x)
 {
    return htond(x);
 }
-#endif
 
