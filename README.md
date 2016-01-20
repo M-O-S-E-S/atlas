@@ -13,4 +13,5 @@ licensing information below) and is provided by the University of
 Central Florida and the U.S. Army's Army Research Laboratory Simulation
 and Training Technology Center (under the Military Open Simulator
 Enterprise Strategy, or MOSES, program).  Individual contributors can
-be found in the CONTRIBUTORS.txt file included in this archive.
+be found in the CONTRIBUTORS.txt file included in this archive.  Build
+instructions can be found in the README.txt.
