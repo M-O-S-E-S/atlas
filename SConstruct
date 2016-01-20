@@ -327,7 +327,7 @@ elif buildTarget == 'posix.64bit':
 
    # Add the uuid library
    if enableUUID == 'yes':
-      addExternal(uuidPath, '/include', '/lib64', 'ossp-uuid')
+      addExternal(uuidPath, '/include/ossp', '/lib64', 'ossp-uuid')
 
    # Add libxml2
    if enableXML == 'yes':
