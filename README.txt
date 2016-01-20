@@ -65,3 +65,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
+CHANGE LOG
+==========
+
+v1.0.1   Including copyright, licensing, etc.
+
+v1.0.0   Initial version (not for public release).
+
