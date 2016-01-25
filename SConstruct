@@ -158,7 +158,8 @@ utilDir = 'util'
 utilSrc = 'atConfigFile.c++ atBufferHandler.c++ atPath.c++ atImage.c++ \
            atString.c++ atStringBuffer.c++ atStringTokenizer.c++ \
            atTimer.c++ atJoint.c++ atCommandLine.c++ \
-           atChar.c++ atInt.c++ atLong.c++ atFloat.c++ atDouble.c++'
+           atChar.c++ atInt.c++ atLong.c++ atUInt64.c++ atFloat.c++ \
+           atDouble.c++'
 
 xmlDir = 'xml'
 xmlSrc = 'atXMLBuffer.c++ atXMLDocument.c++ atXMLReader.c++'
