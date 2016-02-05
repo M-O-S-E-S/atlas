@@ -25,6 +25,9 @@ enableRTI = ARGUMENTS.get('enableRTI', 'no').lower();
 enableUUID = ARGUMENTS.get('enableUUID', 'yes').lower();
 enableXML = ARGUMENTS.get('enableXML', 'yes').lower();
 
+# Grab if a specific Visual Studio is desired
+msvcVersion = ARGUMENTS.get('msvc', '')
+
 
 # Base paths for external libraries (platform dependent)
 if buildTarget == 'win32.64bit':
@@ -126,10 +129,17 @@ def embedManifest(environment, target, suffix):
 # Create an exportable environment; this will be used as the basis
 # environment for all of the modules we create (though they can add
 # additional element to it if necessary)
+#
 # NOTE: For 32-bit Windows, we have to force the target architecture or
-#       Scons will default to 64-bit; we also limit to VS2010 for now
+#       Scons will default to 64-bit; also MSVC version can be set 
+#       on command line if desired
+#
 if buildTarget == 'win32.32bit':
-   basisEnv = Environment(MSVC_VERSION='10.0', TARGET_ARCH='x86')
+   # Pass the MSVC version if it was specified
+   if (msvcVersion == ''):
+      basisEnv = Environment(TARGET_ARCH='x86')
+   else:
+      basisEnv = Environment(MSVC_VERSION='10.0', TARGET_ARCH='x86')
 else:
    basisEnv = Environment()
 
