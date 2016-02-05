@@ -5,7 +5,7 @@ import sys
 
 # Figure out whether we're on a 32-bit or 64-bit system
 import struct
-arch = str(struct.calcsize("P") * 8) + 'bit'
+arch = ARGUMENTS.get('arch', str(struct.calcsize("P") * 8) + 'bit')
 
 # Get the build target (e.g., win32, posix, etc.)
 buildTarget = ARGUMENTS.get('platform', str(Platform()))
@@ -32,6 +32,17 @@ if buildTarget == 'win32.64bit':
    xmlPath = ARGUMENTS.get('xmlPath', 'L:/libxml2-2.9.2')
    # iconv
    iconvPath = ARGUMENTS.get('iconvPath', 'L:/libiconv-1.14')
+   # inttypes.h for MSVC
+   msinttypesPath = ARGUMENTS.get('msinttypesPath', 'L:/msinttypes-r26')
+   # Bluetooth (disabled for Windows)
+   bluetoothPath = ARGUMENTS.get('bluetoothPath', '')
+   # HLA RTI
+   rtiPath = ARGUMENTS.get('rtiPath', 'L:/rtis-1.3_D22')
+elif buildTarget == 'win32.32bit':
+   # libxml2
+   xmlPath = ARGUMENTS.get('xmlPath', 'L:/libxml2-2.7.6')
+   # iconv
+   iconvPath = ARGUMENTS.get('iconvPath', 'L:/iconv-1.9.1')
    # inttypes.h for MSVC
    msinttypesPath = ARGUMENTS.get('msinttypesPath', 'L:/msinttypes-r26')
    # Bluetooth (disabled for Windows)
@@ -115,8 +126,12 @@ def embedManifest(environment, target, suffix):
 # Create an exportable environment; this will be used as the basis
 # environment for all of the modules we create (though they can add
 # additional element to it if necessary)
-basisEnv = Environment()
-
+# NOTE: For 32-bit Windows, we have to force the target architecture or
+#       Scons will default to 64-bit; we also limit to VS2010 for now
+if buildTarget == 'win32.32bit':
+   basisEnv = Environment(MSVC_VERSION='10.0', TARGET_ARCH='x86')
+else:
+   basisEnv = Environment()
 
 # Build-up subdirs and sublists of files within ATLAS
 communicationDir = 'communication'
@@ -219,15 +234,46 @@ if buildTarget == 'win32.64bit':
    # /INCREMENTAL:NO = Do not perform incremental linking
    # /MANIFEST       = Generate manifest file
    linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO /MANIFEST')
+elif buildTarget == 'win32.32bit':
+   # Flags for the VC++ compiler
+   # /nologo      = Don't print the compiler banner
+   # /MD          = Use multithreaded DLL runtime
+   # /O2          = Optimize for speed
+   # /EHsc        = Exception handling
+   # /W3          = Warning level
+   # /Zc:forScope = Use standard C++ scoping rules in for loops
+   # /GR          = Enable C++ run-time type information
+   # /Gd          = Use __cdecl calling convention
+   # /Zi          = Generate debug information
+   compileFlags = Split('/nologo /MD /O2 /EHsc /W3 /Zc:forScope /GR /Gd /Zi')
+
+   # Additional flags to disable useless warnings in Windows
+   compileFlags += Split('/wd4091 /wd4275 /wd4290')
+
+   # Disable deprecation warnings for "insecure" and "nonstandard" functions
+   # in Windows
+   defines += Split('_CRT_SECURE_NO_DEPRECATE _CRT_NONSTDC_NO_DEPRECATE')
+
+   # Flags for the VC++ linker
+   # /DEBUG          = Generate debugging information
+   # /OPT:REF        = Optimize away unreferenced code
+   # /OPT:ICF        = Optimize away redundant function packages
+   # /INCREMENTAL:NO = Do not perform incremental linking
+   # /MANIFEST       = Generate manifest file
+   linkFlags = Split('/DEBUG /OPT:REF /OPT:ICF /INCREMENTAL:NO /MANIFEST')
+   linkFlags += Split('/MACHINE:X86')
 elif buildTarget == 'posix.64bit':
-   # Flags for gcc (generate debug information and optimize)
+   # Flags for gcc (generate debug information and optimize,
+   # use POSIX and not GNU)
    compileFlags = Split('-g -O -Wno-write-strings -fpermissive')
+   compileFlags += Split('-D_POSIX_C_SOURCE=200112L')
 
    # No linker flags
    linkFlags = []
 elif buildTarget == 'posix.32bit':
-   # Flags for gcc (generate debug information and optimize)
-   compileFlags = Split('-g -O -Wno-write-strings')
+   # Flags for gcc (generate debug information and optimize,
+   # use POSIX and not GNU)
+   compileFlags = Split('-g -O -Wno-write-strings -D_POSIX_C_SOURCE=200112L')
 
    # No linker flags
    linkFlags = []
@@ -313,7 +359,23 @@ if buildTarget == 'win32.64bit':
    # Add libxml2 (and its dependency, iconv)
    if enableXML == 'yes':
       addExternal(xmlPath, '/include/libxml2', '/lib', 'libxml2')
-      addExternal(iconvPath, '/include', '/lib', 'libiconv')
+      addExternal(iconvPath, '/include', '/lib', 'iconv')
+
+   # Add msinttypes headers
+   extIncPath.extend(Split(msinttypesPath + '/include'))
+
+   # Add the Windows-specific libraries (already in main path)
+   extLibs.extend(Split('ws2_32 winmm rpcrt4 shell32 ole32'))
+elif buildTarget == 'win32.32bit':
+   # Add the RTI
+   if enableRTI == 'yes':
+      addExternal(rtiPath, '/include/1.3', '/lib/winnt_vc++-10.0',
+                  'librti13 libfedtime13 rtis mcast snpr parser')
+
+   # Add libxml2 (and its dependency, iconv)
+   if enableXML == 'yes':
+      addExternal(xmlPath, '/include', '/lib', 'libxml2')
+      addExternal(iconvPath, '/include', '/lib', 'iconv')
 
    # Add msinttypes headers
    extIncPath.extend(Split(msinttypesPath + '/include'))
@@ -413,6 +475,9 @@ if buildTarget != 'ios':
 
 # Under Windows, embed the manifest into the .dll
 if buildTarget == 'win32.64bit':
+   embedManifest(basisEnv, atlasLib, 2)
+   embedManifest(basisEnv, atlasDSO, 2)
+elif buildTarget == 'win32.32bit':
    embedManifest(basisEnv, atlasLib, 2)
    embedManifest(basisEnv, atlasDSO, 2)
 

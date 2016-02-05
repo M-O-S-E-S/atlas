@@ -43,6 +43,7 @@
 #include "atDynamic.h++"
 #include "atErrno.h++"
 #include "atFile.h++"
+#include "atFloatTypes.h++"
 #include "atIntTypes.h++"
 #include "atLang.h++"
 #include "atNetwork.h++"

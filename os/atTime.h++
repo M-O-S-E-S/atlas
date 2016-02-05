@@ -40,6 +40,12 @@
    #include <time.h>
    #include "atSymbols.h++"
 
+   // VS2015 seems to have a struct timespec now, yet pthreads is still
+   // released defining its own (which then conflicts) so define this to
+   // tell pthreads not to define it
+   #if _MSC_VER >= 1900
+      #define _TIMESPEC_DEFINED
+   #endif
 
    // TYPES
    struct timezone
