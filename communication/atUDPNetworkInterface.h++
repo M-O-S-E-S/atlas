@@ -41,16 +41,16 @@ class ATLAS_SYM atUDPNetworkInterface : public atNetworkInterface
       bool   ignore_our_own;
 
    public:
-      atUDPNetworkInterface(char * readAddress, char * writeAddress, 
-                            short port);
-      atUDPNetworkInterface(char * writeAddress, short port);
+      atUDPNetworkInterface(char * address, short port);
       atUDPNetworkInterface(short port);
-      atUDPNetworkInterface(char * address, short srcPort, short dstPort);
       virtual ~atUDPNetworkInterface();
 
       int   read(u_char * buffer, u_long len);
-      int   read(u_char * buffer, u_long len, atString * senderAddr);
+      int   read(u_char * buffer, u_long len,
+                 atString * senderAddr, short * senderPort);
       int   write(u_char * buffer, u_long len);
+      int   write(u_char * buffer, u_long len,
+                  atString * senderAddr, short * senderPort);
 };
 
 #endif
