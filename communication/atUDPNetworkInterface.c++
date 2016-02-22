@@ -224,14 +224,14 @@ int atUDPNetworkInterface::write(u_char * buffer, u_long len)
 
 
 int atUDPNetworkInterface::write(u_char * buffer, u_long len,
-   atString * sendToAddr, short * sendToPort)
+   atString sendToAddr, short sendToPort)
 {
    struct sockaddr_in   sendTo;
    int                  lengthWritten;
 
    // Set-up sockaddr based on destination
    sendTo.sin_family = AF_INET;
-   strToNetAddr(AF_INET, sendToAddr->getString(), &sendTo.sin_addr);
+   strToNetAddr(AF_INET, sendToAddr.getString(), &sendTo.sin_addr);
    sendTo.sin_port = htons(sendToPort);
 
    // Write the packet

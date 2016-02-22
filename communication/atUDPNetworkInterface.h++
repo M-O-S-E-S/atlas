@@ -50,7 +50,7 @@ class ATLAS_SYM atUDPNetworkInterface : public atNetworkInterface
                  atString * senderAddr, short * senderPort);
       int   write(u_char * buffer, u_long len);
       int   write(u_char * buffer, u_long len,
-                  atString * senderAddr, short * senderPort);
+                  atString senderAddr, short senderPort);
 };
 
 #endif
