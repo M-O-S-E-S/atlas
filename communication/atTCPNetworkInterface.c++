@@ -34,7 +34,7 @@
 #define AT_TCP_MAX_PACKET_SIZE   65536
 
 
-atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
+atTCPNetworkInterface::atTCPNetworkInterface(char * address, u_short port)
 {
    SocketOptionValue   max;
    SocketOptionValue   on;
@@ -82,7 +82,7 @@ atTCPNetworkInterface::atTCPNetworkInterface(char * address, short port)
 }
 
 
-atTCPNetworkInterface::atTCPNetworkInterface(short port)
+atTCPNetworkInterface::atTCPNetworkInterface(u_short port)
 {
    SocketOptionValue   max;
    SocketOptionValue   on;

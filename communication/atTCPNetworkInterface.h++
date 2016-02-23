@@ -51,8 +51,8 @@ class ATLAS_SYM atTCPNetworkInterface : public atNetworkInterface
       u_long       num_client_sockets;
 
    public:
-      atTCPNetworkInterface(char * address, short port);
-      atTCPNetworkInterface(short port);
+      atTCPNetworkInterface(char * address, u_short port);
+      atTCPNetworkInterface(u_short port);
       virtual ~atTCPNetworkInterface();
 
       bool         allowConnections(int backlog);

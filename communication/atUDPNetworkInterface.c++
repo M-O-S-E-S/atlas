@@ -31,7 +31,7 @@
 #include "atNetwork.h++"
 
 
-atUDPNetworkInterface::atUDPNetworkInterface(char * address, short port)
+atUDPNetworkInterface::atUDPNetworkInterface(char * address, u_short port)
 {
    char               hostname[MAXHOSTNAMELEN];
    struct hostent *   host;
@@ -91,7 +91,7 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * address, short port)
 }
 
 
-atUDPNetworkInterface::atUDPNetworkInterface(short port)
+atUDPNetworkInterface::atUDPNetworkInterface(u_short port)
 {
    SocketOptionFlag   on;
 
@@ -140,7 +140,7 @@ int atUDPNetworkInterface::read(u_char * buffer, u_long len)
 
 
 int atUDPNetworkInterface::read(u_char * buffer, u_long len,
-   atString * senderAddr, short * senderPort)
+   atString * senderAddr, u_short * senderPort)
 {
    bool                 loop;
    struct sockaddr_in   fromAddress;
@@ -224,7 +224,7 @@ int atUDPNetworkInterface::write(u_char * buffer, u_long len)
 
 
 int atUDPNetworkInterface::write(u_char * buffer, u_long len,
-   atString sendToAddr, short sendToPort)
+   atString sendToAddr, u_short sendToPort)
 {
    struct sockaddr_in   sendTo;
    int                  lengthWritten;
