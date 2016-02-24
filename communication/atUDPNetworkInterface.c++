@@ -86,8 +86,8 @@ atUDPNetworkInterface::atUDPNetworkInterface(char * address, u_short port)
          notify(AT_WARN, "Unable to join multicast group on socket.\n");
    }
 
-   // Ignore our own broadcasted packets by default
-   ignore_our_own = true;
+   // Do not ignore our own broadcasted packets by default
+   ignore_our_own = false;
 }
 
 
